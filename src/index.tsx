@@ -1,18 +1,39 @@
 import type { History } from 'history';
 import type { Fiber } from 'react-reconciler';
-import React, { createContext, useContext, useEffect, useLayoutEffect, useMemo, useState } from 'react';
-import { findFiberByType, getRootFiber, Nullable } from './helpers';
+import React, {
+    createContext,
+    useContext,
+    useEffect,
+    useLayoutEffect,
+    useMemo,
+    useState,
+} from 'react';
+import {
+    Nullable,
+    appendFiberEffect,
+    findFiberByType,
+    getRootFiber,
+    traverseFiber,
+} from './helpers';
+import noop from 'lodash/noop';
 import pick from 'lodash/pick';
 
 type Cache = [Fiber, Partial<Fiber>, Partial<Fiber>];
 type Status = [string, void | Fiber];
 
+// detachFiber()
 const PatrialProps: Array<keyof Fiber> = [
-    'alternate',
+    'return',
     'child',
+    'memoizedState',
+    'updateQueue',
+    'dependencies',
+    'alternate',
     'firstEffect',
-    'nextEffect',
     'lastEffect',
+    'pendingProps',
+    'memoizedProps',
+    'stateNode',
 ];
 
 const KeepAliveTragetContext = createContext<string>('default');
@@ -51,7 +72,7 @@ export const KeepAliveProvider: React.FC<{
 
     const unbind = useMemo(() => history.listen(({ key = 'default' }) => {
         const rootFiber = getRootFiber(container);
-        const [newFiber] = findFiberByType(rootFiber, KeepAlive) || [];
+        const [newFiber] = findFiberByType(rootFiber, KeepAlive);
 
         if (newFiber?.key && newFiber.child) {
             console.log('[KEEP-ALIVE]', '[KEEP]', newFiber.key, newFiber, newFiber.child);
@@ -98,7 +119,7 @@ export const KeepAliveProvider: React.FC<{
             return setStatus(newStatus);
         }
 
-        const [newFiber] = findFiberByType(rootFiber, KeepAlive) || [];
+        const [newFiber] = findFiberByType(rootFiber, KeepAlive);
         if (key !== newFiber?.key) {
             console.log('[KEEP-ALIVE]', '[WAIT]', `Wait "${key}" to be mounted`, newFiber, newFiber?.key);
             return void requestAnimationFrame(() => setStatus((curStatus) => {
@@ -149,8 +170,15 @@ export const KeepAliveProvider: React.FC<{
             }
         }
 
-        setStatus(newStatus);
+        setStatus([key, undefined]);
+
+        traverseFiber(oldFiber, (fiber) => {
+            appendFiberEffect(rootFiber, fiber);
+        });
     }, [status]);
+
+    // trigger effect hook
+    useEffect(noop, [status]);
 
     return (
         <KeepAliveTragetContext.Provider value={target}>
