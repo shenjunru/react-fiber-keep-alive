@@ -1,10 +1,28 @@
-import type { ComponentType, ComponentProps } from 'react';
 import type { Fiber } from 'react-reconciler';
-import React, { version } from 'react';
-import isFunction from 'lodash/isFunction';
-import identity from 'lodash/identity';
+import type {
+    Component,
+    ComponentClass,
+    ComponentType,
+    ComponentProps,
+    DependencyList,
+    EffectCallback,
+} from 'react';
+import { version } from 'react';
 
 export type Nullable<T> = T | null | undefined;
+
+interface TypedFiber<C extends ComponentType<any> = ComponentType<any>> extends Fiber {
+    memoizedProps: ComponentProps<C>;
+}
+
+interface FiberEffectHookState {
+    tag: number;
+    create: EffectCallback;
+    destroy: ReturnType<EffectCallback>;
+    deps: DependencyList;
+    // Circular
+    next: null | FiberEffectHookState;
+}
 
 const v16 = version.startsWith('16');
 const v17 = version.startsWith('17');
@@ -12,6 +30,34 @@ const v18 = version.startsWith('18');
 const DomPropPrefix = v16 ? '__reactInternalInstance$' : '__reactFiber$';
 // const RefPropPrefix = V16 ? '_reactInternalFiber' : '_reactInternals';
 const FiberEffectProp = (v16 ? 'effectTag' : 'flags') as 'flags';
+const UseSubtreeFlags = v18;
+const UseDeepDetach = v18;
+
+const hasOwnProperty = Object.prototype.hasOwnProperty;
+const isFunction = (object: any): object is (...args: any[]) => any =>  {
+    return 'function' === typeof object;
+};
+
+const EffectProp = Symbol('Effect');
+export const markEffectHookIsOnetime = (effect: React.EffectCallback) => {
+    return Object.defineProperty(effect, EffectProp, {
+        configurable: true,
+        enumerable: false,
+        get() {
+            return true;
+        },
+    });
+};
+
+export const markClassComponentHasSideEffectRender = <T extends ComponentClass<any>>(Class: T): T => {
+    return Object.defineProperty(Class, EffectProp, {
+        configurable: true,
+        enumerable: false,
+        get() {
+            return true;
+        },
+    });
+};
 
 type PropRestore = { current: boolean };
 const ProtectedFiberProps: Array<keyof Fiber> = [
@@ -29,22 +75,28 @@ const ProtectedFiberProps: Array<keyof Fiber> = [
     '_debugOwner',
 ];
 
-export enum FiberVisit {
-    Child   = 0b0001,
-    Sibling = 0b0010,
-    Return  = 0b0100,
-}
-
 
 /* eslint-disable @typescript-eslint/indent */
+
+export enum FiberVisit {
+    Child   = 0b000001,
+    Sibling = 0b000010,
+    Return  = 0b000100,
+    Effect  = 0b001000,
+    Break   = 0b010000,
+}
 
 // v16: shared/ReactWorkTags.js
 // react-reconciler/src/ReactWorkTags.js
 export enum FiberTag {
     FunctionComponent = 0,
     ClassComponent = 1,
+    HostRoot = 3,
+    HostPortal = 4,
     HostComponent = 5,
     HostText = 6,
+    MemoComponent = 14,
+    SimpleMemoComponent = 15,
 }
 // react-reconciler/src/ReactTypeOfMode.js
 export enum FiberMode {
@@ -56,44 +108,47 @@ export enum FiberMode {
 // v16: shared/ReactSideEffectTags.js
 // react-reconciler/src/ReactFiberFlags.js
 export enum FiberFlag {
-    NoFlags       =       0b00000000000000000000000000, // 0
-    PerformedWork =       0b00000000000000000000000001, // 1
-    Placement     =       0b00000000000000000000000010, // 2
-    Update        =       0b00000000000000000000000100, // 4
-    Deletion      =       0b00000000000000000000001000, // 8
-    ChildDeletion = v18 ? 0b00000000000000000000010000  // 16
-        /* v16 | v17 */ : 0,
-    Callback      = v18 ? 0b00000000000000000001000000  // 64
-        /* v16 | v17 */ : 0b00000000000000000000100000, // 32
-    Ref           = v18 ? 0b00000000000000001000000000  // 512
-        /* v16 | v17 */ : 0b00000000000000000010000000, // 128
-    Snapshot      = v18 ? 0b00000000000000010000000000  // 1024
-        /* v16 | v17 */ : 0b00000000000000000100000000, // 256
-    Passive       = v18 ? 0b00000000000000100000000000  // 2048
-        /* v16 | v17 */ : 0b00000000000000001000000000, // 512
+    NoFlags             =       0b00000000000000000000000000, // 0
+    PerformedWork       =       0b00000000000000000000000001, // 1
+    Placement           =       0b00000000000000000000000010, // 2
+    Update              =       0b00000000000000000000000100, // 4
+    Deletion            =       0b00000000000000000000001000, // 8
+    ChildDeletion       = v18 ? 0b00000000000000000000010000  // 16
+              /* v16 | v17 */ : 0,
+    Callback            = v18 ? 0b00000000000000000001000000  // 64
+              /* v16 | v17 */ : 0b00000000000000000000100000, // 32
+    Ref                 = v18 ? 0b00000000000000001000000000  // 512
+              /* v16 | v17 */ : 0b00000000000000000010000000, // 128
+    Snapshot            = v18 ? 0b00000000000000010000000000  // 1024
+              /* v16 | v17 */ : 0b00000000000000000100000000, // 256
+    Passive             = v18 ? 0b00000000000000100000000000  // 2048
+              /* v16 | v17 */ : 0b00000000000000001000000000, // 512
 
-    Incomplete    = v18 ? 0b00000000001000000000000000  // 32768
-        /* v16 | v17 */ : 0b00000000000000100000000000, // 2048
-    Forked        = v18 ? 0b00000100000000000000000000  // 1048576
-        /* v16 | v17 */ : 0,
+    LifecycleEffectMask = v18 ? 0b00000000000111111000000000  // 32256 = Passive | Update | Callback | Ref | Snapshot | StoreConsistency
+              /* v16 | v17 */ : 0b00000000000000001110100100, // 932 = Passive | Update | Callback | Ref | Snapshot
 
-    LayoutStatic  = v18 ? 0b00010000000000000000000000  // 4194304
-        /* v16 | v17 */ : 0,
-    PassiveStatic = v18 ? 0b00100000000000000000000000  // 8388608
-                  : v17 ? 0b00000000001000000000000000  // 32768
-              /* v16 */ : 0,
+    Incomplete          = v18 ? 0b00000000001000000000000000  // 32768
+              /* v16 | v17 */ : 0b00000000000000100000000000, // 2048
+    Forked              = v18 ? 0b00000100000000000000000000  // 1048576
+              /* v16 | v17 */ : 0,
 
-    LayoutMask    = v18 ? 0b00000000000010001001000100  // 8772 = Update | Callback | Ref | Visibility
-                  : v17 ? 0b00000000000000000010100100  // 164
-              /* v16 */ : 0,
+    LayoutStatic        = v18 ? 0b00010000000000000000000000  // 4194304
+              /* v16 | v17 */ : 0,
+    PassiveStatic       = v18 ? 0b00100000000000000000000000  // 8388608
+                        : v17 ? 0b00000000001000000000000000  // 32768
+                    /* v16 */ : 0,
 
-    PassiveMask   = v18 ? 0b00000000000000100000010000  // 2064 = Passive | ChildDeletion
-                  : v17 ? 0b00000000000000001000001000  // 520
-              /* v16 */ : 0,
+    LayoutMask          = v18 ? 0b00000000000010001001000100  // 8772 = Update | Callback | Ref | Visibility
+                        : v17 ? 0b00000000000000000010100100  // 164
+                    /* v16 */ : 0,
 
-    StaticMask    = v18 ? 0b00111000000000000000000000 // 14680064 = LayoutStatic | PassiveStatic | RefStatic
-                  : v17 ? 0b00000000001000000000000000 // 32768
-              /* v16 */ : 0,
+    PassiveMask         = v18 ? 0b00000000000000100000010000  // 2064 = Passive | ChildDeletion
+                        : v17 ? 0b00000000000000001000001000  // 520
+                    /* v16 */ : 0,
+
+    StaticMask          = v18 ? 0b00111000000000000000000000  // 14680064 = LayoutStatic | PassiveStatic | RefStatic
+                        : v17 ? 0b00000000001000000000000000  // 32768 = PassiveStatic
+                    /* v16 */ : 0,
 }
 
 // react-reconciler/src/ReactHookEffectTags.js
@@ -111,32 +166,6 @@ export enum HookEffectTag {
 /* eslint-enable @typescript-eslint/indent */
 
 
-// https://github.com/facebook/react/blob/main/packages/shared/ReactTypes.js
-interface TypedFiber<C extends ComponentType<any> = ComponentType<any>> extends Fiber {
-    memoizedProps: ComponentProps<C>;
-}
-
-interface FiberEffectHookState {
-    tag: number;
-    create: React.EffectCallback;
-    destroy: ReturnType<React.EffectCallback>;
-    deps: React.DependencyList;
-    // Circular
-    next: null | FiberEffectHookState;
-}
-
-interface FiberMemoizedState {
-    memoizedState: null | FiberEffectHookState; // any
-    // baseState: any;
-    // baseQueue: any;
-    // queue: any;
-    next: null | FiberMemoizedState;
-}
-
-export const isConcurrentMode = (fiber: Fiber) => {
-    return v18 && FiberMode.NoMode !== (fiber.mode & FiberMode.ConcurrentMode);
-};
-
 export const getInternalKey = (element: Nullable<HTMLElement>, prefix: string) => {
     return element && Object.keys(element).find((key) => key.startsWith(prefix));
 };
@@ -152,9 +181,24 @@ export const getRootFiber = (container: Nullable<void | HTMLElement>): undefined
     return root?.current;
 };
 
+const pushVisitStack = (stack: any[], fiber: Fiber, flags: number) => {
+    if (flags & FiberVisit.Sibling) {
+        fiber.sibling && stack.push(fiber.sibling);
+    }
+    if (flags & FiberVisit.Child) {
+        fiber.child && stack.push(fiber.child);
+    }
+    if (flags & FiberVisit.Return) {
+        fiber.return && stack.push(fiber.return);
+    }
+    if (flags & FiberVisit.Effect) {
+        fiber.nextEffect && stack.push(fiber.nextEffect);
+    }
+};
+
 export const findFiber = <T extends Fiber>(
     fiber: Nullable<Fiber>,
-    predicate: (fiber: Fiber) => boolean,
+    predicate: (fiber: Fiber) => boolean | FiberVisit.Break,
     flags = FiberVisit.Child | FiberVisit.Sibling,
 ): null | T => {
     const stack = [fiber];
@@ -163,25 +207,21 @@ export const findFiber = <T extends Fiber>(
         if (!current) {
             continue;
         }
-        if (predicate(current)) {
+        const value = predicate(current);
+        if (value === FiberVisit.Break) {
+            continue;
+        }
+        if (value) {
             return <T>current;
         }
-        if ((flags & FiberVisit.Sibling) && current.sibling) {
-            stack.push(current.sibling);
-        }
-        if ((flags & FiberVisit.Child) && current.child) {
-            stack.push(current.child);
-        }
-        if ((flags & FiberVisit.Return) && current.return) {
-            stack.push(current.return);
-        }
+        pushVisitStack(stack, current, flags);
     }
     return null;
 };
 
 export const findFibers = <T extends Fiber>(
     fiber: Nullable<Fiber>,
-    predicate: (fiber: Fiber) => boolean,
+    predicate: (fiber: Fiber) => boolean | FiberVisit.Break,
     flags = FiberVisit.Child | FiberVisit.Sibling,
 ): T[] => {
     const result: T[] = [];
@@ -191,18 +231,14 @@ export const findFibers = <T extends Fiber>(
         if (!current) {
             continue;
         }
-        if (predicate(current)) {
+        const value = predicate(current);
+        if (value === FiberVisit.Break) {
+            continue;
+        }
+        if (value) {
             result.push(<T>current);
         }
-        if ((flags & FiberVisit.Sibling) && current.sibling) {
-            stack.push(current.sibling);
-        }
-        if ((flags & FiberVisit.Child) && current.child) {
-            stack.push(current.child);
-        }
-        if ((flags & FiberVisit.Return) && current.return) {
-            stack.push(current.return);
-        }
+        pushVisitStack(stack, current, flags);
     }
     return result;
 };
@@ -225,7 +261,7 @@ export const findFibersByType = <T extends ComponentType<any>>(
 
 export const traverseFiber = (
     fiber: Nullable<Fiber>,
-    visit: (fiber: Fiber) => void | Nullable<() => void>,
+    visit: (fiber: Fiber) =>  Nullable<void | FiberVisit.Break | (() => void)>,
     flags = FiberVisit.Child | FiberVisit.Sibling,
 ) => {
     const stack: Array<Nullable<Fiber | (() => void)>> = [fiber];
@@ -239,117 +275,172 @@ export const traverseFiber = (
             continue;
         }
         const post = visit(current);
-        if (post) {
+        if (post === FiberVisit.Break) {
+            continue;
+        }
+        if (isFunction(post)) {
             stack.push(post);
         }
-        if ((flags & FiberVisit.Sibling) && current.sibling) {
-            stack.push(current.sibling);
-        }
-        if ((flags & FiberVisit.Child) && current.child) {
-            stack.push(current.child);
-        }
-        if ((flags & FiberVisit.Return) && current.return) {
-            stack.push(current.return);
-        }
+        pushVisitStack(stack, current, flags);
     }
 };
 
-export const replaceFiber = (target: Fiber, replacement: Fiber) => {
-    const parentFiber = target.return;
+const replaceFiberOnParent = (
+    parentFiber: Fiber,
+    oldFiber: null | Fiber,
+    newFiber: Fiber,
+) => {
+    let child = parentFiber.child;
+    while (child) {
+        if (child.sibling === oldFiber) {
+            child.sibling = newFiber;
+            break;
+        }
+
+        child = child.sibling;
+
+        if (!child) {
+            parentFiber.child = newFiber;
+        }
+    }
+
+    newFiber.return = parentFiber;
+
+    if (oldFiber) {
+        newFiber.sibling = oldFiber.sibling;
+
+        if (oldFiber._debugOwner) {
+            newFiber._debugOwner = oldFiber._debugOwner;
+        }
+    }
+
+    return parentFiber;
+};
+
+export const replaceFiber = (oldFiber: Fiber, newFiber: Fiber) => {
+    const parentFiber = oldFiber.return;
     if (!parentFiber) {
         return false;
     }
-    parentFiber.child = replacement;
-    replacement.return = parentFiber;
-    if (target._debugOwner) {
-        replacement._debugOwner = target._debugOwner;
-    }
 
-    if (!replacement.alternate || !parentFiber.alternate) {
-        if (replacement.alternate) {
-            replacement.alternate.return = null;
-            replacement.alternate.sibling = null;
+    replaceFiberOnParent(parentFiber, oldFiber, newFiber);
+
+    if (!newFiber.alternate || !parentFiber.alternate) {
+        if (newFiber.alternate) {
+            newFiber.alternate.return = null;
+            newFiber.alternate.sibling = null;
         }
     } else {
-        parentFiber.alternate.child = replacement.alternate;
-        replacement.alternate.return = parentFiber.alternate;
-        if (target.alternate?._debugOwner) {
-            replacement.alternate._debugOwner = target.alternate._debugOwner;
+        replaceFiberOnParent(parentFiber.alternate, oldFiber.alternate, newFiber.alternate);
+    }
+
+    return true;
+};
+
+
+const traverseEffectHooks = (
+    fiber: Fiber,
+    visit: (effect: FiberEffectHookState) => void,
+) => {
+    switch (fiber.tag) {
+        case FiberTag.FunctionComponent:
+        case FiberTag.MemoComponent:
+        case FiberTag.SimpleMemoComponent: {
+            break;
+        }
+        default:
+            return false;
+    }
+
+    const updateQueue = fiber.updateQueue as any;
+    const lastEffect = updateQueue?.lastEffect;
+    let nextEffect: Nullable<FiberEffectHookState> = updateQueue?.lastEffect;
+    while (nextEffect) {
+        if (null != nextEffect?.tag) {
+            let match = HookEffectTag.NoFlags;
+
+            match || (match = nextEffect.tag & HookEffectTag.Layout);
+            match || (match = nextEffect.tag & HookEffectTag.Passive);
+
+            if (match) {
+                visit(nextEffect);
+            }
+        }
+
+        nextEffect = nextEffect.next;
+        if (nextEffect === lastEffect) {
+            break;
         }
     }
 
     return true;
 };
 
+const isNoEffectHook = (effect: FiberEffectHookState) => {
+    const create = effect.create;
+    if (!create) {
+        return true;
+    }
+    if (!hasOwnProperty.call(create, EffectProp)) {
+        return false;
+    }
+    // determine deps updated
+    return HookEffectTag.NoFlags === (effect.tag & HookEffectTag.HasEffect);
+};
+
 const applyFiberEffect = (fiber: Fiber): number => {
-    let flags = 0;
+    let flags = FiberFlag.NoFlags;
 
-    switch (fiber.tag) {
-        case FiberTag.FunctionComponent: {
-            let state: FiberMemoizedState['next'] = fiber.memoizedState;
-            while (state) {
-                const effect = state.memoizedState;
-                if (null != effect?.tag) {
-                    let match = 0;
-                    if (match || (match = effect.tag & HookEffectTag.Layout)) {
-                        flags |= FiberFlag.Update;
-                    }
-
-                    if (match || (match = effect.tag & HookEffectTag.Passive)) {
-                        flags |= FiberFlag.Update;
-                        flags |= FiberFlag.Passive;
-                    }
-
-                    if (match) {
-                        effect.tag |= HookEffectTag.HasEffect;
-                        effect.destroy = undefined;
-                    }
-                }
-                state = state.next;
-            }
-
-            const updateQueue = fiber.updateQueue as any;
-            const lastEffect = updateQueue?.lastEffect;
-            let nextEffect: Nullable<FiberEffectHookState> = updateQueue?.lastEffect;
-            while (nextEffect) {
-                if (null != nextEffect?.tag) {
-                    let match = 0;
-
-                    match || (match = nextEffect.tag & HookEffectTag.Layout);
-                    match || (match = nextEffect.tag & HookEffectTag.Passive);
-
-                    if (match) {
-                        nextEffect.tag |= HookEffectTag.HasEffect;
-                        nextEffect.destroy = undefined;
-                    }
-                }
-                nextEffect = nextEffect.next;
-                if (nextEffect === lastEffect) {
-                    break;
-                }
-            }
-
-            break;
+    const isFunctionComponent = traverseEffectHooks(fiber, (effect) => {
+        if (isNoEffectHook(effect)) {
+            return;
         }
 
+        effect.tag |= HookEffectTag.HasEffect;
+
+        switch (effect.tag & ~HookEffectTag.HasEffect) {
+            case HookEffectTag.Layout:
+                flags |= FiberFlag.Update;
+                break;
+            case HookEffectTag.Passive:
+                flags |= FiberFlag.Update;
+                flags |= FiberFlag.Passive;
+                break;
+        }
+    });
+
+    if (isFunctionComponent) {
+        return flags;
+    }
+
+    switch (fiber.tag) {
         case FiberTag.ClassComponent: {
-            const instance = fiber.stateNode as React.Component;
-            if (isFunction(instance?.componentDidMount)) {
+            if (!fiber.alternate) {
+                break;
+            }
+
+            const instance = fiber.stateNode as Component;
+            const noUpdate = FiberFlag.NoFlags === (fiber.flags & FiberFlag.Update);
+            const needRender = noUpdate && (true === (instance.constructor as any)[EffectProp]);
+            if (needRender || isFunction(instance?.componentDidMount)) {
                 flags |= FiberFlag.Update;
 
-                if (fiber.alternate) {
-                    const propKey = 'componentDidUpdate';
-                    const propVal = instance[propKey];
-                    const ownProp = Object.prototype.hasOwnProperty.call(instance, propKey);
-                    instance[propKey] = function simulateComponentDidMount() {
-                        if (ownProp) {
-                            instance[propKey] = propVal;
-                        } else {
-                            delete instance[propKey];
-                        }
-                        this.componentDidMount?.();
-                    };
-                }
+                const propKey = 'componentDidUpdate';
+                const propVal = instance[propKey];
+                const ownProp = hasOwnProperty.call(instance, propKey);
+                instance[propKey] = function simulateComponentDidMount() {
+                    if (ownProp) {
+                        instance[propKey] = propVal;
+                    } else {
+                        delete instance[propKey];
+                    }
+                    if (needRender) {
+                        this.render();
+                    }
+                    this.componentDidMount?.();
+                };
+
+                break;
             }
         }
     }
@@ -366,54 +457,51 @@ const bubbleProperties = (fiber: Fiber) => {
     }
 };
 
+// only execute in the useLayoutEffect()
 export const appendFiberEffect = (
     rootFiber: Fiber,
-    takeFiber: Fiber,
-    ThisComponent: ComponentType<any>,
+    effectFiber: Fiber, // fiber of <KeepAliveEffect> component
+    renderFiber: Fiber, // fiber of <KeepAliveRender> component
+    finishFiber: Fiber, // fiber of <KeepAliveFinish> component
 ) => {
-    v18 && traverseFiber(takeFiber, (fiber) => {
-        const flags = applyFiberEffect(fiber);
-        if (!flags) {
-            return;
-        }
+    if (UseSubtreeFlags) {
+        traverseFiber(renderFiber, (fiber) => {
+            const flags = applyFiberEffect(fiber);
 
-        fiber.flags |= flags;
-        return fiber.child && (() => {
-            bubbleProperties(fiber);
+            fiber.flags |= flags;
+            return fiber.child && (() => {
+                bubbleProperties(fiber);
+            });
         });
-    });
 
-    v18 && traverseFiber(takeFiber.return, (fiber) => {
-        bubbleProperties(fiber);
-    }, FiberVisit.Return);
+        // skip the fake passive effect
+        effectFiber.subtreeFlags &= FiberFlag.PassiveMask;
+    } else {
+        // clean all effects in the <KeepAliveRender>
+        effectFiber.nextEffect = finishFiber;
 
-    v18 && commitSubtreeEffects(rootFiber, ThisComponent);
+        traverseFiber(renderFiber, (fiber) => {
+            if (fiber === finishFiber) {
+                return FiberVisit.Break;
+            }
 
-    v18 || traverseFiber(takeFiber, (fiber) => {
-        const flags = applyFiberEffect(fiber);
-        if (!flags) {
-            return;
-        }
-
-        return () => {
+            const flags = applyFiberEffect(fiber);
             rootFiber[FiberEffectProp] |= flags;
             fiber[FiberEffectProp] |= flags;
-            const lastEffect = rootFiber.lastEffect;
-            if (lastEffect) {
-                rootFiber.lastEffect = lastEffect.nextEffect = fiber;
-            } else {
-                rootFiber.firstEffect = rootFiber.lastEffect = fiber;
-            }
-        };
-    });
+            fiber.nextEffect = null;
 
-    // TODO: remove
-    traverseFiber(takeFiber, (fiber) => {
-        if (fiber.tag === FiberTag.ClassComponent) {
-            const instance = fiber.stateNode as React.Component;
-            instance.render();
-        }
-    });
+            return () => {
+                if (FiberFlag.NoFlags === (fiber[FiberEffectProp] & FiberFlag.LifecycleEffectMask)) {
+                    return;
+                }
+
+                const nextEffect = effectFiber.nextEffect;
+
+                effectFiber.nextEffect = fiber;
+                fiber.nextEffect = nextEffect;
+            };
+        });
+    }
 };
 
 export const defineFiberProp = <K extends keyof Fiber>(
@@ -426,30 +514,6 @@ export const defineFiberProp = <K extends keyof Fiber>(
         enumerable: true,
         writable: true,
         value,
-    });
-};
-
-const onetimeFiberProp = <K extends keyof Fiber>(
-    fiber: Nullable<Fiber>,
-    prop: K,
-    getter: ((value: Fiber[K]) => Fiber[K]) = identity,
-) => {
-    if (null == fiber) {
-        return;
-    }
-    const backup = fiber[prop];
-    Object.defineProperty(fiber, prop, {
-        configurable: true,
-        enumerable: true,
-        get() {
-            // console.log('[GET]', `[${prop}]`, fiber, value);
-            defineFiberProp(this, prop, backup);
-            return getter(backup);
-        },
-        set() {
-            // console.log('[SET]', `[${prop}]`, fiber, update);
-            defineFiberProp(this, prop, backup);
-        },
     });
 };
 
@@ -491,7 +555,7 @@ const protectFiberProp = (fiber: Nullable<Fiber>, prop: keyof Fiber, restore: Pr
 };
 
 const restoreFiberProp = (fiber: Fiber, prop: keyof Fiber) => {
-    if (Object.prototype.hasOwnProperty.call(fiber, prop)) {
+    if (hasOwnProperty.call(fiber, prop)) {
         defineFiberProp(fiber, prop, fiber[prop]);
     }
 };
@@ -528,7 +592,8 @@ const restoreFiberProps = (fiber: Fiber, current: null | Fiber) => {
 // - v18 detachFiberAfterEffects()
 
 export const protectFiber = (fiber: Fiber, restore: PropRestore) => {
-    if (v18) {
+    restore.current = false;
+    if (UseDeepDetach) {
         traverseFiber(fiber, (node) => () => {
             protectFiberProps(node, null, restore);
         });
@@ -539,47 +604,24 @@ export const protectFiber = (fiber: Fiber, restore: PropRestore) => {
 
 export const restoreFiber = (fiber: Fiber, restore: PropRestore) => {
     restore.current = true;
-    if (v18) {
+    if (UseDeepDetach) {
         traverseFiber(fiber, (node) => () => {
             restoreFiberProps(node, null);
+
+            // unset effect hook destroy(), which is executed already
+            traverseEffectHooks(node, (effect) => {
+                effect.destroy = undefined;
+            });
         });
     } else {
         restoreFiberProps(fiber, null);
+
+        // unset effect hook destroy(), which is executed already
+        traverseFiber(fiber, (node) => {
+            traverseEffectHooks(node, (effect) => {
+                effect.destroy = undefined;
+            });
+        });
     }
     restore.current = false;
-};
-
-// v18 - hijack loop of commitLayoutMountEffects_complete()
-export const commitSubtreeEffects = (
-    rootFiber: Fiber,
-    ThisComponent: ComponentType<any>,
-) => {
-    const thisFiber = findFiberByType(rootFiber, ThisComponent);
-    if (!thisFiber || !(thisFiber.subtreeFlags & FiberFlag.LayoutMask)) {
-        return;
-    }
-
-    // in commitLayoutMountEffects_complete(thisFiber)
-    // after commitLayoutEffectOnFiber(thisFiber) <- current effect
-    // thisFiber.sibling -> thisFiber.return
-    // return to commitLayoutMountEffects_begin()
-    onetimeFiberProp(thisFiber, 'sibling', () => {
-        // prevent set thisFiber.return.return once
-        onetimeFiberProp(thisFiber.return, 'return');
-
-        // in commitLayoutMountEffects_complete(subFiber)
-        // while ((nexteffect = fiber.retrun) === thisFiber)
-        // skip commitLayoutEffectOnFiber(thisFiber)
-        onetimeFiberProp(thisFiber, 'flags', () => {
-            return 0;
-        });
-
-        return thisFiber.return;
-    });
-
-    // in commitLayoutMountEffects_begin()
-    // skip commitLayoutMountEffects_complete(thisFiber)
-    onetimeFiberProp(thisFiber, 'subtreeFlags', (value) => {
-        return value | FiberFlag.LayoutMask;
-    });
 };
