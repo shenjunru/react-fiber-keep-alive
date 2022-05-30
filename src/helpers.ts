@@ -2,34 +2,114 @@ import type { ComponentType, ComponentProps } from 'react';
 import type { Fiber } from 'react-reconciler';
 import React, { version } from 'react';
 import isFunction from 'lodash/isFunction';
+import identity from 'lodash/identity';
 
 export type Nullable<T> = T | null | undefined;
 
-const V16 = version.startsWith('16');
-const DomPropPrefix = V16 ? '__reactInternalInstance$' : '__reactFiber$';
+const v16 = version.startsWith('16');
+const v17 = version.startsWith('17');
+const v18 = version.startsWith('18');
+const DomPropPrefix = v16 ? '__reactInternalInstance$' : '__reactFiber$';
 // const RefPropPrefix = V16 ? '_reactInternalFiber' : '_reactInternals';
-const FiberEffectProp = (V16 ? 'effectTag' : 'flags') as 'tag';
+const FiberEffectProp = (v16 ? 'effectTag' : 'flags') as 'flags';
 
+type PropRestore = { current: boolean };
+const ProtectedFiberProps: Array<keyof Fiber> = [
+    'alternate',
+    'child',
+    'sibling',
+    'return',
+    'dependencies',
+    'pendingProps',
+    'memoizedProps',
+    'memoizedState',
+    'stateNode',
+    'updateQueue',
+    // __DEV__
+    '_debugOwner',
+];
+
+export enum FiberVisit {
+    Child   = 0b0001,
+    Sibling = 0b0010,
+    Return  = 0b0100,
+}
+
+
+/* eslint-disable @typescript-eslint/indent */
+
+// v16: shared/ReactWorkTags.js
+// react-reconciler/src/ReactWorkTags.js
 export enum FiberTag {
     FunctionComponent = 0,
     ClassComponent = 1,
+    HostComponent = 5,
+    HostText = 6,
+}
+// react-reconciler/src/ReactTypeOfMode.js
+export enum FiberMode {
+    NoMode = 0,
+    ConcurrentMode = v18 ? 0b000001  // 1
+         /* v16 | v17 */ : 0b000100, // 4
 }
 
-export enum FiberEffect {
-    NoEffect = 0, // NoEffect(0)
-    PerformedWork = 1, // PerformedWork(1)
-    Placement = 2, // Placement(2)
-    Update = 4, // Update(4)
-    PlacementAndUpdate = 6, // PlacementAndUpdate(6)
-    Deletion = 8, // Deletion(8)
-    Passive = 512, // Passive(512)
+// v16: shared/ReactSideEffectTags.js
+// react-reconciler/src/ReactFiberFlags.js
+export enum FiberFlag {
+    NoFlags       =       0b00000000000000000000000000, // 0
+    PerformedWork =       0b00000000000000000000000001, // 1
+    Placement     =       0b00000000000000000000000010, // 2
+    Update        =       0b00000000000000000000000100, // 4
+    Deletion      =       0b00000000000000000000001000, // 8
+    ChildDeletion = v18 ? 0b00000000000000000000010000  // 16
+        /* v16 | v17 */ : 0,
+    Callback      = v18 ? 0b00000000000000000001000000  // 64
+        /* v16 | v17 */ : 0b00000000000000000000100000, // 32
+    Ref           = v18 ? 0b00000000000000001000000000  // 512
+        /* v16 | v17 */ : 0b00000000000000000010000000, // 128
+    Snapshot      = v18 ? 0b00000000000000010000000000  // 1024
+        /* v16 | v17 */ : 0b00000000000000000100000000, // 256
+    Passive       = v18 ? 0b00000000000000100000000000  // 2048
+        /* v16 | v17 */ : 0b00000000000000001000000000, // 512
+
+    Incomplete    = v18 ? 0b00000000001000000000000000  // 32768
+        /* v16 | v17 */ : 0b00000000000000100000000000, // 2048
+    Forked        = v18 ? 0b00000100000000000000000000  // 1048576
+        /* v16 | v17 */ : 0,
+
+    LayoutStatic  = v18 ? 0b00010000000000000000000000  // 4194304
+        /* v16 | v17 */ : 0,
+    PassiveStatic = v18 ? 0b00100000000000000000000000  // 8388608
+                  : v17 ? 0b00000000001000000000000000  // 32768
+              /* v16 */ : 0,
+
+    LayoutMask    = v18 ? 0b00000000000010001001000100  // 8772 = Update | Callback | Ref | Visibility
+                  : v17 ? 0b00000000000000000010100100  // 164
+              /* v16 */ : 0,
+
+    PassiveMask   = v18 ? 0b00000000000000100000010000  // 2064 = Passive | ChildDeletion
+                  : v17 ? 0b00000000000000001000001000  // 520
+              /* v16 */ : 0,
+
+    StaticMask    = v18 ? 0b00111000000000000000000000 // 14680064 = LayoutStatic | PassiveStatic | RefStatic
+                  : v17 ? 0b00000000001000000000000000 // 32768
+              /* v16 */ : 0,
 }
 
+// react-reconciler/src/ReactHookEffectTags.js
 export enum HookEffectTag {
-    HasEffect = 1, // HasEffect(1)
-    Layout = 2, // Layout(2)
-    Passive = 4, // Passive$1(4)
+    NoFlags   =       0b0000, // 0
+    HasEffect =       0b0001, // 1
+    Insertion = v18 ? 0b0010  // 2
+    /* v16 | v17 */ : 0,
+    Layout    = v18 ? 0b0100  // 4
+    /* v16 | v17 */ : 0b0010, // 2
+    Passive   = v18 ? 0b1000  // 8
+    /* v16 | v17 */ : 0b0100, // 4
 }
+
+/* eslint-enable @typescript-eslint/indent */
+
 
 // https://github.com/facebook/react/blob/main/packages/shared/ReactTypes.js
 interface TypedFiber<C extends ComponentType<any> = ComponentType<any>> extends Fiber {
@@ -53,167 +133,158 @@ interface FiberMemoizedState {
     next: null | FiberMemoizedState;
 }
 
-interface DomContainer extends HTMLElement {
-    _reactRootContainer?: {
-        _internalRoot: {
-            containerInfo: DomContainer;
-            current: Fiber;
-        };
-    };
-}
-
-export const getRootFiber = (container: Nullable<HTMLElement>) => {
-    return (container as DomContainer)?._reactRootContainer?._internalRoot.current;
+export const isConcurrentMode = (fiber: Fiber) => {
+    return v18 && FiberMode.NoMode !== (fiber.mode & FiberMode.ConcurrentMode);
 };
 
-export const getInternalKey = (element: Nullable<HTMLElement>) => {
-    return element && Object.keys(element).find((key) => key.startsWith(DomPropPrefix));
+export const getInternalKey = (element: Nullable<HTMLElement>, prefix: string) => {
+    return element && Object.keys(element).find((key) => key.startsWith(prefix));
 };
 
-export const getElementFiber = (element: Nullable<HTMLElement>) => {
-    const internalKey = getInternalKey(element);
-    return internalKey ? (element as any)[internalKey] as Fiber : undefined;
+export const getElementFiber = (element: Nullable<HTMLElement>, prefix = DomPropPrefix): undefined | Fiber => {
+    const internalKey = getInternalKey(element, prefix);
+    return internalKey ? (element as any)[internalKey] : undefined;
 };
 
-type NodePath<P extends (void | boolean)> = Array<P extends true ? (
-    | 'return'
-) : (
-    | 'child'
-    | 'sibling'
-)>;
+export const getRootFiber = (container: Nullable<void | HTMLElement>): undefined | Fiber => {
+    const fiber = v18 && container && getElementFiber(container, '__reactContainer$');
+    const root = fiber ? fiber.stateNode : (container as any)?._reactRootContainer?._internalRoot;
+    return root?.current;
+};
 
-export const findFiber = <T extends Fiber, P extends boolean = false>(
+export const findFiber = <T extends Fiber>(
     fiber: Nullable<Fiber>,
     predicate: (fiber: Fiber) => boolean,
-    parent?: P,
-): [null | T, NodePath<P>] => {
-    const path: NodePath<P> = [];
+    flags = FiberVisit.Child | FiberVisit.Sibling,
+): null | T => {
     const stack = [fiber];
     while (stack.length) {
         const current = stack.pop();
         if (!current) {
-            path.pop();
             continue;
         }
         if (predicate(current)) {
-            return [<T>current, path];
+            return <T>current;
         }
-        if (true !== parent && current.child) {
-            path.push('child' as any);
-            stack.push(current.child);
-        }
-        if (!parent && current.sibling) {
-            path.push('sibling' as any);
+        if ((flags & FiberVisit.Sibling) && current.sibling) {
             stack.push(current.sibling);
         }
-        if (parent && current.return) {
-            path.push('return' as any);
+        if ((flags & FiberVisit.Child) && current.child) {
+            stack.push(current.child);
+        }
+        if ((flags & FiberVisit.Return) && current.return) {
             stack.push(current.return);
         }
     }
-    return [null, []];
+    return null;
 };
 
-export const findFibers = <T extends Fiber, P extends boolean = false>(
+export const findFibers = <T extends Fiber>(
     fiber: Nullable<Fiber>,
     predicate: (fiber: Fiber) => boolean,
-    parent?: P,
-): Array<[T, NodePath<P>]> => {
-    const path: NodePath<P> = [];
-    const result: Array<[T, NodePath<P>]> = [];
+    flags = FiberVisit.Child | FiberVisit.Sibling,
+): T[] => {
+    const result: T[] = [];
     const stack = [fiber];
     while (stack.length) {
         const current = stack.pop();
         if (!current) {
-            path.pop();
             continue;
         }
         if (predicate(current)) {
-            result.push([<T>current, [...path]]);
+            result.push(<T>current);
         }
-        if (!parent && current.child) {
-            path.push('child' as any);
-            stack.push(current.child);
-        }
-        if (!parent && current.sibling) {
-            path.push('sibling' as any);
+        if ((flags & FiberVisit.Sibling) && current.sibling) {
             stack.push(current.sibling);
         }
-        if (parent && current.return) {
-            path.push('return' as any);
+        if ((flags & FiberVisit.Child) && current.child) {
+            stack.push(current.child);
+        }
+        if ((flags & FiberVisit.Return) && current.return) {
             stack.push(current.return);
         }
     }
     return result;
 };
 
+export const findFiberByType = <T extends ComponentType<any>>(
+    root: Nullable<Fiber>,
+    type: T,
+    flags?: number,
+): null | TypedFiber<T> => findFiber(root, (fiber) => {
+    return fiber.type === type;
+}, flags);
+
+export const findFibersByType = <T extends ComponentType<any>>(
+    root: Nullable<Fiber>,
+    type: T,
+    flags?: number,
+): Array<TypedFiber<T>> => findFibers(root, (fiber) => {
+    return fiber.type === type;
+}, flags);
+
 export const traverseFiber = (
     fiber: Nullable<Fiber>,
-    visit: (fiber: Fiber) => void,
-    parent?: boolean,
+    visit: (fiber: Fiber) => void | Nullable<() => void>,
+    flags = FiberVisit.Child | FiberVisit.Sibling,
 ) => {
-    const stack = [fiber];
+    const stack: Array<Nullable<Fiber | (() => void)>> = [fiber];
     while (stack.length) {
         const current = stack.pop();
         if (!current) {
             continue;
         }
-        visit(current);
-        if (!parent && current.child) {
-            stack.push(current.child);
+        if (isFunction(current)) {
+            current();
+            continue;
         }
-        if (!parent && current.sibling) {
+        const post = visit(current);
+        if (post) {
+            stack.push(post);
+        }
+        if ((flags & FiberVisit.Sibling) && current.sibling) {
             stack.push(current.sibling);
         }
-        if (parent && current.return) {
+        if ((flags & FiberVisit.Child) && current.child) {
+            stack.push(current.child);
+        }
+        if ((flags & FiberVisit.Return) && current.return) {
             stack.push(current.return);
         }
     }
 };
 
-export const findFiberByType = <T extends ComponentType<any>, P extends boolean = false>(
-    root: Nullable<Fiber>,
-    type: T,
-    parent?: P,
-): [null | TypedFiber<T>, NodePath<P>] => findFiber(root, (fiber) => {
-    return fiber.type === type;
-}, parent);
+export const replaceFiber = (target: Fiber, replacement: Fiber) => {
+    const parentFiber = target.return;
+    if (!parentFiber) {
+        return false;
+    }
+    parentFiber.child = replacement;
+    replacement.return = parentFiber;
+    if (target._debugOwner) {
+        replacement._debugOwner = target._debugOwner;
+    }
 
-export const findFibersByType = <T extends ComponentType<any>, P extends boolean = false>(
-    root: Nullable<Fiber>,
-    type: T,
-    parent?: P,
-): Array<[TypedFiber<T>, NodePath<P>]> => findFibers(root, (fiber) => {
-    return fiber.type === type;
-}, parent);
+    if (!replacement.alternate || !parentFiber.alternate) {
+        if (replacement.alternate) {
+            replacement.alternate.return = null;
+            replacement.alternate.sibling = null;
+        }
+    } else {
+        parentFiber.alternate.child = replacement.alternate;
+        replacement.alternate.return = parentFiber.alternate;
+        if (target.alternate?._debugOwner) {
+            replacement.alternate._debugOwner = target.alternate._debugOwner;
+        }
+    }
 
+    return true;
+};
 
-/*
------
-# Hooks - Effect
-
-## ReactCurrentDispatcher(HooksDispatcherOnMountInDEV)
-    |-> mountEffect() / mountLayoutEffect() / mountImperativeHandle()
-        |-> mountEffectImpl()
-            |-> mountWorkInProgressHook()
-            |-> pushEffect()
-
-## ReactCurrentDispatcher(HooksDispatcherOnUpdateInDEV)
-    |-> updateEffect() / updateLayoutEffect() / updateImperativeHandle()
-        |-> updateEffectImpl()
-            |-> updateWorkInProgressHook()
-            |-> pushEffect()
-
-commitLifeCycles()
-commitHookEffectListMount()
-commitPassiveHookEffects()
------
-*/
-
-export const applyFiberEffect = (fiber: Nullable<Fiber>): number => {
+const applyFiberEffect = (fiber: Fiber): number => {
     let flags = 0;
 
-    switch (fiber?.tag) {
+    switch (fiber.tag) {
         case FiberTag.FunctionComponent: {
             let state: FiberMemoizedState['next'] = fiber.memoizedState;
             while (state) {
@@ -221,12 +292,12 @@ export const applyFiberEffect = (fiber: Nullable<Fiber>): number => {
                 if (null != effect?.tag) {
                     let match = 0;
                     if (match || (match = effect.tag & HookEffectTag.Layout)) {
-                        flags |= FiberEffect.Update;
+                        flags |= FiberFlag.Update;
                     }
 
                     if (match || (match = effect.tag & HookEffectTag.Passive)) {
-                        flags |= FiberEffect.Update;
-                        flags |= FiberEffect.Passive;
+                        flags |= FiberFlag.Update;
+                        flags |= FiberFlag.Passive;
                     }
 
                     if (match) {
@@ -264,7 +335,7 @@ export const applyFiberEffect = (fiber: Nullable<Fiber>): number => {
         case FiberTag.ClassComponent: {
             const instance = fiber.stateNode as React.Component;
             if (isFunction(instance?.componentDidMount)) {
-                flags |= FiberEffect.Update;
+                flags |= FiberFlag.Update;
 
                 if (fiber.alternate) {
                     const propKey = 'componentDidUpdate';
@@ -279,9 +350,6 @@ export const applyFiberEffect = (fiber: Nullable<Fiber>): number => {
                         this.componentDidMount?.();
                     };
                 }
-
-                // TODO: remove
-                instance.render();
             }
         }
     }
@@ -289,19 +357,229 @@ export const applyFiberEffect = (fiber: Nullable<Fiber>): number => {
     return flags;
 };
 
-export const appendFiberEffect = (root: Fiber, fiber: Fiber) => {
-    const flags = applyFiberEffect(fiber);
-    if (!flags) {
+const bubbleProperties = (fiber: Fiber) => {
+    let child = fiber.child;
+    while (child) {
+        fiber.subtreeFlags |= child.subtreeFlags;
+        fiber.subtreeFlags |= child.flags;
+        child = child.sibling;
+    }
+};
+
+export const appendFiberEffect = (
+    rootFiber: Fiber,
+    takeFiber: Fiber,
+    ThisComponent: ComponentType<any>,
+) => {
+    v18 && traverseFiber(takeFiber, (fiber) => {
+        const flags = applyFiberEffect(fiber);
+        if (!flags) {
+            return;
+        }
+
+        fiber.flags |= flags;
+        return fiber.child && (() => {
+            bubbleProperties(fiber);
+        });
+    });
+
+    v18 && traverseFiber(takeFiber.return, (fiber) => {
+        bubbleProperties(fiber);
+    }, FiberVisit.Return);
+
+    v18 && commitSubtreeEffects(rootFiber, ThisComponent);
+
+    v18 || traverseFiber(takeFiber, (fiber) => {
+        const flags = applyFiberEffect(fiber);
+        if (!flags) {
+            return;
+        }
+
+        return () => {
+            rootFiber[FiberEffectProp] |= flags;
+            fiber[FiberEffectProp] |= flags;
+            const lastEffect = rootFiber.lastEffect;
+            if (lastEffect) {
+                rootFiber.lastEffect = lastEffect.nextEffect = fiber;
+            } else {
+                rootFiber.firstEffect = rootFiber.lastEffect = fiber;
+            }
+        };
+    });
+
+    // TODO: remove
+    traverseFiber(takeFiber, (fiber) => {
+        if (fiber.tag === FiberTag.ClassComponent) {
+            const instance = fiber.stateNode as React.Component;
+            instance.render();
+        }
+    });
+};
+
+export const defineFiberProp = <K extends keyof Fiber>(
+    fiber: Fiber,
+    prop: K,
+    value: Fiber[K],
+) => {
+    Object.defineProperty(fiber, prop, {
+        configurable: true,
+        enumerable: true,
+        writable: true,
+        value,
+    });
+};
+
+const onetimeFiberProp = <K extends keyof Fiber>(
+    fiber: Nullable<Fiber>,
+    prop: K,
+    getter: ((value: Fiber[K]) => Fiber[K]) = identity,
+) => {
+    if (null == fiber) {
+        return;
+    }
+    const backup = fiber[prop];
+    Object.defineProperty(fiber, prop, {
+        configurable: true,
+        enumerable: true,
+        get() {
+            // console.log('[GET]', `[${prop}]`, fiber, value);
+            defineFiberProp(this, prop, backup);
+            return getter(backup);
+        },
+        set() {
+            // console.log('[SET]', `[${prop}]`, fiber, update);
+            defineFiberProp(this, prop, backup);
+        },
+    });
+};
+
+const protectFiberProp = (fiber: Nullable<Fiber>, prop: keyof Fiber, restore: PropRestore) => {
+    if (null == fiber) {
+        return;
+    }
+    const descriptor = Object.getOwnPropertyDescriptor(fiber, prop);
+    if (!descriptor || descriptor.get) {
         return;
     }
 
-    root[FiberEffectProp] |= flags;
-    fiber[FiberEffectProp] |= flags;
+    const backup = fiber[prop];
+    let value = backup;
 
-    const lastEffect = root.lastEffect;
-    if (lastEffect) {
-        root.lastEffect = lastEffect.nextEffect = fiber;
-    } else {
-        root.firstEffect = root.lastEffect = fiber;
+    // prevent detachDeletedInstance() <- detachFiberAfterEffects()
+    if (prop === 'stateNode' && fiber.tag === FiberTag.HostComponent) {
+        value = null;
+
+        if (backup?.parentNode) {
+            const dummy = document.createElement('div');
+            backup.parentNode.appendChild(dummy);
+            value = dummy;
+        }
     }
+
+    Object.defineProperty(fiber, prop, {
+        configurable: true,
+        enumerable: true,
+        get() {
+            // console.log('[GET]', `[${prop}]`, fiber, restore.current ? backup : update);
+            return restore.current ? backup : value;
+        },
+        set(update) {
+            // console.log('[SET]', `[${prop}]`, fiber, update);
+            value = update;
+        },
+    });
+};
+
+const restoreFiberProp = (fiber: Fiber, prop: keyof Fiber) => {
+    if (Object.prototype.hasOwnProperty.call(fiber, prop)) {
+        defineFiberProp(fiber, prop, fiber[prop]);
+    }
+};
+
+const protectFiberProps = (fiber: Fiber, current: null | Fiber, restore: PropRestore) => {
+    const alternate = fiber.alternate;
+    if (alternate && !current) {
+        protectFiberProps(alternate, fiber, restore);
+    }
+
+    for (const prop of ProtectedFiberProps) {
+        protectFiberProp(fiber, prop, restore);
+    }
+};
+
+const restoreFiberProps = (fiber: Fiber, current: null | Fiber) => {
+    restoreFiberProp(fiber, 'alternate');
+    const alternate = fiber.alternate;
+    if (alternate && !current) {
+        restoreFiberProps(alternate, fiber);
+    }
+
+    for (const prop of ProtectedFiberProps) {
+        if (prop !== 'alternate') {
+            restoreFiberProp(fiber, prop);
+        }
+    }
+};
+
+
+// against fiber detaching
+// - v16 detachFiber()
+// - v17 detachFiberMutation()
+// - v18 detachFiberAfterEffects()
+
+export const protectFiber = (fiber: Fiber, restore: PropRestore) => {
+    if (v18) {
+        traverseFiber(fiber, (node) => () => {
+            protectFiberProps(node, null, restore);
+        });
+    } else {
+        protectFiberProps(fiber, null, restore);
+    }
+};
+
+export const restoreFiber = (fiber: Fiber, restore: PropRestore) => {
+    restore.current = true;
+    if (v18) {
+        traverseFiber(fiber, (node) => () => {
+            restoreFiberProps(node, null);
+        });
+    } else {
+        restoreFiberProps(fiber, null);
+    }
+    restore.current = false;
+};
+
+// v18 - hijack loop of commitLayoutMountEffects_complete()
+export const commitSubtreeEffects = (
+    rootFiber: Fiber,
+    ThisComponent: ComponentType<any>,
+) => {
+    const thisFiber = findFiberByType(rootFiber, ThisComponent);
+    if (!thisFiber || !(thisFiber.subtreeFlags & FiberFlag.LayoutMask)) {
+        return;
+    }
+
+    // in commitLayoutMountEffects_complete(thisFiber)
+    // after commitLayoutEffectOnFiber(thisFiber) <- current effect
+    // thisFiber.sibling -> thisFiber.return
+    // return to commitLayoutMountEffects_begin()
+    onetimeFiberProp(thisFiber, 'sibling', () => {
+        // prevent set thisFiber.return.return once
+        onetimeFiberProp(thisFiber.return, 'return');
+
+        // in commitLayoutMountEffects_complete(subFiber)
+        // while ((nexteffect = fiber.retrun) === thisFiber)
+        // skip commitLayoutEffectOnFiber(thisFiber)
+        onetimeFiberProp(thisFiber, 'flags', () => {
+            return 0;
+        });
+
+        return thisFiber.return;
+    });
+
+    // in commitLayoutMountEffects_begin()
+    // skip commitLayoutMountEffects_complete(thisFiber)
+    onetimeFiberProp(thisFiber, 'subtreeFlags', (value) => {
+        return value | FiberFlag.LayoutMask;
+    });
 };

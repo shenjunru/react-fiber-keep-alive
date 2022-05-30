@@ -6,6 +6,7 @@ import React, {
     useEffect,
     useLayoutEffect,
     useMemo,
+    useRef,
     useState,
 } from 'react';
 import {
@@ -13,83 +14,103 @@ import {
     appendFiberEffect,
     findFiberByType,
     getRootFiber,
-    traverseFiber,
+    protectFiber,
+    restoreFiber,
+    replaceFiber,
 } from './helpers';
 import noop from 'lodash/noop';
-import pick from 'lodash/pick';
 
-type Cache = [Fiber, Partial<Fiber>, Partial<Fiber>];
 type Status = [string, void | Fiber];
+type Target = string;
 
-// detachFiber()
-const PatrialProps: Array<keyof Fiber> = [
-    'return',
-    'child',
-    'memoizedState',
-    'updateQueue',
-    'dependencies',
-    'alternate',
-    'firstEffect',
-    'lastEffect',
-    'pendingProps',
-    'memoizedProps',
-    'stateNode',
-];
-
-const KeepAliveTragetContext = createContext<string>('default');
-const KeepAliveStatusContext = createContext<Status>(['default', undefined]);
+const DefaultRouteKey = 'default';
+const KeepAliveTargetContext = createContext<Target>(DefaultRouteKey);
+const KeepAliveStatusContext = createContext<Status>([DefaultRouteKey, undefined]);
 
 const KeepAlive: React.FC<{
     children: React.ReactNode;
     name: string;
     wait: boolean;
 }> = ({ children, name, wait }) => (
-    <div data-keep-alive={name}>
+    <div data-keep-alive-save={name}>
         {wait ? null : children}
     </div>
 );
 
 export function keepAlive<P>(Component: React.ComponentType<P>): React.FC<P> {
     return (props) => {
-        const key = useContext(KeepAliveTragetContext);
+        const key = useContext(KeepAliveTargetContext);
         const [name, cache] = useContext(KeepAliveStatusContext);
+
         return (
-            <KeepAlive key={key} name={key} wait={key !== name || null != cache}>
-                <Component {...props} />
-            </KeepAlive>
+            <div data-keep-alive-wrap={key}>
+                <KeepAlive key={key} name={key} wait={key !== name || null != cache}>
+                    <Component {...props} />
+                </KeepAlive>
+            </div>
         );
     };
 }
+
+const EffectProp = Symbol('Effect');
+const EnableProp = Symbol('Enable');
+type EffectProxy = React.EffectCallback & {
+    [EffectProp]: React.EffectCallback;
+    [EnableProp]: boolean;
+};
+const asActiveEffect = (effect: React.EffectCallback) => {
+    const proxy = (() => {
+        return proxy[EnableProp] ? proxy[EffectProp]() : undefined;
+    }) as EffectProxy;
+
+    Object.defineProperty(proxy, EffectProp, {
+        configurable: false,
+        enumerable: false,
+        get() {
+            return effect;
+        },
+    });
+
+    Object.defineProperty(proxy, EnableProp, {
+        configurable: true,
+        enumerable: false,
+        value: false,
+    });
+
+    return proxy;
+};
+
+export const useActiveEffect = (effect: React.EffectCallback, deps: React.DependencyList) => {
+    return useEffect(asActiveEffect(effect), deps);
+};
+
+export const useActiveLayoutEffect = (effect: React.EffectCallback, deps: React.DependencyList) => {
+    return useLayoutEffect(asActiveEffect(effect), deps);
+};
 
 export const KeepAliveProvider: React.FC<{
     children: React.ReactNode;
     container: HTMLElement;
     history: History;
 }> = ({ children, container, history }) => {
-    const caches = useMemo(() => new Map<string, Cache>(), []);
-    const [target, setTarget] = useState<string>('default');
-    const [status, setStatus] = useState<Status>(['default', undefined]);
+    const caches = useMemo(() => new Map<string, Fiber>(), []);
+    const restore = useRef<boolean>(false);
+    const [target, setTarget] = useState<Target>(DefaultRouteKey);
+    const [status, setStatus] = useState<Status>([DefaultRouteKey, undefined]);
 
-    const unbind = useMemo(() => history.listen(({ key = 'default' }) => {
+    const unbind = useMemo(() => history.listen(({ key = DefaultRouteKey }) => {
         const rootFiber = getRootFiber(container);
-        const [newFiber] = findFiberByType(rootFiber, KeepAlive);
+        const newFiber = findFiberByType(rootFiber, KeepAlive);
 
         if (newFiber?.key && newFiber.child) {
-            console.log('[KEEP-ALIVE]', '[KEEP]', newFiber.key, newFiber, newFiber.child);
-            caches.set(newFiber.key, [
-                newFiber,
-                pick(newFiber, PatrialProps),
-                pick(newFiber.alternate, PatrialProps),
-            ]);
+            console.log('[KEEP-ALIVE]', '[KEEP]', newFiber.key, newFiber);
+            protectFiber(newFiber, restore);
+            caches.set(newFiber.key, newFiber);
         }
 
-        const cached = caches.get(key);
-        if (cached) {
-            const [oldFiber, oldPartial, altPartial] = cached;
-            if (oldPartial.alternate) {
-                Object.assign(oldPartial.alternate, altPartial);
-            }
-            Object.assign(oldFiber, oldPartial);
+        const oldFiber = caches.get(key);
+        if (oldFiber) {
+            restoreFiber(oldFiber, restore);
             requestAnimationFrame(() => {
                 console.log('[KEEP-ALIVE]', '[LOAD]', key, oldFiber);
                 setStatus([key, oldFiber]);
@@ -119,12 +140,14 @@ export const KeepAliveProvider: React.FC<{
             return setStatus(newStatus);
         }
 
-        const [newFiber] = findFiberByType(rootFiber, KeepAlive);
+        const newFiber = findFiberByType(rootFiber, KeepAlive);
         if (key !== newFiber?.key) {
             console.log('[KEEP-ALIVE]', '[WAIT]', `Wait "${key}" to be mounted`, newFiber, newFiber?.key);
-            return void requestAnimationFrame(() => setStatus((curStatus) => {
-                return curStatus !== status ? curStatus : [...status];
-            }));
+            return void requestAnimationFrame(() => {
+                setStatus((curStatus) => {
+                    return curStatus !== status ? curStatus : [...status];
+                });
+            });
         }
 
         const parentFiber = newFiber.return;
@@ -136,9 +159,11 @@ export const KeepAliveProvider: React.FC<{
         const newElement: Nullable<HTMLElement> = newFiber.child?.stateNode;
         if (!newElement?.parentElement) {
             console.log('[KEEP-ALIVE]', '[WAIT]', `Wait "${key}" to be rendered`, newElement);
-            return void requestAnimationFrame(() => setStatus((curStatus) => {
-                return curStatus !== status ? curStatus : [...status];
-            }));
+            return void requestAnimationFrame(() => {
+                setStatus((curStatus) => {
+                    return curStatus !== status ? curStatus : [...status];
+                });
+            });
         }
 
         const oldElement: Nullable<HTMLElement> = oldFiber.child?.stateNode;
@@ -149,43 +174,24 @@ export const KeepAliveProvider: React.FC<{
 
         console.log('[KEEP-ALIVE]', '[SWAP]', key, { newFiber, oldFiber });
         caches.delete(key);
+
         newElement.parentElement.replaceChild(oldElement, newElement);
+        replaceFiber(newFiber, oldFiber);
+        appendFiberEffect(rootFiber, oldFiber, KeepAliveProvider);
 
-        parentFiber.child = oldFiber;
-        oldFiber.return = parentFiber;
-        if (newFiber._debugOwner) {
-            oldFiber._debugOwner = newFiber._debugOwner;
-        }
-
-        if (!oldFiber.alternate || !parentFiber.alternate) {
-            if (oldFiber.alternate) {
-                oldFiber.alternate.return = null;
-                oldFiber.alternate.sibling = null;
-            }
-        } else {
-            parentFiber.alternate.child = oldFiber.alternate;
-            oldFiber.alternate.return = parentFiber.alternate;
-            if (newFiber.alternate?._debugOwner) {
-                oldFiber.alternate._debugOwner = newFiber.alternate._debugOwner;
-            }
-        }
-
-        setStatus([key, undefined]);
-
-        traverseFiber(oldFiber, (fiber) => {
-            appendFiberEffect(rootFiber, fiber);
-        });
+        // TODO: dangerous
+        status[1] = undefined;
     }, [status]);
 
     // trigger effect hook
     useEffect(noop, [status]);
 
     return (
-        <KeepAliveTragetContext.Provider value={target}>
+        <KeepAliveTargetContext.Provider value={target}>
             <KeepAliveStatusContext.Provider value={status}>
                 {children}
             </KeepAliveStatusContext.Provider>
-        </KeepAliveTragetContext.Provider>
+        </KeepAliveTargetContext.Provider>
     );
 };
 
