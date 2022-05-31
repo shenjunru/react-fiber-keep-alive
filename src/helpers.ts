@@ -398,6 +398,7 @@ const applyFiberEffect = (fiber: Fiber): number => {
         }
 
         effect.tag |= HookEffectTag.HasEffect;
+        effect.destroy = undefined;
 
         switch (effect.tag & ~HookEffectTag.HasEffect) {
             case HookEffectTag.Layout:
