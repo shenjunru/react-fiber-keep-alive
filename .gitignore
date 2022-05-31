@@ -1,0 +1,22 @@
+# OSX
+#
+.DS_Store
+
+# IDE
+#
+.idea
+.classpath
+.project
+.settings
+.vscode/
+!.vscode/setings.json
+!.vscode/launch.json
+
+# Node.js
+#
+node_modules/
+
+# Ignore
+#
+*.bak
+*.log
