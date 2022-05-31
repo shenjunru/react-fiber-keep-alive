@@ -1,4 +1,3 @@
-import type { History } from 'history';
 import type { Fiber } from 'react-reconciler';
 import React, {
     createContext,
@@ -10,21 +9,22 @@ import React, {
     useState,
 } from 'react';
 import {
-    Nullable,
     appendFiberEffect,
-    findFiberByType,
-    getRootFiber,
     protectFiber,
     restoreFiber,
     replaceFiber,
+    getRootFiber,
+    findFiber,
 } from './helpers';
 
-export {
-    markClassComponentHasSideEffectRender,
-    markEffectHookIsOnetime,
-} from './helpers';
+function noop() {}
 
-type Context = [null | HTMLElement, string, string, number];
+const useIsomorphicLayoutEffect =
+  typeof window !== 'undefined' &&
+  typeof window.document !== 'undefined' &&
+  typeof window.document.createElement !== 'undefined'
+    ? useLayoutEffect
+    : useEffect
 
 enum Step {
     Finish = 0b0000,
@@ -32,40 +32,48 @@ enum Step {
     Effect = 0b0010,
 }
 
-export function noop() {}
-const DefaultRouteKey = 'default';
-const KeepAliveContext = createContext<Context>([null, DefaultRouteKey, DefaultRouteKey, Step.Finish]);
+type Nullable<T> = T | null | undefined;
+type KeepAliveStatus = [Step];
 
-const KeepAliveEffect: React.FC = () => {
+const randomKey = Math.random().toString(36).slice(2);
+const KeepAlivePropKey = '__keepAlive$' + randomKey;
+const KeepAliveContext = createContext<null | HTMLElement>(null);
+
+const KeepAliveEffect: React.FC<{
+    host: React.RefObject<HTMLDivElement>;
+    name: string;
+    status: KeepAliveStatus;
+}> = ({ host, name, status }) => {
     const context = useContext(KeepAliveContext);
-    const [container, target, , step] = context;
+    const [step] = status;
 
-    useLayoutEffect(() => {
-        if (!(step & Step.Effect)) {
+    useIsomorphicLayoutEffect(() => {
+        if (!context || step !== Step.Effect) {
             return;
         }
 
-        console.log('[KEEP-ALIVE] [LIFE]', target);
-        context[3] = Step.Finish;
+        console.log('[KEEP-ALIVE] [LIFE]', name);
 
-        const rootFiber = getRootFiber(container);
-        const thisFiber = findFiberByType(rootFiber, KeepAliveEffect);
-        const takeFiber = findFiberByType(rootFiber, KeepAliveRender);
-        const nextFiber = findFiberByType(rootFiber, KeepAliveFinish);
+        const rootFiber = getRootFiber(context);
+        const divFiber = findFiber(rootFiber, (fiber) => fiber.stateNode === host.current);
 
-        if (rootFiber && thisFiber && takeFiber && nextFiber) {
-            appendFiberEffect(rootFiber, thisFiber, takeFiber, nextFiber);
+        const effectFiber = divFiber?.child;
+        const renderFiber = effectFiber?.sibling;
+        const finishFiber = renderFiber?.sibling;
+
+        if (rootFiber && effectFiber && renderFiber && finishFiber) {
+            appendFiberEffect(rootFiber, effectFiber, renderFiber, finishFiber);
         }
-    }, [context]);
+    }, [context, status]);
 
     // fake passive effect
-    useEffect(noop, [context]);
+    useEffect(noop, [context, status]);
 
     return null;
 };
 
 const KeepAliveFinish: React.FC = () => {
-    useLayoutEffect(noop);
+    useIsomorphicLayoutEffect(noop);
     useEffect(noop);
 
     return null;
@@ -75,115 +83,124 @@ const KeepAliveRender: React.FC<{
     children: React.ReactNode;
     name: string;
     wait: boolean;
-}> = ({ children, name, wait }) => {
-    return (
-        <div data-keep-alive-save={name}>
-            {wait ? null : children}
-        </div>
-    );
-};
+}> = ({ children, name, wait }) => (
+    <div data-keep-alive-save={name}>
+        {wait ? null : children}
+    </div>
+);
 
-export function keepAlive<P>(Component: React.ComponentType<P>): React.FC<P> {
-    return (props) => {
-        const context = useContext(KeepAliveContext);
-        const [, target, current] = context;
-
-        return (
-            <div data-keep-alive-wrap={target}>
-                <KeepAliveEffect />
-                <KeepAliveRender key={target} name={target} wait={target !== current}>
-                    <Component {...props} />
-                </KeepAliveRender>
-                <KeepAliveFinish />
-            </div>
-        );
-    };
-}
-
-export const KeepAliveProvider: React.FC<{
+export const KeepAlive: React.FC<{
+    name: string;
     children: React.ReactNode;
-    container: HTMLElement;
-    history: History;
-}> = ({ children, container, history }) => {
-    const caches = useMemo(() => new Map<string, Fiber>(), []);
-    const restore = useRef<boolean>(false);
-    const [context, setContext] = useState<Context>([container, DefaultRouteKey, DefaultRouteKey, Step.Finish]);
-    const [, target, current, step] = context;
-
-    const unbind = useMemo(() => history.listen(({ key = DefaultRouteKey }) => {
-        const rootFiber = getRootFiber(container);
-        const newFiber = findFiberByType(rootFiber, KeepAliveRender);
-
-        if (newFiber?.key && newFiber.child) {
-            console.log('[KEEP-ALIVE]', '[SAVE]', newFiber.key, newFiber);
-            protectFiber(newFiber, restore);
-            caches.set(newFiber.key, newFiber);
+}> = ({ name, children }) => {
+    const host = useRef<HTMLDivElement>(null);
+    const context = useContext(KeepAliveContext);
+    const [status, setStatus] = useState<KeepAliveStatus>([Step.Render]);
+    const caches = useMemo((): Map<string, [Fiber, { current: boolean }]> => {
+        const value = (context as any)?.[KeepAlivePropKey] || new Map();
+        if (context) {
+            (context as any)[KeepAlivePropKey] = value;
         }
+        return value;
+    }, [context]);
 
-        setContext(([, old]) => [container, key, old, Step.Render]);
-        // TEST POINT: context updated during the fiber remounting
-    }), []);
+    const [step] = status;
+    const cache = caches.get(name);
 
-    useEffect(() => unbind, []);
-
-    useEffect(() => {
-        if (target === target && !(step & Step.Render)) {
+    useIsomorphicLayoutEffect(() => () => {
+        if (!context) {
             return;
         }
 
-        const newStatus: Context = [container, target, target, Step.Finish];
-        const newFiber = caches.get(target);
+        const rootFiber = getRootFiber(context);
+        const hostFiber = findFiber(rootFiber, (fiber) => fiber.stateNode === host.current);
 
-        if (!newFiber) {
-            console.log('[KEEP-ALIVE]', '[SKIP]', target);
-            // TEST POINT: context updated while the fiber is detached
-            return setContext(newStatus);
+        const renderFiber = hostFiber?.child?.sibling;
+        if (!name || !renderFiber) {
+            return;
         }
 
-        const rootFiber = getRootFiber(container);
-        if (!rootFiber) {
-            console.error('[KEEP-ALIVE]', '[SKIP]', 'No root fiber');
-            return setContext(newStatus);
+        console.log('[KEEP-ALIVE]', '[SAVE]', name, renderFiber);
+        const restore = protectFiber(renderFiber);
+        caches.set(name, [renderFiber, restore]);
+    }, [context, name]);
+
+    useEffect(() => {
+        if (step !== Step.Render) {
+            return;
         }
 
-        const oldFiber = findFiberByType(rootFiber, KeepAliveRender);
+        if (!context || !cache) {
+            console.log('[KEEP-ALIVE]', '[SKIP]', name);
+            return setStatus([Step.Finish]);
+        }
+
+        const rootFiber = getRootFiber(context);
+        const divFiber = findFiber(rootFiber, (fiber) => fiber.stateNode === host.current);
+
+        const oldFiber = divFiber?.child?.sibling;
         const oldElement: Nullable<HTMLElement> = oldFiber?.child?.stateNode;
-        if (!oldElement?.parentElement || (target !== oldFiber?.key)) {
-            console.log('[KEEP-ALIVE]', '[WAIT]', target);
-            return setContext([container, target, current, step]);
+        if (!divFiber || !oldFiber || !oldElement?.parentElement) {
+            console.error('[KEEP-ALIVE]', '[WAIT]', name);
+            return setStatus([Step.Render]);
         }
 
+        caches.delete(name);
+
+        const [newFiber, restore] = cache;
         restoreFiber(newFiber, restore);
 
         const newElement: Nullable<HTMLElement> = newFiber.child?.stateNode;
         if (!newElement) {
-            console.error('[KEEP-ALIVE]', '[SKIP]', 'Invalid cache', newFiber);
-            return setContext(newStatus);
+            console.error('[KEEP-ALIVE]', '[FAIL]', name, newFiber);
+            return setStatus([Step.Finish]);
         }
 
-        console.log('[KEEP-ALIVE]', '[SWAP]', target, { newFiber: oldFiber, oldFiber: newFiber });
+        console.log('[KEEP-ALIVE]', '[SWAP]', name, { newFiber, oldFiber });
         oldElement.parentElement.replaceChild(newElement, oldElement);
-        caches.delete(target);
 
         replaceFiber(oldFiber, newFiber);
 
-        return setContext([container, target, target, Step.Effect]);
-    }, [context]);
+        return setStatus([Step.Effect]);
+    }, [context, status, name]);
 
-    // optional step
     useEffect(() => {
-        if (!(step & Step.Effect)) {
-            return;
+        if (step === Step.Effect) {
+            console.log('[KEEP-ALIVE]', '[DONE]', name);
+            setStatus([Step.Finish]);
         }
-        console.log('[KEEP-ALIVE]', '[DONE]', target);
-        setContext([container, target, current, Step.Finish]);
-    }, [context]);
+    }, [context, status, name]);
 
     return (
-        <KeepAliveContext.Provider value={context}>
-            {children}
-        </KeepAliveContext.Provider>
+        <div ref={host} data-keep-alive-host={name}>
+            <KeepAliveEffect host={host} name={name} status={status} />
+            <KeepAliveRender name={name} wait={null != cache}>
+                {children}
+            </KeepAliveRender>
+            <KeepAliveFinish />
+        </div>
     );
 };
 
-export default KeepAliveProvider;
+export default Object.assign(KeepAlive, {
+    Provider: KeepAliveContext.Provider,
+});
+
+export function keepAlive<P>(
+    Component: React.ComponentType<P>,
+    getCacheName: (props: P) => string,
+): React.FC<P> {
+    return (props) => {
+        const name = getCacheName(props);
+        return (
+            <KeepAlive name={name}>
+                <Component {...props} />
+            </KeepAlive>
+        );
+    };
+}
+
+export {
+    markClassComponentHasSideEffectRender,
+    markEffectHookIsOnetime,
+} from './helpers';

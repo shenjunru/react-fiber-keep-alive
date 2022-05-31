@@ -9,7 +9,7 @@ import type {
 } from 'react';
 import { version } from 'react';
 
-export type Nullable<T> = T | null | undefined;
+type Nullable<T> = T | null | undefined;
 
 interface TypedFiber<C extends ComponentType<any> = ComponentType<any>> extends Fiber {
     memoizedProps: ComponentProps<C>;
@@ -591,8 +591,8 @@ const restoreFiberProps = (fiber: Fiber, current: null | Fiber) => {
 // - v17 detachFiberMutation()
 // - v18 detachFiberAfterEffects()
 
-export const protectFiber = (fiber: Fiber, restore: PropRestore) => {
-    restore.current = false;
+export const protectFiber = (fiber: Fiber) => {
+    const restore: PropRestore = { current: false };
     if (UseDeepDetach) {
         traverseFiber(fiber, (node) => () => {
             protectFiberProps(node, null, restore);
@@ -600,6 +600,7 @@ export const protectFiber = (fiber: Fiber, restore: PropRestore) => {
     } else {
         protectFiberProps(fiber, null, restore);
     }
+    return restore;
 };
 
 export const restoreFiber = (fiber: Fiber, restore: PropRestore) => {
