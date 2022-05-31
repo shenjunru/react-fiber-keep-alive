@@ -39,7 +39,7 @@ const isFunction = (object: any): object is (...args: any[]) => any =>  {
 };
 
 const EffectProp = Symbol('Effect');
-export const markEffectHookIsOnetime = (effect: React.EffectCallback) => {
+const markEffectHookIsOnetime = (effect: React.EffectCallback) => {
     return Object.defineProperty(effect, EffectProp, {
         configurable: true,
         enumerable: false,
@@ -49,7 +49,7 @@ export const markEffectHookIsOnetime = (effect: React.EffectCallback) => {
     });
 };
 
-export const markClassComponentHasSideEffectRender = <T extends ComponentClass<any>>(Class: T): T => {
+const markClassComponentHasSideEffectRender = <T extends ComponentClass<any>>(Class: T): T => {
     return Object.defineProperty(Class, EffectProp, {
         configurable: true,
         enumerable: false,
@@ -78,104 +78,105 @@ const ProtectedFiberProps: Array<keyof Fiber> = [
 
 /* eslint-disable @typescript-eslint/indent */
 
-export enum FiberVisit {
-    Child   = 0b000001,
-    Sibling = 0b000010,
-    Return  = 0b000100,
-    Effect  = 0b001000,
-    Break   = 0b010000,
-}
+const FiberVisit = <const>{
+    Child:    0b000001,
+    Sibling:  0b000010,
+    Return:   0b000100,
+    Effect:   0b001000,
+    Break:    0b010000,
+};
 
 // v16: shared/ReactWorkTags.js
 // react-reconciler/src/ReactWorkTags.js
-export enum FiberTag {
-    FunctionComponent = 0,
-    ClassComponent = 1,
-    HostRoot = 3,
-    HostPortal = 4,
-    HostComponent = 5,
-    HostText = 6,
-    MemoComponent = 14,
-    SimpleMemoComponent = 15,
-}
+const FiberTag = {
+    FunctionComponent:   0,
+    ClassComponent:      1,
+    HostRoot:            3,
+    HostPortal:          4,
+    HostComponent:       5,
+    HostText:            6,
+    MemoComponent:       14,
+    SimpleMemoComponent: 15,
+};
+
 // react-reconciler/src/ReactTypeOfMode.js
-export enum FiberMode {
-    NoMode = 0,
-    ConcurrentMode = v18 ? 0b000001  // 1
+const FiberMode = {
+    NoMode         :       0b000000, // 0
+    ConcurrentMode : v18 ? 0b000001  // 1
          /* v16 | v17 */ : 0b000100, // 4
-}
+};
 
 // v16: shared/ReactSideEffectTags.js
 // react-reconciler/src/ReactFiberFlags.js
-export enum FiberFlag {
-    NoFlags             =       0b00000000000000000000000000, // 0
-    PerformedWork       =       0b00000000000000000000000001, // 1
-    Placement           =       0b00000000000000000000000010, // 2
-    Update              =       0b00000000000000000000000100, // 4
-    Deletion            =       0b00000000000000000000001000, // 8
-    ChildDeletion       = v18 ? 0b00000000000000000000010000  // 16
-              /* v16 | v17 */ : 0,
-    Callback            = v18 ? 0b00000000000000000001000000  // 64
-              /* v16 | v17 */ : 0b00000000000000000000100000, // 32
-    Ref                 = v18 ? 0b00000000000000001000000000  // 512
-              /* v16 | v17 */ : 0b00000000000000000010000000, // 128
-    Snapshot            = v18 ? 0b00000000000000010000000000  // 1024
-              /* v16 | v17 */ : 0b00000000000000000100000000, // 256
-    Passive             = v18 ? 0b00000000000000100000000000  // 2048
+const FiberFlag = {
+    NoFlags             :       0b00000000000000000000000000, // 0
+//  PerformedWork       :       0b00000000000000000000000001, // 1
+    Placement           :       0b00000000000000000000000010, // 2
+    Update              :       0b00000000000000000000000100, // 4
+//  Deletion            :       0b00000000000000000000001000, // 8
+//  ChildDeletion       : v18 ? 0b00000000000000000000010000  // 16
+//            /* v16 | v17 */ : 0,
+//  Callback            : v18 ? 0b00000000000000000001000000  // 64
+//            /* v16 | v17 */ : 0b00000000000000000000100000, // 32
+//  Ref                 : v18 ? 0b00000000000000001000000000  // 512
+//            /* v16 | v17 */ : 0b00000000000000000010000000, // 128
+//  Snapshot            : v18 ? 0b00000000000000010000000000  // 1024
+//            /* v16 | v17 */ : 0b00000000000000000100000000, // 256
+    Passive             : v18 ? 0b00000000000000100000000000  // 2048
               /* v16 | v17 */ : 0b00000000000000001000000000, // 512
 
-    LifecycleEffectMask = v18 ? 0b00000000000111111000000000  // 32256 = Passive | Update | Callback | Ref | Snapshot | StoreConsistency
+    LifecycleEffectMask : v18 ? 0b00000000000111111000000000  // 32256 = Passive | Update | Callback | Ref | Snapshot | StoreConsistency
               /* v16 | v17 */ : 0b00000000000000001110100100, // 932 = Passive | Update | Callback | Ref | Snapshot
 
-    Incomplete          = v18 ? 0b00000000001000000000000000  // 32768
-              /* v16 | v17 */ : 0b00000000000000100000000000, // 2048
-    Forked              = v18 ? 0b00000100000000000000000000  // 1048576
-              /* v16 | v17 */ : 0,
+//  Incomplete          : v18 ? 0b00000000001000000000000000  // 32768
+//            /* v16 | v17 */ : 0b00000000000000100000000000, // 2048
+//  Forked              : v18 ? 0b00000100000000000000000000  // 1048576
+//            /* v16 | v17 */ : 0,
 
-    LayoutStatic        = v18 ? 0b00010000000000000000000000  // 4194304
-              /* v16 | v17 */ : 0,
-    PassiveStatic       = v18 ? 0b00100000000000000000000000  // 8388608
-                        : v17 ? 0b00000000001000000000000000  // 32768
-                    /* v16 */ : 0,
+//  LayoutStatic        : v18 ? 0b00010000000000000000000000  // 4194304
+//            /* v16 | v17 */ : 0,
+//  PassiveStatic       : v18 ? 0b00100000000000000000000000  // 8388608
+//                      : v17 ? 0b00000000001000000000000000  // 32768
+//                  /* v16 */ : 0,
 
-    LayoutMask          = v18 ? 0b00000000000010001001000100  // 8772 = Update | Callback | Ref | Visibility
-                        : v17 ? 0b00000000000000000010100100  // 164
-                    /* v16 */ : 0,
+//  LayoutMask          : v18 ? 0b00000000000010001001000100  // 8772 = Update | Callback | Ref | Visibility
+//                      : v17 ? 0b00000000000000000010100100  // 164
+//                  /* v16 */ : 0,
 
-    PassiveMask         = v18 ? 0b00000000000000100000010000  // 2064 = Passive | ChildDeletion
+    PassiveMask         : v18 ? 0b00000000000000100000010000  // 2064 = Passive | ChildDeletion
                         : v17 ? 0b00000000000000001000001000  // 520
                     /* v16 */ : 0,
 
-    StaticMask          = v18 ? 0b00111000000000000000000000  // 14680064 = LayoutStatic | PassiveStatic | RefStatic
-                        : v17 ? 0b00000000001000000000000000  // 32768 = PassiveStatic
-                    /* v16 */ : 0,
-}
+//  StaticMask          : v18 ? 0b00111000000000000000000000  // 14680064 = LayoutStatic | PassiveStatic | RefStatic
+//                      : v17 ? 0b00000000001000000000000000  // 32768 = PassiveStatic
+//                  /* v16 */ : 0,
+};
 
 // react-reconciler/src/ReactHookEffectTags.js
-export enum HookEffectTag {
-    NoFlags   =       0b0000, // 0
-    HasEffect =       0b0001, // 1
-    Insertion = v18 ? 0b0010  // 2
+const HookEffectTag = {
+    NoFlags   :       0b0000, // 0
+    HasEffect :       0b0001, // 1
+    Insertion : v18 ? 0b0010  // 2
     /* v16 | v17 */ : 0,
-    Layout    = v18 ? 0b0100  // 4
+    Layout    : v18 ? 0b0100  // 4
     /* v16 | v17 */ : 0b0010, // 2
-    Passive   = v18 ? 0b1000  // 8
+    Passive   : v18 ? 0b1000  // 8
     /* v16 | v17 */ : 0b0100, // 4
-}
+};
 
 /* eslint-enable @typescript-eslint/indent */
 
 
-export const getInternalKey = (element: Nullable<HTMLElement>, prefix: string) => {
+const getInternalKey = (element: Nullable<HTMLElement>, prefix: string) => {
     return element && Object.keys(element).find((key) => key.startsWith(prefix));
 };
 
-export const getElementFiber = (element: Nullable<HTMLElement>, prefix = DomPropPrefix): undefined | Fiber => {
+const getElementFiber = (element: Nullable<HTMLElement>, prefix = DomPropPrefix): undefined | Fiber => {
     const internalKey = getInternalKey(element, prefix);
     return internalKey ? (element as any)[internalKey] : undefined;
 };
 
-export const getRootFiber = (container: Nullable<void | HTMLElement>): undefined | Fiber => {
+const getRootFiber = (container: Nullable<void | HTMLElement>): undefined | Fiber => {
     const fiber = v18 && container && getElementFiber(container, '__reactContainer$');
     const root = fiber ? fiber.stateNode : (container as any)?._reactRootContainer?._internalRoot;
     return root?.current;
@@ -196,9 +197,9 @@ const pushVisitStack = (stack: any[], fiber: Fiber, flags: number) => {
     }
 };
 
-export const findFiber = <T extends Fiber>(
+const findFiber = <T extends Fiber>(
     fiber: Nullable<Fiber>,
-    predicate: (fiber: Fiber) => boolean | FiberVisit.Break,
+    predicate: (fiber: Fiber) => boolean | typeof FiberVisit.Break,
     flags = FiberVisit.Child | FiberVisit.Sibling,
 ): null | T => {
     const stack = [fiber];
@@ -219,9 +220,9 @@ export const findFiber = <T extends Fiber>(
     return null;
 };
 
-export const findFibers = <T extends Fiber>(
+const findFibers = <T extends Fiber>(
     fiber: Nullable<Fiber>,
-    predicate: (fiber: Fiber) => boolean | FiberVisit.Break,
+    predicate: (fiber: Fiber) => boolean | typeof FiberVisit.Break,
     flags = FiberVisit.Child | FiberVisit.Sibling,
 ): T[] => {
     const result: T[] = [];
@@ -243,7 +244,7 @@ export const findFibers = <T extends Fiber>(
     return result;
 };
 
-export const findFiberByType = <T extends ComponentType<any>>(
+const findFiberByType = <T extends ComponentType<any>>(
     root: Nullable<Fiber>,
     type: T,
     flags?: number,
@@ -251,7 +252,7 @@ export const findFiberByType = <T extends ComponentType<any>>(
     return fiber.type === type;
 }, flags);
 
-export const findFibersByType = <T extends ComponentType<any>>(
+const findFibersByType = <T extends ComponentType<any>>(
     root: Nullable<Fiber>,
     type: T,
     flags?: number,
@@ -259,9 +260,9 @@ export const findFibersByType = <T extends ComponentType<any>>(
     return fiber.type === type;
 }, flags);
 
-export const traverseFiber = (
+const traverseFiber = (
     fiber: Nullable<Fiber>,
-    visit: (fiber: Fiber) =>  Nullable<void | FiberVisit.Break | (() => void)>,
+    visit: (fiber: Fiber) =>  Nullable<void | typeof FiberVisit.Break | (() => void)>,
     flags = FiberVisit.Child | FiberVisit.Sibling,
 ) => {
     const stack: Array<Nullable<Fiber | (() => void)>> = [fiber];
@@ -317,7 +318,7 @@ const replaceFiberOnParent = (
     return parentFiber;
 };
 
-export const replaceFiber = (oldFiber: Fiber, newFiber: Fiber) => {
+const replaceFiber = (oldFiber: Fiber, newFiber: Fiber) => {
     const parentFiber = oldFiber.return;
     if (!parentFiber) {
         return false;
@@ -458,7 +459,7 @@ const bubbleProperties = (fiber: Fiber) => {
 };
 
 // only execute in the useLayoutEffect()
-export const appendFiberEffect = (
+const appendFiberEffect = (
     rootFiber: Fiber,
     effectFiber: Fiber, // fiber of <KeepAliveEffect> component
     renderFiber: Fiber, // fiber of <KeepAliveRender> component
@@ -504,7 +505,7 @@ export const appendFiberEffect = (
     }
 };
 
-export const defineFiberProp = <K extends keyof Fiber>(
+const defineFiberProp = <K extends keyof Fiber>(
     fiber: Fiber,
     prop: K,
     value: Fiber[K],
@@ -591,7 +592,7 @@ const restoreFiberProps = (fiber: Fiber, current: null | Fiber) => {
 // - v17 detachFiberMutation()
 // - v18 detachFiberAfterEffects()
 
-export const protectFiber = (fiber: Fiber) => {
+const protectFiber = (fiber: Fiber) => {
     const restore: PropRestore = { current: false };
     if (UseDeepDetach) {
         traverseFiber(fiber, (node) => () => {
@@ -603,7 +604,7 @@ export const protectFiber = (fiber: Fiber) => {
     return restore;
 };
 
-export const restoreFiber = (fiber: Fiber, restore: PropRestore) => {
+const restoreFiber = (fiber: Fiber, restore: PropRestore) => {
     restore.current = true;
     if (UseDeepDetach) {
         traverseFiber(fiber, (node) => () => {
@@ -625,4 +626,26 @@ export const restoreFiber = (fiber: Fiber, restore: PropRestore) => {
         });
     }
     restore.current = false;
+};
+
+export {
+    markEffectHookIsOnetime,
+    markClassComponentHasSideEffectRender,
+    FiberVisit,
+    FiberTag,
+    FiberMode,
+    FiberFlag,
+    HookEffectTag,
+    getInternalKey,
+    getElementFiber,
+    getRootFiber,
+    findFiber,
+    findFibers,
+    findFiberByType,
+    findFibersByType,
+    traverseFiber,
+    replaceFiber,
+    appendFiberEffect,
+    protectFiber,
+    restoreFiber,
 };

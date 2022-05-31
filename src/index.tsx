@@ -26,7 +26,7 @@ const useIsomorphicLayoutEffect =
     ? useLayoutEffect
     : useEffect
 
-enum Step {
+const enum Step {
     Finish = 0b0000,
     Render = 0b0001,
     Effect = 0b0010,
@@ -43,16 +43,18 @@ const KeepAliveEffect: React.FC<{
     host: React.RefObject<HTMLDivElement>;
     name: string;
     status: KeepAliveStatus;
-}> = ({ host, name, status }) => {
+}> = (props) => {
     const context = useContext(KeepAliveContext);
-    const [step] = status;
+    const host = props.host;
+    // const name = props.name;
+    const [step] = props.status;
 
     useIsomorphicLayoutEffect(() => {
         if (!context || step !== Step.Effect) {
             return;
         }
 
-        console.log('[KEEP-ALIVE] [LIFE]', name);
+        // console.log('[KEEP-ALIVE] [LIFE]', name);
 
         const rootFiber = getRootFiber(context);
         const divFiber = findFiber(rootFiber, (fiber) => fiber.stateNode === host.current);
@@ -64,10 +66,10 @@ const KeepAliveEffect: React.FC<{
         if (rootFiber && effectFiber && renderFiber && finishFiber) {
             appendFiberEffect(rootFiber, effectFiber, renderFiber, finishFiber);
         }
-    }, [context, status]);
+    }, [context, props.status]);
 
     // fake passive effect
-    useEffect(noop, [context, status]);
+    useEffect(noop, [context, props.status]);
 
     return null;
 };
@@ -83,16 +85,19 @@ const KeepAliveRender: React.FC<{
     children: React.ReactNode;
     name: string;
     wait: boolean;
-}> = ({ children, name, wait }) => (
-    <div data-keep-alive-save={name}>
-        {wait ? null : children}
+}> = (props) => (
+    <div data-keep-alive-save={props.name}>
+        {props.wait ? null : props.children}
     </div>
 );
 
-export const KeepAlive: React.FC<{
+const KeepAlive = Object.assign<React.FC<{
     name: string;
     children: React.ReactNode;
-}> = ({ name, children }) => {
+}>, {
+    Provider: typeof KeepAliveContext.Provider;
+}>((props) => {
+    const name = props.name;
     const host = useRef<HTMLDivElement>(null);
     const context = useContext(KeepAliveContext);
     const [status, setStatus] = useState<KeepAliveStatus>([Step.Render]);
@@ -120,7 +125,7 @@ export const KeepAlive: React.FC<{
             return;
         }
 
-        console.log('[KEEP-ALIVE]', '[SAVE]', name, renderFiber);
+        // console.log('[KEEP-ALIVE]', '[SAVE]', name, renderFiber);
         const restore = protectFiber(renderFiber);
         caches.set(name, [renderFiber, restore]);
     }, [context, name]);
@@ -131,7 +136,7 @@ export const KeepAlive: React.FC<{
         }
 
         if (!context || !cache) {
-            console.log('[KEEP-ALIVE]', '[SKIP]', name);
+            // console.log('[KEEP-ALIVE]', '[SKIP]', name);
             return setStatus([Step.Finish]);
         }
 
@@ -156,7 +161,7 @@ export const KeepAlive: React.FC<{
             return setStatus([Step.Finish]);
         }
 
-        console.log('[KEEP-ALIVE]', '[SWAP]', name, { newFiber, oldFiber });
+        // console.log('[KEEP-ALIVE]', '[SWAP]', name, { newFiber, oldFiber });
         oldElement.parentElement.replaceChild(newElement, oldElement);
 
         replaceFiber(oldFiber, newFiber);
@@ -166,7 +171,7 @@ export const KeepAlive: React.FC<{
 
     useEffect(() => {
         if (step === Step.Effect) {
-            console.log('[KEEP-ALIVE]', '[DONE]', name);
+            // console.log('[KEEP-ALIVE]', '[DONE]', name);
             setStatus([Step.Finish]);
         }
     }, [context, status, name]);
@@ -175,18 +180,16 @@ export const KeepAlive: React.FC<{
         <div ref={host} data-keep-alive-host={name}>
             <KeepAliveEffect host={host} name={name} status={status} />
             <KeepAliveRender name={name} wait={null != cache}>
-                {children}
+                {props.children}
             </KeepAliveRender>
             <KeepAliveFinish />
         </div>
     );
-};
-
-export default Object.assign(KeepAlive, {
+}, {
     Provider: KeepAliveContext.Provider,
 });
 
-export function keepAlive<P>(
+function keepAlive<P>(
     Component: React.ComponentType<P>,
     getCacheName: (props: P) => string,
 ): React.FC<P> {
@@ -200,6 +203,12 @@ export function keepAlive<P>(
     };
 }
 
+export default KeepAlive;
+export {
+    useIsomorphicLayoutEffect,
+    keepAlive,
+    KeepAlive,
+};
 export {
     markClassComponentHasSideEffectRender,
     markEffectHookIsOnetime,
