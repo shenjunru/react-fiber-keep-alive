@@ -1,5 +1,4 @@
 {
-  "compileOnSave": false,
   "compilerOptions": {
     "strict": true,
     "alwaysStrict": true,
@@ -11,39 +10,29 @@
     "noImplicitReturns": true,
     "noImplicitAny": true,
 
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "preserveConstEnums": true,
+    "emitDecoratorMetadata": false,
+    "experimentalDecorators": false,
+    "preserveConstEnums": false,
 
-    "allowJs": true,
+    "allowJs": false,
     "checkJs": false,
     "skipLibCheck": true,
 
-    "sourceMap": true,
-    "inlineSources": true,
-    "inlineSourceMap": false,
-    "importHelpers": true,
-
-    "noEmit": true,
-    "noEmitHelpers": true,
+    "sourceMap": false,
+    "importHelpers": false,
     "removeComments": true,
     "declaration": false,
 
-    "resolveJsonModule": true,
+    "resolveJsonModule": false,
     "moduleResolution": "node",
-    "module": "esnext",
-    "target": "esnext",
-    "jsx": "preserve",
+    "newLine": "lf",
+    "jsx": "react",
 
-    "baseUrl": ".",
-    "rootDir": ".",
+    "baseUrl": "./src",
+    "rootDir": "./src",
 
-    "lib": [
-      "dom",
-      "esnext",
-    ],
+    "lib": ["dom", "esnext"]
   },
-  "exclude": [
-    "node_modules",
-  ],
+  "exclude": ["node_modules"],
+  "include": ["src"]
 }
