@@ -45,31 +45,32 @@ const KeepAliveEffect: React.FC<{
     status: KeepAliveStatus;
 }> = (props) => {
     const context = useContext(KeepAliveContext);
+    const status = props.status;
     const host = props.host;
     // const name = props.name;
-    const [step] = props.status;
+    const [step] = status;
 
     useIsomorphicLayoutEffect(() => {
         if (!context || step !== Step.Effect) {
             return;
         }
 
-        // console.log('[KEEP-ALIVE] [LIFE]', name);
+        // console.log('[KEEP-ALIVE] [LIVE]', name);
 
         const rootFiber = getRootFiber(context);
-        const divFiber = findFiber(rootFiber, (fiber) => fiber.stateNode === host.current);
+        const hostFiber = findFiber(rootFiber, (fiber) => fiber.stateNode === host.current);
 
-        const effectFiber = divFiber?.child;
+        const effectFiber = hostFiber?.child;
         const renderFiber = effectFiber?.sibling;
         const finishFiber = renderFiber?.sibling;
 
         if (rootFiber && effectFiber && renderFiber && finishFiber) {
             appendFiberEffect(rootFiber, effectFiber, renderFiber, finishFiber);
         }
-    }, [context, props.status]);
+    }, [context, status]);
 
     // fake passive effect
-    useEffect(noop, [context, props.status]);
+    useEffect(noop, [context, status]);
 
     return null;
 };
@@ -82,23 +83,19 @@ const KeepAliveFinish: React.FC = () => {
 };
 
 const KeepAliveRender: React.FC<{
-    children: React.ReactNode;
-    name: string;
-    wait: boolean;
-}> = (props) => (
-    <div data-keep-alive-save={props.name}>
-        {props.wait ? null : props.children}
-    </div>
-);
+    children: React.ReactElement;
+}> = (props) => React.Children.only(props.children);
 
 const KeepAlive = Object.assign<React.FC<{
     name: string;
+    hostTag?: 'div' | 'span';
     children: React.ReactNode;
 }>, {
     Provider: typeof KeepAliveContext.Provider;
 }>((props) => {
     const name = props.name;
-    const host = useRef<HTMLDivElement>(null);
+    const HostTag = props.hostTag || 'div';
+    const hostRef = useRef<HTMLDivElement>(null);
     const context = useContext(KeepAliveContext);
     const [status, setStatus] = useState<KeepAliveStatus>([Step.Render]);
     const caches = useMemo((): Map<string, [Fiber, { current: boolean }]> => {
@@ -118,10 +115,10 @@ const KeepAlive = Object.assign<React.FC<{
         }
 
         const rootFiber = getRootFiber(context);
-        const hostFiber = findFiber(rootFiber, (fiber) => fiber.stateNode === host.current);
+        const hostFiber = findFiber(rootFiber, (fiber) => fiber.stateNode === hostRef.current);
 
         const renderFiber = hostFiber?.child?.sibling;
-        if (!name || !renderFiber) {
+        if (!renderFiber) {
             return;
         }
 
@@ -135,18 +132,18 @@ const KeepAlive = Object.assign<React.FC<{
             return;
         }
 
-        if (!context || !cache) {
+        if (!context || !name || !cache) {
             // console.log('[KEEP-ALIVE]', '[SKIP]', name);
             return setStatus([Step.Finish]);
         }
 
         const rootFiber = getRootFiber(context);
-        const divFiber = findFiber(rootFiber, (fiber) => fiber.stateNode === host.current);
+        const hostFiber = findFiber(rootFiber, (fiber) => fiber.stateNode === hostRef.current);
 
-        const oldFiber = divFiber?.child?.sibling;
+        const oldFiber = hostFiber?.child?.sibling;
         const oldElement: Nullable<HTMLElement> = oldFiber?.child?.stateNode;
-        if (!divFiber || !oldFiber || !oldElement?.parentElement) {
-            console.error('[KEEP-ALIVE]', '[WAIT]', name);
+        if (!hostFiber || !oldFiber || !oldElement?.parentElement) {
+            // console.log('[KEEP-ALIVE]', '[WAIT]', name);
             return setStatus([Step.Render]);
         }
 
@@ -157,7 +154,7 @@ const KeepAlive = Object.assign<React.FC<{
 
         const newElement: Nullable<HTMLElement> = newFiber.child?.stateNode;
         if (!newElement) {
-            console.error('[KEEP-ALIVE]', '[FAIL]', name, newFiber);
+            // console.error('[KEEP-ALIVE]', '[FAIL]', name, newFiber);
             return setStatus([Step.Finish]);
         }
 
@@ -177,13 +174,15 @@ const KeepAlive = Object.assign<React.FC<{
     }, [context, status, name]);
 
     return (
-        <div ref={host} data-keep-alive-host={name}>
-            <KeepAliveEffect host={host} name={name} status={status} />
-            <KeepAliveRender name={name} wait={null != cache}>
-                {props.children}
+        <HostTag ref={hostRef} data-keep-alive-host={name}>
+            <KeepAliveEffect host={hostRef} name={name} status={status} />
+            <KeepAliveRender>
+                <HostTag data-keep-alive-save={name}>
+                    {null != cache ? null : props.children}
+                </HostTag>
             </KeepAliveRender>
             <KeepAliveFinish />
-        </div>
+        </HostTag>
     );
 }, {
     Provider: KeepAliveContext.Provider,
