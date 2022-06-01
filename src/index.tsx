@@ -86,11 +86,13 @@ const KeepAliveRender: React.FC<{
     children: React.ReactElement;
 }> = (props) => React.Children.only(props.children);
 
-const KeepAlive = Object.assign<React.FC<{
+type KeepAliveProps = {
     name: string;
     hostTag?: 'div' | 'span';
     children: React.ReactNode;
-}>, {
+};
+
+const KeepAlive = Object.assign<React.FC<KeepAliveProps>, {
     Provider: typeof KeepAliveContext.Provider;
 }>((props) => {
     const name = props.name;
@@ -190,12 +192,13 @@ const KeepAlive = Object.assign<React.FC<{
 
 function keepAlive<P>(
     Component: React.ComponentType<P>,
-    getCacheName: (props: P) => string,
+    getProps: (props: P) => string | Omit<KeepAliveProps, 'children'>,
 ): React.FC<P> {
     return (props) => {
-        const name = getCacheName(props);
+        const value = getProps(props);
+        const alive = typeof value === 'string' ? { name: value } : value;
         return (
-            <KeepAlive name={name}>
+            <KeepAlive {...alive}>
                 <Component {...props} />
             </KeepAlive>
         );
