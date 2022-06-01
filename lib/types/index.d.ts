@@ -1,13 +1,14 @@
 import React from 'react';
+import { markClassComponentHasSideEffectRender, markEffectHookIsOnetime } from './helpers';
 declare const useIsomorphicLayoutEffect: typeof React.useLayoutEffect;
-declare const KeepAliveContext: React.Context<HTMLElement | null>;
-declare const KeepAlive: React.FC<{
+declare type KeepAliveProps = {
     name: string;
+    hostTag?: 'div' | 'span';
     children: React.ReactNode;
-}> & {
-    Provider: typeof KeepAliveContext.Provider;
 };
-declare function keepAlive<P>(Component: React.ComponentType<P>, getCacheName: (props: P) => string): React.FC<P>;
+declare function keepAlive<P>(Component: React.ComponentType<P>, getProps: (props: P) => string | Omit<KeepAliveProps, 'children'>): React.FC<P>;
+declare const KeepAlive: React.FC<KeepAliveProps> & {
+    Provider: React.Provider<HTMLElement | null>;
+};
 export default KeepAlive;
-export { useIsomorphicLayoutEffect, keepAlive, KeepAlive, };
-export { markClassComponentHasSideEffectRender, markEffectHookIsOnetime, } from './helpers';
+export { markClassComponentHasSideEffectRender, markEffectHookIsOnetime, useIsomorphicLayoutEffect, keepAlive, KeepAlive, };
