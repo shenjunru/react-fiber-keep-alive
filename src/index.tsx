@@ -9,6 +9,8 @@ import React, {
     useState,
 } from 'react';
 import {
+    markClassComponentHasSideEffectRender,
+    markEffectHookIsOnetime,
     appendFiberEffect,
     protectFiber,
     restoreFiber,
@@ -33,7 +35,12 @@ const enum Step {
 }
 
 type Nullable<T> = T | null | undefined;
-type KeepAliveStatus = [Step];
+type KeepAliveState = [Step];
+type KeepAliveProps = {
+    name: string;
+    hostTag?: 'div' | 'span';
+    children: React.ReactNode;
+};
 
 const randomKey = Math.random().toString(36).slice(2);
 const KeepAlivePropKey = '__keepAlive$' + randomKey;
@@ -42,13 +49,13 @@ const KeepAliveContext = createContext<null | HTMLElement>(null);
 const KeepAliveEffect: React.FC<{
     host: React.RefObject<HTMLDivElement>;
     name: string;
-    status: KeepAliveStatus;
+    state: KeepAliveState;
 }> = (props) => {
     const context = useContext(KeepAliveContext);
-    const status = props.status;
+    const state = props.state;
     const host = props.host;
     // const name = props.name;
-    const [step] = status;
+    const [step] = state;
 
     useIsomorphicLayoutEffect(() => {
         if (!context || step !== Step.Effect) {
@@ -67,10 +74,10 @@ const KeepAliveEffect: React.FC<{
         if (rootFiber && effectFiber && renderFiber && finishFiber) {
             appendFiberEffect(rootFiber, effectFiber, renderFiber, finishFiber);
         }
-    }, [context, status]);
+    }, [context, state]);
 
     // fake passive effect
-    useEffect(noop, [context, status]);
+    useEffect(noop, [context, state]);
 
     return null;
 };
@@ -86,20 +93,12 @@ const KeepAliveRender: React.FC<{
     children: React.ReactElement;
 }> = (props) => React.Children.only(props.children);
 
-type KeepAliveProps = {
-    name: string;
-    hostTag?: 'div' | 'span';
-    children: React.ReactNode;
-};
-
-const KeepAlive = Object.assign<React.FC<KeepAliveProps>, {
-    Provider: typeof KeepAliveContext.Provider;
-}>((props) => {
+const KeepAliveManage: React.FC<KeepAliveProps> = (props) => {
     const name = props.name;
     const HostTag = props.hostTag || 'div';
     const hostRef = useRef<HTMLDivElement>(null);
     const context = useContext(KeepAliveContext);
-    const [status, setStatus] = useState<KeepAliveStatus>([Step.Render]);
+    const [state, setState] = useState<KeepAliveState>([Step.Render]);
     const caches = useMemo((): Map<string, [Fiber, { current: boolean }]> => {
         const value = (context as any)?.[KeepAlivePropKey] || new Map();
         if (context) {
@@ -108,7 +107,7 @@ const KeepAlive = Object.assign<React.FC<KeepAliveProps>, {
         return value;
     }, [context]);
 
-    const [step] = status;
+    const [step] = state;
     const cache = caches.get(name);
 
     useIsomorphicLayoutEffect(() => () => {
@@ -136,7 +135,7 @@ const KeepAlive = Object.assign<React.FC<KeepAliveProps>, {
 
         if (!context || !name || !cache) {
             // console.log('[KEEP-ALIVE]', '[SKIP]', name);
-            return setStatus([Step.Finish]);
+            return setState([Step.Finish]);
         }
 
         const rootFiber = getRootFiber(context);
@@ -146,7 +145,7 @@ const KeepAlive = Object.assign<React.FC<KeepAliveProps>, {
         const oldElement: Nullable<HTMLElement> = oldFiber?.child?.stateNode;
         if (!hostFiber || !oldFiber || !oldElement?.parentElement) {
             // console.log('[KEEP-ALIVE]', '[WAIT]', name);
-            return setStatus([Step.Render]);
+            return setState([Step.Render]);
         }
 
         caches.delete(name);
@@ -157,7 +156,7 @@ const KeepAlive = Object.assign<React.FC<KeepAliveProps>, {
         const newElement: Nullable<HTMLElement> = newFiber.child?.stateNode;
         if (!newElement) {
             // console.error('[KEEP-ALIVE]', '[FAIL]', name, newFiber);
-            return setStatus([Step.Finish]);
+            return setState([Step.Finish]);
         }
 
         // console.log('[KEEP-ALIVE]', '[SWAP]', name, { newFiber, oldFiber });
@@ -165,19 +164,19 @@ const KeepAlive = Object.assign<React.FC<KeepAliveProps>, {
 
         replaceFiber(oldFiber, newFiber);
 
-        return setStatus([Step.Effect]);
-    }, [context, status, name]);
+        return setState([Step.Effect]);
+    }, [context, state, name]);
 
     useEffect(() => {
         if (step === Step.Effect) {
             // console.log('[KEEP-ALIVE]', '[DONE]', name);
-            setStatus([Step.Finish]);
+            setState([Step.Finish]);
         }
-    }, [context, status, name]);
+    }, [context, state, name]);
 
     return (
         <HostTag ref={hostRef} data-keep-alive-host={name}>
-            <KeepAliveEffect host={hostRef} name={name} status={status} />
+            <KeepAliveEffect host={hostRef} name={name} state={state} />
             <KeepAliveRender>
                 <HostTag data-keep-alive-save={name}>
                     {null != cache ? null : props.children}
@@ -186,9 +185,7 @@ const KeepAlive = Object.assign<React.FC<KeepAliveProps>, {
             <KeepAliveFinish />
         </HostTag>
     );
-}, {
-    Provider: KeepAliveContext.Provider,
-});
+};
 
 function keepAlive<P>(
     Component: React.ComponentType<P>,
@@ -205,13 +202,15 @@ function keepAlive<P>(
     };
 }
 
+const KeepAlive = Object.assign(KeepAliveManage, {
+    Provider: KeepAliveContext.Provider,
+});
+
 export default KeepAlive;
 export {
+    markClassComponentHasSideEffectRender,
+    markEffectHookIsOnetime,
     useIsomorphicLayoutEffect,
     keepAlive,
     KeepAlive,
 };
-export {
-    markClassComponentHasSideEffectRender,
-    markEffectHookIsOnetime,
-} from './helpers';
