@@ -318,13 +318,23 @@ export const traverseFiber = (
 
 export const findChildHostFibers = (fiber: Nullable<Fiber>): Fiber[] => {
     const result: Fiber[] = [];
-    traverseFiber(fiber, (node) => {
-        if (isHostFiber(node)) {
-            result.push(node);
-            return FiberVisit.Break;
+    if (!fiber) {
+        return result;
+    }
+
+    const stack: Array<Nullable<Fiber>> = [fiber];
+    while (stack.length) {
+        const current = stack.pop();
+        if (!current) {
+            continue;
         }
-        return;
-    });
+        if (isHostFiber(current)) {
+            result.push(current);
+            pushVisitStack(stack, fiber, current, FiberVisit.Sibling);
+        } else {
+            pushVisitStack(stack, fiber, current, FiberVisit.Child | FiberVisit.Sibling);
+        }
+    }
     return result;
 };
 
@@ -607,7 +617,7 @@ const protectFiberProp = (fiber: Nullable<Fiber>, prop: keyof Fiber, restore: Pr
     let value = backup;
 
     // prevent detachDeletedInstance() <- detachFiberAfterEffects()
-    if (prop === 'stateNode' && fiber.tag === FiberTag.HostComponent) {
+    if (!restore.current && prop === 'stateNode' && isHostFiber(fiber)) {
         value = null;
 
         if (backup?.parentNode) {
@@ -669,16 +679,22 @@ const restoreFiberProps = (fiber: Fiber, current: null | Fiber) => {
 // - v18 detachFiberAfterEffects()
 
 export const protectFiber = (fiber: Fiber) => {
+    const restore: PropRestore = { current: true };
+
     // detach child nodes
     findChildHostFibers(fiber).forEach((node) => {
-        const stateNode = node.stateNode as null | Node;
-        const parentNode = stateNode?.parentNode;
-        if (stateNode && parentNode) {
-            parentNode.removeChild(stateNode);
+        protectFiberProp(node, 'stateNode', restore);
+        const hostNode = getHostNode(node);
+        const parentNode = hostNode?.parentNode;
+        if (hostNode && parentNode) {
+            const dummy = document.createElement('div');
+            parentNode.replaceChild(dummy, hostNode);
+            node.stateNode = dummy;
         }
     });
 
-    const restore: PropRestore = { current: false };
+    restore.current = false;
+
     if (UseDeepDetach) {
         traverseFiber(fiber, (node) => () => {
             protectFiberProps(node, null, restore);
@@ -686,6 +702,7 @@ export const protectFiber = (fiber: Fiber) => {
     } else {
         protectFiberProps(fiber, null, restore);
     }
+
     return restore;
 };
 
