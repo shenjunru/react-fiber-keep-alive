@@ -4,19 +4,19 @@ declare type Nullable<T> = T | null | undefined;
 interface TypedFiber<C extends ComponentType<any> = ComponentType<any>> extends Fiber {
     memoizedProps: ComponentProps<C>;
 }
-declare const markEffectHookIsOnetime: (effect: React.EffectCallback) => any;
-declare const markClassComponentHasSideEffectRender: <T extends ComponentClass<any, any>>(Class: T) => T;
+export declare const markEffectHookIsOnetime: (effect: React.EffectCallback) => EffectCallback;
+export declare const markClassComponentHasSideEffectRender: <T extends ComponentClass<any, any>>(Class: T) => T;
 declare type PropRestore = {
     current: boolean;
 };
-declare const FiberVisit: {
-    readonly Child: 1;
-    readonly Sibling: 2;
-    readonly Return: 4;
-    readonly Effect: 8;
-    readonly Break: 16;
-};
-declare const FiberTag: {
+export declare const FiberVisit: Readonly<{
+    Child: number;
+    Sibling: number;
+    Return: number;
+    Effect: number;
+    Break: number;
+}>;
+export declare const FiberTag: Readonly<{
     FunctionComponent: number;
     ClassComponent: number;
     HostRoot: number;
@@ -25,36 +25,37 @@ declare const FiberTag: {
     HostText: number;
     MemoComponent: number;
     SimpleMemoComponent: number;
-};
-declare const FiberMode: {
+}>;
+export declare const FiberMode: Readonly<{
     NoMode: number;
     ConcurrentMode: number;
-};
-declare const FiberFlag: {
+}>;
+export declare const FiberFlag: Readonly<{
     NoFlags: number;
     Placement: number;
     Update: number;
     Passive: number;
     LifecycleEffectMask: number;
     PassiveMask: number;
-};
-declare const HookEffectTag: {
+}>;
+export declare const HookEffectTag: Readonly<{
     NoFlags: number;
     HasEffect: number;
     Insertion: number;
     Layout: number;
     Passive: number;
-};
-declare const getInternalKey: (element: Nullable<HTMLElement>, prefix: string) => string | null | undefined;
-declare const getElementFiber: (element: Nullable<HTMLElement>, prefix?: string) => undefined | Fiber;
-declare const getRootFiber: (container: Nullable<void | HTMLElement>) => undefined | Fiber;
-declare const findFiber: <T extends Fiber>(fiber: Nullable<Fiber>, predicate: (fiber: Fiber) => boolean | typeof FiberVisit.Break, flags?: number) => T | null;
-declare const findFibers: <T extends Fiber>(fiber: Nullable<Fiber>, predicate: (fiber: Fiber) => boolean | typeof FiberVisit.Break, flags?: number) => T[];
-declare const findFiberByType: <T extends ComponentType<any>>(root: Nullable<Fiber>, type: T, flags?: number | undefined) => TypedFiber<T> | null;
-declare const findFibersByType: <T extends ComponentType<any>>(root: Nullable<Fiber>, type: T, flags?: number | undefined) => TypedFiber<T>[];
-declare const traverseFiber: (fiber: Nullable<Fiber>, visit: (fiber: Fiber) => Nullable<void | typeof FiberVisit.Break | (() => void)>, flags?: number) => void;
-declare const replaceFiber: (oldFiber: Fiber, newFiber: Fiber) => boolean;
-declare const appendFiberEffect: (rootFiber: Fiber, effectFiber: Fiber, renderFiber: Fiber, finishFiber: Fiber) => void;
-declare const protectFiber: (fiber: Fiber) => PropRestore;
-declare const restoreFiber: (fiber: Fiber, restore: PropRestore) => void;
-export { markEffectHookIsOnetime, markClassComponentHasSideEffectRender, FiberVisit, FiberTag, FiberMode, FiberFlag, HookEffectTag, getInternalKey, getElementFiber, getRootFiber, findFiber, findFibers, findFiberByType, findFibersByType, traverseFiber, replaceFiber, appendFiberEffect, protectFiber, restoreFiber, };
+}>;
+export declare const getElementFiber: (element: Nullable<HTMLElement>, prefix?: string) => undefined | Fiber;
+export declare const getRootFiber: (container: Nullable<void | HTMLElement>) => undefined | Fiber;
+export declare const findFiber: <T extends Fiber>(fiber: Nullable<Fiber>, predicate: (fiber: Fiber) => boolean, flags?: number) => T | null;
+export declare const findFibers: <T extends Fiber>(fiber: Nullable<Fiber>, predicate: (fiber: Fiber) => boolean, flags?: number) => T[];
+export declare const findFiberByType: <T extends ComponentType<any>>(fiber: Nullable<Fiber>, type: T, flags?: number | undefined) => TypedFiber<T> | null;
+export declare const findFibersByType: <T extends ComponentType<any>>(fiber: Nullable<Fiber>, type: T, flags?: number | undefined) => TypedFiber<T>[];
+export declare const traverseFiber: (fiber: Nullable<Fiber>, visit: (fiber: Fiber) => Nullable<void | typeof FiberVisit.Break | (() => void)>, flags?: number) => void;
+export declare const findChildHostFibers: (fiber: Nullable<Fiber>) => Fiber[];
+export declare const findNextHostFiber: (scope: Fiber, target: Fiber) => null | Fiber;
+export declare const replaceFiber: (oldFiber: Fiber, newFiber: Fiber) => boolean;
+export declare const appendFiberEffect: (rootFiber: Fiber, effectFiber: Fiber, renderFiber: Fiber, finishFiber: Fiber) => void;
+export declare const protectFiber: (fiber: Fiber) => PropRestore;
+export declare const restoreFiber: (fiber: Fiber, restore: PropRestore) => void;
+export {};
