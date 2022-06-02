@@ -95,6 +95,7 @@ export const FiberTag = Object.freeze({
     HostPortal:          4,
     HostComponent:       5,
     HostText:            6,
+    ForwardRef:          11,
     MemoComponent:       14,
     SimpleMemoComponent: 15,
 });
@@ -430,6 +431,7 @@ const traverseEffectHooks = (
 ) => {
     switch (fiber.tag) {
         case FiberTag.FunctionComponent:
+        case FiberTag.ForwardRef:
         case FiberTag.MemoComponent:
         case FiberTag.SimpleMemoComponent: {
             break;
