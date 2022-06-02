@@ -669,6 +669,15 @@ const restoreFiberProps = (fiber: Fiber, current: null | Fiber) => {
 // - v18 detachFiberAfterEffects()
 
 export const protectFiber = (fiber: Fiber) => {
+    // detach child nodes
+    findChildHostFibers(fiber).forEach((node) => {
+        const stateNode = node.stateNode as null | Node;
+        const parentNode = stateNode?.parentNode;
+        if (stateNode && parentNode) {
+            parentNode.removeChild(stateNode);
+        }
+    });
+
     const restore: PropRestore = { current: false };
     if (UseDeepDetach) {
         traverseFiber(fiber, (node) => () => {
