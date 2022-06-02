@@ -631,7 +631,7 @@ const protectFiberProp = (fiber: Nullable<Fiber>, prop: keyof Fiber, restore: Pr
         configurable: true,
         enumerable: true,
         get() {
-            // console.log('[GET]', `[${prop}]`, fiber, restore.current ? backup : update);
+            // console.log('[GET]', `[${prop}]`, fiber, restore.current ? backup : value);
             return restore.current ? backup : value;
         },
         set(update) {
@@ -719,6 +719,10 @@ export const restoreFiber = (fiber: Fiber, restore: PropRestore) => {
         });
     } else {
         restoreFiberProps(fiber, null);
+
+        findChildHostFibers(fiber).forEach((node) => {
+            restoreFiberProp(node, 'stateNode');
+        });
 
         // unset effect hook destroy(), which is executed already
         traverseFiber(fiber, (node) => {
