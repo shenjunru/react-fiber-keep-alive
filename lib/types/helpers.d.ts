@@ -23,6 +23,7 @@ export declare const FiberTag: Readonly<{
     HostPortal: number;
     HostComponent: number;
     HostText: number;
+    ForwardRef: number;
     MemoComponent: number;
     SimpleMemoComponent: number;
 }>;
