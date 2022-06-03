@@ -99,6 +99,9 @@ React.useLayoutEffect(markEffectHookIsOnetime(() => {
 
 ## 🏁 Tested
 
+### Examples
+- [react-router v5](https://codesandbox.io/s/keep-alive-react-router-example-hfbbi7)
+
 ### React v16.8+ / v17 / v18
 - [x] `render(children, container)`
 - [x] `hydrate(children, container)`
