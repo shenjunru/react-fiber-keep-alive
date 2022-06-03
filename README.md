@@ -1,6 +1,9 @@
 # Keep-Alive for `React DOM`
 
------
+[![npm](https://img.shields.io/npm/v/react-fiber-keep-alive.svg?style=flat-square)](http://npm.im/react-fiber-keep-alive)
+[![React: Tools](https://img.shields.io/badge/React-Tools-26C9FF?style=flat-square&logo=react)](http://npm.im/react-fiber-keep-alive)
+[![Types: Typescript](https://img.shields.io/badge/Types-Typescript-red?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
+
 
 ## ✨ Features
 - [x] Only based on `React Fiber` and `React Hooks`.
@@ -44,57 +47,61 @@ ReactDOM.render((
 ## 📝 API
 
 - Provider `root` container element
-```JSX
-<KeepAlive.Provider value={container}>
-```
+    ```JSX
+    <KeepAlive.Provider value={container}>
+    ```
+  - Must be the root container of `render()`.
+  - If not provided, `keep-alive` will be disabled.
 
 - Wrap your component with `keepLive()`
-```JavaScript
-const NewComponent = keepAlive(YourComponent, (props) => {
-    // you can use react hooks here
-    return `unique-key`;
-});
-```
+    ```JavaScript
+    const NewComponent = keepAlive(YourComponent, (props) => {
+        // you can use react hooks here
+        return `unique-key`;
+    });
+    ```
 
 - Wrap your component with `<KeepAlive>`
-```JSX
-<KeepAlive name="unique-key">
-    <YourComponent />
-</KeepAlive>
-```
+    ```JSX
+    <KeepAlive name="unique-key">
+        <YourComponent />
+    </KeepAlive>
+    ```
 
 - If the `render()` of class component has side effects.
-```JavaScript
-markClassComponentHasSideEffectRender(ClassComponent);
+    ```JavaScript
+    markClassComponentHasSideEffectRender(ClassComponent);
 
-// Example:
-class Test extends React.Component {
-    render() {
-        // emit event here.
-        return null;
+    // Example:
+    class Test extends React.Component {
+        render() {
+            // emit event here.
+            return null;
+        }
     }
-}
-markClassComponentHasSideEffectRender(Test);
-```
+    markClassComponentHasSideEffectRender(Test);
+    ```
 
 - If no need to trigger the effect hook while remounting.
-```JavaScript
-markEffectHookIsOnetime(effectHook);
+    ```JavaScript
+    markEffectHookIsOnetime(effectHook);
 
-// Example:
-React.useEffect(markEffectHookIsOnetime(() => {
-    // do something
-}), []);
-React.useLayoutEffect(markEffectHookIsOnetime(() => {
-    // do something
-}), []);
-```
+    // Example:
+    React.useEffect(markEffectHookIsOnetime(() => {
+        // do something
+    }), []);
+    React.useLayoutEffect(markEffectHookIsOnetime(() => {
+        // do something
+    }), []);
+    ```
+
 
 ## 💡 Be careful
 
 - The global side effects. (ex: insert global style)
 - Do not use `<KeepAlive>` under the `<React.StrictMode>`.
 - Do not use `<KeepAlive>` recursively.
+  - But works, it handled by first level `<KeepAlive>`.
 
 
 ## 🏁 Tested
