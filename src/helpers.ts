@@ -326,7 +326,7 @@ export const findChildHostFibers = (fiber: Nullable<Fiber>): Fiber[] => {
     const stack: Array<Nullable<Fiber>> = [fiber];
     while (stack.length) {
         const current = stack.pop();
-        if (!current) {
+        if (!current || current.tag === FiberTag.HostPortal) {
             continue;
         }
         if (isHostFiber(current)) {
@@ -402,12 +402,24 @@ export const replaceFiber = (oldFiber: Fiber, newFiber: Fiber) => {
     const nextHostFiber = findNextHostFiber(hostFiber, oldFiber);
     const nextHostNode = getHostNode(nextHostFiber);
     findChildHostFibers(oldFiber).forEach((fiber) => {
-        hostNode.removeChild(fiber.stateNode);
+        const thisHostNode = getHostNode(fiber);
+        thisHostNode && hostNode.removeChild(thisHostNode);
     });
     findChildHostFibers(newFiber).forEach(nextHostNode ? (fiber) => {
-        hostNode.insertBefore(fiber.stateNode, nextHostNode);
+        const thisHostNode = getHostNode(fiber);
+        thisHostNode && hostNode.insertBefore(thisHostNode, nextHostNode);
     } : (fiber) => {
-        hostNode.appendChild(fiber.stateNode);
+        const thisHostNode = getHostNode(fiber);
+        thisHostNode && hostNode.appendChild(thisHostNode);
+    });
+
+    const portalFibers = findFibers(newFiber, (node) => node.tag === FiberTag.HostPortal);
+    portalFibers.forEach((portalFiber) => {
+        const containerInfo = portalFiber.stateNode?.containerInfo;
+        containerInfo && findChildHostFibers(portalFiber.child).forEach((fiber) => {
+            const thisHostNode = getHostNode(fiber);
+            thisHostNode && containerInfo.appendChild(thisHostNode);
+        });
     });
 
     // replace on fiber tree
@@ -674,6 +686,20 @@ const restoreFiberProps = (fiber: Fiber, current: null | Fiber) => {
     }
 };
 
+const protectChildHostNodes = (fiber: Nullable<Fiber>, restore: PropRestore) => {
+    const hostFibers = findChildHostFibers(fiber);
+    hostFibers.forEach((hostFiber) => {
+        protectFiberProp(hostFiber, 'stateNode', restore);
+        const hostNode = getHostNode(hostFiber);
+        const parentNode = hostNode?.parentNode;
+        if (hostNode && parentNode) {
+            const dummy = document.createElement('div');
+            parentNode.replaceChild(dummy, hostNode);
+            hostFiber.stateNode = dummy;
+        }
+    });
+};
+
 
 // against fiber detaching
 // - v16 detachFiber()
@@ -684,16 +710,9 @@ export const protectFiber = (fiber: Fiber) => {
     const restore: PropRestore = { current: true };
 
     // detach child nodes
-    findChildHostFibers(fiber).forEach((node) => {
-        protectFiberProp(node, 'stateNode', restore);
-        const hostNode = getHostNode(node);
-        const parentNode = hostNode?.parentNode;
-        if (hostNode && parentNode) {
-            const dummy = document.createElement('div');
-            parentNode.replaceChild(dummy, hostNode);
-            node.stateNode = dummy;
-        }
-    });
+    const portalFibers = findFibers(fiber, (node) => node.tag === FiberTag.HostPortal);
+    portalFibers.forEach((portalFiber) => protectChildHostNodes(portalFiber.child, restore));
+    protectChildHostNodes(fiber, restore);
 
     restore.current = false;
 
