@@ -17,7 +17,6 @@ import {
     getRootFiber,
     protectFiber,
     replaceFiber,
-    restoreFiber,
     FiberVisit,
 } from './helpers';
 
@@ -156,12 +155,10 @@ const KeepAliveManage: React.FC<KeepAliveProps> = (props) => {
         }
 
         caches.delete(name);
+        // console.log('[KEEP-ALIVE]', '[SWAP]', name);
 
         const [cachedFiber, restore] = cache;
-        restoreFiber(cachedFiber, restore);
-
-        // console.log('[KEEP-ALIVE]', '[SWAP]', name);
-        replaceFiber(renderFiber, cachedFiber);
+        replaceFiber(renderFiber, cachedFiber, restore);
 
         return setState([Step.Effect]);
     }, [context, state, name]);

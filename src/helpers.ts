@@ -79,17 +79,26 @@ const ProtectedFiberProps: Array<keyof Fiber> = [
 /* eslint-disable @typescript-eslint/indent */
 
 export const FiberVisit = Object.freeze(<const>{
-    Child:        0b000001,
-    Sibling:      0b000010,
-    Return:       0b000100,
-    Effect:       0b001000,
-    Break:        0b010000,
-    SiblingFirst: 0b100000,
+    // Property Accessor
+    Child:        0b00000001,
+    Sibling:      0b00000010,
+    Return:       0b00000100,
+    Effect:       0b00001000,
+    SiblingFirst: 0b00010000,
+
+    // Traverse Controller
+    Break:        0b01000000,
+    Continue:     0b00100000,
 });
+
+type FiberTraverseControl = (
+    | typeof FiberVisit.Break
+    | typeof FiberVisit.Continue
+);
 
 // v16: shared/ReactWorkTags.js
 // react-reconciler/src/ReactWorkTags.js
-export const FiberTag = Object.freeze({
+export const FiberTag = Object.freeze(<const>{
     FunctionComponent:   0,
     ClassComponent:      1,
     HostRoot:            3,
@@ -190,16 +199,25 @@ const getHostNode = (fiber: Nullable<Fiber>): null | Node => {
         case FiberTag.HostText:
             return fiber.stateNode;
         case FiberTag.HostRoot:
+        case FiberTag.HostPortal:
             return fiber.stateNode.containerInfo;
     }
     return null;
 };
 
-const isHostFiber = (fiber: Fiber) => {
+const isNodeFiber = (fiber: Fiber) => {
     switch (fiber.tag) {
         case FiberTag.HostComponent:
         case FiberTag.HostText:
+            return true;
+    }
+    return false;
+};
+
+const isHostFiber = (fiber: Fiber) => {
+    switch (fiber.tag) {
         case FiberTag.HostRoot:
+        case FiberTag.HostPortal:
             return true;
     }
     return false;
@@ -242,7 +260,7 @@ const pushVisitStack = (
 
 export const findFiber = <T extends Fiber>(
     fiber: Nullable<Fiber>,
-    predicate: (fiber: Fiber) => boolean,
+    predicate: (fiber: Fiber) => boolean | FiberTraverseControl,
     flags: number = FiberVisit.Child,
 ): null | T => {
     if (!fiber) {
@@ -255,38 +273,20 @@ export const findFiber = <T extends Fiber>(
         if (!current) {
             continue;
         }
-        if (predicate(current)) {
+        const value = predicate(current);
+        if (value === FiberVisit.Break) {
+            break;
+        }
+        if (value === FiberVisit.Continue) {
+            continue;
+        }
+        if (value) {
             return <T>current;
         }
         pushVisitStack(stack, fiber, current, flags, null);
     }
 
     return null;
-};
-
-export const findFibers = <T extends Fiber>(
-    fiber: Nullable<Fiber>,
-    predicate: (fiber: Fiber) => boolean,
-    flags: number = FiberVisit.Child,
-): T[] => {
-    const result: T[] = [];
-    if (!fiber) {
-        return result;
-    }
-
-    const stack = [fiber];
-    while (stack.length) {
-        const current = stack.pop();
-        if (!current) {
-            continue;
-        }
-        if (predicate(current)) {
-            result.push(<T>current);
-        }
-        pushVisitStack(stack, fiber, current, flags, null);
-    }
-
-    return result;
 };
 
 export const findFiberByType = <T extends ComponentType<any>>(
@@ -297,17 +297,9 @@ export const findFiberByType = <T extends ComponentType<any>>(
     return node.type === type;
 }, flags);
 
-export const findFibersByType = <T extends ComponentType<any>>(
-    fiber: Nullable<Fiber>,
-    type: T,
-    flags?: number,
-): Array<TypedFiber<T>> => findFibers(fiber, (node) => {
-    return node.type === type;
-}, flags);
-
 export const traverseFiber = (
     fiber: Nullable<Fiber>,
-    visit: (fiber: Fiber) =>  Nullable<void | typeof FiberVisit.Break | (() => void)>,
+    visit: (fiber: Fiber) => Nullable<void | FiberTraverseControl | (() => void)>,
     flags: number = FiberVisit.Child,
 ) => {
     if (!fiber) {
@@ -324,43 +316,29 @@ export const traverseFiber = (
             current();
             continue;
         }
-        const post = visit(current);
-        if (post === FiberVisit.Break) {
+        const value = visit(current);
+        if (value === FiberVisit.Break) {
+            break;
+        }
+        if (value === FiberVisit.Continue) {
             continue;
         }
-        pushVisitStack(stack, fiber, current, flags, post);
+        pushVisitStack(stack, fiber, current, flags, value);
     }
 };
 
-export const findChildHostFibers = (fiber: Nullable<Fiber>): Fiber[] => {
-    const result: Fiber[] = [];
-    if (!fiber) {
-        return result;
-    }
-
-    const stack: Array<Nullable<Fiber>> = [fiber];
-    while (stack.length) {
-        const current = stack.pop();
-        if (!current || current.tag === FiberTag.HostPortal) {
-            continue;
-        }
-        if (isHostFiber(current)) {
-            result.push(current);
-            pushVisitStack(stack, fiber, current, FiberVisit.Sibling, null);
-        } else {
-            pushVisitStack(stack, fiber, current, FiberVisit.Child | FiberVisit.Sibling, null);
-        }
-    }
-    return result;
-};
-
-export const findNextHostFiber = (scope: Fiber, target: Fiber): null | Fiber => {
-    let current = target.sibling || target.return;
+const findNextHostFiber = (scope: Fiber, target: Fiber): null | Fiber => {
+    let current: null | Fiber = target;
     while (current) {
         if (current === scope) {
             return null;
         }
-        const found = findFiber(current.sibling, isHostFiber, FiberVisit.Child | FiberVisit.Sibling);
+        const found = findFiber(current.sibling, (fiber) => {
+            if (isHostFiber(fiber)) {
+                return FiberVisit.Continue;
+            }
+            return isNodeFiber(fiber);
+        }, FiberVisit.Child | FiberVisit.Sibling);
         if (found) {
             return found;
         }
@@ -399,56 +377,6 @@ const replaceFiberOnParent = (
     }
 
     return parentFiber;
-};
-
-export const replaceFiber = (oldFiber: Fiber, newFiber: Fiber) => {
-    const parentFiber = oldFiber.return;
-    if (!parentFiber) {
-        return false;
-    }
-
-    // replace on dom tree
-    const hostFiber = findFiber(parentFiber, isHostFiber, FiberVisit.Return);
-    const hostNode = getHostNode(hostFiber);
-    if (!hostFiber || !hostNode) {
-        return false;
-    }
-
-    const nextHostFiber = findNextHostFiber(hostFiber, oldFiber);
-    const nextHostNode = getHostNode(nextHostFiber);
-    findChildHostFibers(oldFiber).forEach((fiber) => {
-        const thisHostNode = getHostNode(fiber);
-        thisHostNode && hostNode.removeChild(thisHostNode);
-    });
-    findChildHostFibers(newFiber).forEach(nextHostNode ? (fiber) => {
-        const thisHostNode = getHostNode(fiber);
-        thisHostNode && hostNode.insertBefore(thisHostNode, nextHostNode);
-    } : (fiber) => {
-        const thisHostNode = getHostNode(fiber);
-        thisHostNode && hostNode.appendChild(thisHostNode);
-    });
-
-    const portalFibers = findFibers(newFiber, (node) => node.tag === FiberTag.HostPortal);
-    portalFibers.forEach((portalFiber) => {
-        const containerInfo = portalFiber.stateNode?.containerInfo;
-        containerInfo && findChildHostFibers(portalFiber.child).forEach((fiber) => {
-            const thisHostNode = getHostNode(fiber);
-            thisHostNode && containerInfo.appendChild(thisHostNode);
-        });
-    });
-
-    // replace on fiber tree
-    replaceFiberOnParent(parentFiber, oldFiber, newFiber);
-    if (!newFiber.alternate || !parentFiber.alternate) {
-        if (newFiber.alternate) {
-            newFiber.alternate.return = null;
-            newFiber.alternate.sibling = null;
-        }
-    } else {
-        replaceFiberOnParent(parentFiber.alternate, oldFiber.alternate, newFiber.alternate);
-    }
-
-    return true;
 };
 
 const traverseEffectHooks = (
@@ -597,7 +525,7 @@ export const appendFiberEffect = (
 
         traverseFiber(renderFiber, (fiber) => {
             if (fiber === finishFiber) {
-                return FiberVisit.Break;
+                return FiberVisit.Continue;
             }
 
             const flags = applyFiberEffect(fiber);
@@ -629,7 +557,7 @@ const defineFiberProp = <K extends keyof Fiber>(
     });
 };
 
-const protectFiberProp = (fiber: Nullable<Fiber>, prop: keyof Fiber, restore: PropRestore, needDummy: boolean) => {
+const protectFiberProp = (fiber: Nullable<Fiber>, prop: keyof Fiber, restore: PropRestore) => {
     if (null == fiber) {
         return;
     }
@@ -642,13 +570,8 @@ const protectFiberProp = (fiber: Nullable<Fiber>, prop: keyof Fiber, restore: Pr
     let value = backup;
 
     // prevent detachDeletedInstance() <- detachFiberAfterEffects()
-    if (needDummy && prop === 'stateNode' && isHostFiber(fiber)) {
-        value = null;
-
-        if (backup?.parentNode) {
-            value = document.createElement('dummy');
-            backup.parentNode.appendChild(value);
-        }
+    if (prop === 'stateNode' && isNodeFiber(fiber)) {
+        value = value && document.createElement('dummy');
     }
 
     Object.defineProperty(fiber, prop, {
@@ -671,14 +594,14 @@ const restoreFiberProp = (fiber: Fiber, prop: keyof Fiber) => {
     }
 };
 
-const protectFiberProps = (fiber: Fiber, current: null | Fiber, restore: PropRestore, needDummy: boolean) => {
+const protectFiberProps = (fiber: Fiber, current: null | Fiber, restore: PropRestore) => {
     const alternate = fiber.alternate;
     if (alternate && !current) {
-        protectFiberProps(alternate, fiber, restore, false);
+        protectFiberProps(alternate, fiber, restore);
     }
 
     for (const prop of ProtectedFiberProps) {
-        protectFiberProp(fiber, prop, restore, needDummy);
+        protectFiberProp(fiber, prop, restore);
     }
 };
 
@@ -696,23 +619,20 @@ const restoreFiberProps = (fiber: Fiber, current: null | Fiber) => {
     }
 };
 
-
-// against fiber detaching
-// - v16 detachFiber()
-// - v17 detachFiberMutation()
-// - v18 detachFiberAfterEffects()
-
 export const protectFiber = (fiber: Fiber) => {
     const restore: PropRestore = { current: true };
     const stack = [true];
 
     traverseFiber(fiber, (node) => {
-        const needDummy = isHostFiber(node) && true === stack[0];
-        if (needDummy) {
-            // detach child node of parent host node or portal node
-            protectFiberProp(node, 'stateNode', restore, false);
+        // v16 / v17: unmountHostComponents()
+        // v18: commitDeletionEffectsOnFiber()
+        const needDetach = isNodeFiber(node) && true === stack[0];
+        if (needDetach) {
             const hostNode = getHostNode(node);
             const parentNode = hostNode?.parentNode;
+
+            protectFiberProp(node, 'stateNode', restore);
+
             if (hostNode && parentNode) {
                 const dummy = document.createElement('dummy');
                 parentNode.replaceChild(dummy, hostNode);
@@ -720,15 +640,17 @@ export const protectFiber = (fiber: Fiber) => {
             }
         }
 
+        // - v16: detachFiber()
+        // - v17 / 18: detachFiberMutation() & detachFiberAfterEffects()
         if (UseDeepDetach || node === fiber) {
-            protectFiberProps(node, null, restore, true);
+            protectFiberProps(node, null, restore);
         }
 
         if (node.tag === FiberTag.HostPortal) {
             stack.unshift(true);
             return () => stack.shift();
         }
-        if (needDummy) {
+        if (needDetach) {
             stack.unshift(false);
             return () => stack.shift();
         }
@@ -740,33 +662,98 @@ export const protectFiber = (fiber: Fiber) => {
     return restore;
 };
 
-export const restoreFiber = (fiber: Fiber, restore: PropRestore) => {
-    restore.current = true;
+export const replaceFiber = (oldFiber: Fiber, newFiber: Fiber, restore: PropRestore) => {
+    const parentFiber = oldFiber.return;
+    if (!parentFiber) {
+        return false;
+    }
 
-    const stack = [true];
-    traverseFiber(fiber, (node) => {
-        const needRestore = isHostFiber(node) && true === stack[0];
-        if (UseDeepDetach || node === fiber) {
-            restoreFiberProps(node, null);
-        } else if (needRestore) {
-            restoreFiberProp(node, 'stateNode');
+    const containerFiber = findFiber(parentFiber, (fiber) => {
+        return isNodeFiber(fiber) || isHostFiber(fiber);
+    }, FiberVisit.Return);
+    const containerNode = getHostNode(containerFiber);
+    if (!containerFiber || !containerNode) {
+        return false;
+    }
+
+    const stack: Array<null | Fiber> = [containerFiber];
+
+    // detach old fiber host nodes
+    traverseFiber(oldFiber, (fiber) => {
+        const hostFiber = stack[0];
+        const needDetach = isNodeFiber(fiber) && null != hostFiber;
+        if (needDetach) {
+            const parentNode = getHostNode(hostFiber);
+            const childNode = getHostNode(fiber);
+            if (parentNode && childNode) {
+                parentNode.removeChild(childNode);
+            }
         }
 
-        // unset effect hook destroy(), which is executed already
-        traverseEffectHooks(node, (effect) => {
-            effect.destroy = undefined;
-        });
-
-        if (node.tag === FiberTag.HostPortal) {
-            stack.unshift(true);
+        if (fiber.tag === FiberTag.HostPortal) {
+            stack.unshift(fiber);
             return () => stack.shift();
         }
-        if (needRestore) {
-            stack.unshift(false);
+        if (needDetach) {
+            stack.unshift(null);
             return () => stack.shift();
         }
         return null;
     });
 
+    const nextHostFiber = findNextHostFiber(containerFiber, oldFiber);
+    const nextHostNode = getHostNode(nextHostFiber);
+
+    // attach new fiber host nodes
+    // opposite to protectFiber()
+    restore.current = true;
+    traverseFiber(newFiber, (fiber) => {
+        const hostFiber = stack[0];
+        const needAttach = isNodeFiber(fiber) && null != hostFiber;
+        if (needAttach) {
+            restoreFiberProp(fiber, 'stateNode');
+            const parentNode = getHostNode(hostFiber);
+            const childNode = getHostNode(fiber);
+            if (parentNode && childNode) {
+                if (!nextHostNode || hostFiber.tag === FiberTag.HostPortal) {
+                    parentNode.appendChild(childNode);
+                } else {
+                    parentNode.insertBefore(childNode, nextHostNode);
+                }
+            }
+        }
+
+        if (UseDeepDetach || fiber === newFiber) {
+            restoreFiberProps(fiber, null);
+        }
+
+        // unset effect hook destroy(), which is executed already
+        traverseEffectHooks(fiber, (effect) => {
+            effect.destroy = undefined;
+        });
+
+        if (fiber.tag === FiberTag.HostPortal) {
+            stack.unshift(fiber);
+            return () => stack.shift();
+        }
+        if (needAttach) {
+            stack.unshift(null);
+            return () => stack.shift();
+        }
+        return null;
+    });
     restore.current = false;
+
+    // replace on fiber tree
+    replaceFiberOnParent(parentFiber, oldFiber, newFiber);
+    if (!newFiber.alternate || !parentFiber.alternate) {
+        if (newFiber.alternate) {
+            newFiber.alternate.return = null;
+            newFiber.alternate.sibling = null;
+        }
+    } else {
+        replaceFiberOnParent(parentFiber.alternate, oldFiber.alternate, newFiber.alternate);
+    }
+
+    return true;
 };
