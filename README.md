@@ -100,8 +100,10 @@ ReactDOM.render((
 
 - The global side effects. (ex: insert global style)
 - Do not use `<KeepAlive>` under the `<React.StrictMode>`.
-- Do not use `<KeepAlive>` recursively.
-  - But works, it handled by first level `<KeepAlive>`.
+- If use `<KeepAlive>` recursively.
+  - It handled by top level `<KeepAlive>`.
+- If the `container` changed in `ReactDOM.createPortal(children, container)`.
+  - All saved sub tree state will be lost.
 
 
 ## 🏁 Tested
@@ -142,10 +144,12 @@ ReactDOM.render((
 - [ ] `useInsertionEffect()` (since v18)
 
 ### Other
+- [x] `ReactDOM.createPortal(children, container)`
 - [x] `React.memo()`
 - [x] `React.forwardRef()`
 - [ ] `React.lazy()`
 - [ ] `<Suspense>`
+- [ ] `<Offscreen>` (since v18)
 
 
 ## 🐛 Issues
