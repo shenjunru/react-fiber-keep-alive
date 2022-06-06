@@ -10,11 +10,12 @@ declare type PropRestore = {
     current: boolean;
 };
 export declare const FiberVisit: Readonly<{
-    Child: number;
-    Sibling: number;
-    Return: number;
-    Effect: number;
-    Break: number;
+    readonly Child: 1;
+    readonly Sibling: 2;
+    readonly Return: 4;
+    readonly Effect: 8;
+    readonly Break: 16;
+    readonly SiblingFirst: 32;
 }>;
 export declare const FiberTag: Readonly<{
     FunctionComponent: number;
