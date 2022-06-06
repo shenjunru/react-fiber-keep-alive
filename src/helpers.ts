@@ -79,11 +79,12 @@ const ProtectedFiberProps: Array<keyof Fiber> = [
 /* eslint-disable @typescript-eslint/indent */
 
 export const FiberVisit = Object.freeze(<const>{
-    Child:   0b000001,
-    Sibling: 0b000010,
-    Return:  0b000100,
-    Effect:  0b001000,
-    Break:   0b010000,
+    Child:        0b000001,
+    Sibling:      0b000010,
+    Return:       0b000100,
+    Effect:       0b001000,
+    Break:        0b010000,
+    SiblingFirst: 0b100000,
 });
 
 // v16: shared/ReactWorkTags.js
@@ -211,11 +212,22 @@ const pushVisitStack = (
     flags: number,
     callback: Nullable<void | (() => void)>,
 ) => {
-    if (scope !== fiber && flags === FiberVisit.Child) {
+    if (flags === FiberVisit.Return) {
+        fiber.return && stack.push(fiber.return);
+        return;
+    }
+    if (flags === FiberVisit.Effect) {
+        fiber.nextEffect && stack.push(fiber.nextEffect);
+        return;
+    }
+
+    if (scope !== fiber && (flags & ~FiberVisit.SiblingFirst) === FiberVisit.Child) {
         flags |= FiberVisit.Sibling;
     }
+
+    const siblingFirst = flags & FiberVisit.SiblingFirst;
     if (flags & FiberVisit.Sibling) {
-        fiber.sibling && stack.push(fiber.sibling);
+        siblingFirst || fiber.sibling && stack.push(fiber.sibling);
     }
     if (isFunction(callback)) {
         stack.push(callback);
@@ -223,11 +235,8 @@ const pushVisitStack = (
     if (flags & FiberVisit.Child) {
         fiber.child && stack.push(fiber.child);
     }
-    if (flags === FiberVisit.Return) {
-        fiber.return && stack.push(fiber.return);
-    }
-    if (flags === FiberVisit.Effect) {
-        fiber.nextEffect && stack.push(fiber.nextEffect);
+    if (flags & FiberVisit.Sibling) {
+        siblingFirst && fiber.sibling && stack.push(fiber.sibling);
     }
 };
 
@@ -299,7 +308,7 @@ export const findFibersByType = <T extends ComponentType<any>>(
 export const traverseFiber = (
     fiber: Nullable<Fiber>,
     visit: (fiber: Fiber) =>  Nullable<void | typeof FiberVisit.Break | (() => void)>,
-    flags = FiberVisit.Child,
+    flags: number = FiberVisit.Child,
 ) => {
     if (!fiber) {
         return;
@@ -596,17 +605,14 @@ export const appendFiberEffect = (
             fiber[FiberEffectProp] |= flags;
             fiber.nextEffect = null;
 
-            return () => {
-                if (FiberFlag.NoFlags === (fiber[FiberEffectProp] & FiberFlag.LifecycleEffectMask)) {
-                    return;
-                }
-
+            if (FiberFlag.NoFlags !== (fiber[FiberEffectProp] & FiberFlag.LifecycleEffectMask)) {
                 const nextEffect = effectFiber.nextEffect;
-
                 effectFiber.nextEffect = fiber;
                 fiber.nextEffect = nextEffect;
-            };
-        });
+            }
+
+            return null;
+        }, FiberVisit.Child | FiberVisit.SiblingFirst);
     }
 };
 
@@ -726,6 +732,7 @@ export const protectFiber = (fiber: Fiber) => {
             stack.unshift(false);
             return () => stack.shift();
         }
+        return null;
     });
 
     restore.current = false;
