@@ -289,13 +289,12 @@ export const findFiber = <T extends Fiber>(
     return null;
 };
 
-export const findFiberByType = <T extends ComponentType<any>>(
+export const findParentFiber = <T extends ComponentType<any>>(
     fiber: Nullable<Fiber>,
-    type: T,
-    flags?: number,
-): null | TypedFiber<T> => findFiber(fiber, (node) => {
-    return node.type === type;
-}, flags);
+    Component: T,
+): null | TypedFiber<T> => findFiber(fiber?.return, (node) => {
+    return node.elementType === Component;
+}, FiberVisit.Return);
 
 export const traverseFiber = (
     fiber: Nullable<Fiber>,

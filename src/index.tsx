@@ -13,21 +13,21 @@ import {
     markEffectHookIsOnetime,
     appendFiberEffect,
     findFiber,
-    findFiberByType,
+    findParentFiber,
     getRootFiber,
     protectFiber,
     replaceFiber,
-    FiberVisit,
 } from './helpers';
 
 function noop() {}
 
-const useIsomorphicLayoutEffect =
-  typeof window !== 'undefined' &&
-  typeof window.document !== 'undefined' &&
-  typeof window.document.createElement !== 'undefined'
-    ? useLayoutEffect
-    : useEffect
+const InBrowser = (
+    typeof window !== 'undefined' &&
+    typeof window.document !== 'undefined' &&
+    typeof window.document.createElement !== 'undefined'
+);
+
+const useIsomorphicLayoutEffect = InBrowser ? useLayoutEffect : useEffect;
 
 const enum Step {
     Finish = 0b0000,
@@ -35,7 +35,8 @@ const enum Step {
     Effect = 0b0010,
 }
 
-type KeepAliveState = [Step];
+type KeepAliveCache = [Fiber, { current: boolean }];
+type KeepAliveState = [Step, null | undefined | KeepAliveCache];
 type KeepAliveProps = {
     name: string;
     ignore?: boolean;
@@ -104,7 +105,6 @@ const KeepAliveManage: React.FC<KeepAliveProps> = (props) => {
     const context = useContext(KeepAliveContext);
     const cursor = useRef<KeepAliveCursor>(null);
     const ignore = useRef(true === props.ignore);
-    const [state, setState] = useState<KeepAliveState>([Step.Render]);
     const caches = useMemo((): Map<string, [Fiber, { current: boolean }]> => {
         const value = (context as any)?.[KeepAlivePropKey] || new Map();
         if (context) {
@@ -114,8 +114,11 @@ const KeepAliveManage: React.FC<KeepAliveProps> = (props) => {
     }, [context]);
 
     ignore.current = true === props.ignore;
-    const cache = ignore.current ? null : caches.get(name);
-    const [step] = state;
+
+    const [state, setState] = useState<KeepAliveState>(() => {
+        return [Step.Render, ignore.current ? null : caches.get(name)];
+    });
+    const [step, cache] = state;
 
     useIsomorphicLayoutEffect(() => () => {
         if (!context || ignore.current) {
@@ -129,8 +132,8 @@ const KeepAliveManage: React.FC<KeepAliveProps> = (props) => {
             return;
         }
 
-        if (findFiberByType(cursorFiber.return, KeepAliveRender, FiberVisit.Return)) {
-            // console.error('use <KeepAlive> recursively.');
+        const boundaryFiber = findParentFiber(cursorFiber, KeepAliveRender);
+        if (boundaryFiber) {
             return;
         }
 
@@ -146,8 +149,8 @@ const KeepAliveManage: React.FC<KeepAliveProps> = (props) => {
 
         if (!context || !name || !cache) {
             // console.log('[KEEP-ALIVE]', '[SKIP]', name);
-            name && caches.delete(name);
-            return setState([Step.Finish]);
+            name && ignore.current && caches.delete(name);
+            return setState([Step.Finish, cache]);
         }
 
         const rootFiber = getRootFiber(context);
@@ -155,7 +158,13 @@ const KeepAliveManage: React.FC<KeepAliveProps> = (props) => {
         const renderFiber = cursorFiber?.sibling?.sibling;
         if (!renderFiber || !renderFiber) {
             // console.log('[KEEP-ALIVE]', '[WAIT]', name);
-            return setState([Step.Render]);
+            return setState([Step.Render, cache]);
+        }
+
+        const boundaryFiber = findParentFiber(cursorFiber, KeepAliveRender);
+        if (boundaryFiber) {
+            // console.log('[KEEP-ALIVE]', '[PASS]', name);
+            return setState([Step.Finish, null]);
         }
 
         caches.delete(name);
@@ -164,13 +173,13 @@ const KeepAliveManage: React.FC<KeepAliveProps> = (props) => {
         const [cachedFiber, restore] = cache;
         replaceFiber(renderFiber, cachedFiber, restore);
 
-        return setState([Step.Effect]);
+        return setState([Step.Effect, null]);
     }, [context, state, name]);
 
     useEffect(() => {
         if (step === Step.Effect) {
             // console.log('[KEEP-ALIVE]', '[DONE]', name);
-            setState([Step.Finish]);
+            setState([Step.Finish, null]);
         }
     }, [context, state, name]);
 
@@ -192,7 +201,10 @@ export const KeepAlive = Object.assign(KeepAliveManage, {
 
 export function keepAlive<P>(
     Component: React.ComponentType<P>,
-    getProps: (props: P) => string | Omit<KeepAliveProps, 'children'>,
+    getProps: (props: P) => (
+        | (Omit<KeepAliveProps, 'children'> & { key?: React.Key })
+        | string
+    ),
 ): React.FC<P> {
     return (props) => {
         const value = getProps(props);
