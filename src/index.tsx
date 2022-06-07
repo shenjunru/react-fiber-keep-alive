@@ -38,6 +38,7 @@ const enum Step {
 type KeepAliveState = [Step];
 type KeepAliveProps = {
     name: string;
+    ignore?: boolean;
     children: React.ReactNode;
 };
 
@@ -102,6 +103,7 @@ const KeepAliveManage: React.FC<KeepAliveProps> = (props) => {
     const name = props.name;
     const context = useContext(KeepAliveContext);
     const cursor = useRef<KeepAliveCursor>(null);
+    const ignore = useRef(true === props.ignore);
     const [state, setState] = useState<KeepAliveState>([Step.Render]);
     const caches = useMemo((): Map<string, [Fiber, { current: boolean }]> => {
         const value = (context as any)?.[KeepAlivePropKey] || new Map();
@@ -111,11 +113,12 @@ const KeepAliveManage: React.FC<KeepAliveProps> = (props) => {
         return value;
     }, [context]);
 
+    ignore.current = true === props.ignore;
+    const cache = ignore.current ? null : caches.get(name);
     const [step] = state;
-    const cache = caches.get(name);
 
     useIsomorphicLayoutEffect(() => () => {
-        if (!context) {
+        if (!context || ignore.current) {
             return;
         }
 
@@ -143,6 +146,7 @@ const KeepAliveManage: React.FC<KeepAliveProps> = (props) => {
 
         if (!context || !name || !cache) {
             // console.log('[KEEP-ALIVE]', '[SKIP]', name);
+            name && caches.delete(name);
             return setState([Step.Finish]);
         }
 
