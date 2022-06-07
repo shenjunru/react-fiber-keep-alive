@@ -728,6 +728,7 @@ export const replaceFiber = (oldFiber: Fiber, newFiber: Fiber, restore: PropRest
 
         // unset effect hook destroy(), which is executed already
         traverseEffectHooks(fiber, (effect) => {
+            effect.tag &= ~ HookEffectTag.HasEffect;
             effect.destroy = undefined;
         });
 
