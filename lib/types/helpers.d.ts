@@ -52,7 +52,7 @@ export declare const HookEffectTag: Readonly<{
 export declare const getElementFiber: (element: Nullable<HTMLElement>, prefix?: string) => undefined | Fiber;
 export declare const getRootFiber: (container: Nullable<void | HTMLElement>) => undefined | Fiber;
 export declare const findFiber: <T extends Fiber>(fiber: Nullable<Fiber>, predicate: (fiber: Fiber) => boolean | FiberTraverseControl, flags?: number) => T | null;
-export declare const findFiberByType: <T extends ComponentType<any>>(fiber: Nullable<Fiber>, type: T, flags?: number | undefined) => TypedFiber<T> | null;
+export declare const findParentFiber: <T extends ComponentType<any>>(fiber: Nullable<Fiber>, Component: T) => TypedFiber<T> | null;
 export declare const traverseFiber: (fiber: Nullable<Fiber>, visit: (fiber: Fiber) => Nullable<void | FiberTraverseControl | (() => void)>, flags?: number) => void;
 export declare const appendFiberEffect: (rootFiber: Fiber, effectFiber: Fiber, renderFiber: Fiber, finishFiber: Fiber) => void;
 export declare const protectFiber: (fiber: Fiber) => PropRestore;
