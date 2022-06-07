@@ -94,9 +94,13 @@ const KeepAliveRender: React.FC<{
     <>{props.children}</>
 );
 
-const KeepAliveFinish: React.FC = () => {
-    useIsomorphicLayoutEffect(noop);
-    useEffect(noop);
+const KeepAliveFinish: React.FC<{
+    state: KeepAliveState;
+}> = (props) => {
+    const state = props.state;
+
+    useIsomorphicLayoutEffect(noop, [state]);
+    useEffect(noop, [state]);
 
     return null;
 };
@@ -136,11 +140,12 @@ const KeepAliveManage: React.FC<KeepAliveProps> = (props) => {
     });
     const [step, cache] = state;
 
+    const bypass = useRef(false);
     const ignore = useRef(true === props.ignore);
     ignore.current = true === props.ignore;
 
     useIsomorphicLayoutEffect(() => () => {
-        if (!context || !readKey || ignore.current) {
+        if (!context || !readKey || ignore.current || bypass.current) {
             return;
         }
 
@@ -182,6 +187,7 @@ const KeepAliveManage: React.FC<KeepAliveProps> = (props) => {
         const boundaryFiber = findParentFiber(cursorFiber, KeepAliveRender);
         if (boundaryFiber) {
             // console.log('[KEEP-ALIVE]', '[PASS]', name);
+            bypass.current = true;
             return setState([Step.Finish, null]);
         }
 
@@ -206,7 +212,7 @@ const KeepAliveManage: React.FC<KeepAliveProps> = (props) => {
             <KeepAliveRender>
                 {null != cache ? null : props.children}
             </KeepAliveRender>
-            <KeepAliveFinish />
+            <KeepAliveFinish state={state} />
         </>
     );
 };
