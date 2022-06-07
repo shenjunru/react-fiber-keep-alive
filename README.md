@@ -117,9 +117,6 @@ ReactDOM.render((
 - Recursive `<KeepAlive>` handled by top level `<KeepAlive>`.
 - If the `container` changed in `ReactDOM.createPortal(children, container)`.
   - All saved sub tree state will be lost.
-- To avoid react reuse same `<KeepAlive>` sub tree.
-  - Provides **different** value of "key" prop on `<KeepAlive>`.
-  - Example: navigate to the same keep-alive wrapped page.
 
 
 ## 🏁 Tested
