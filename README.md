@@ -1,8 +1,11 @@
 # Keep-Alive for `React DOM`
 
-[![npm](https://img.shields.io/npm/v/react-fiber-keep-alive.svg?style=flat-square)](http://npm.im/react-fiber-keep-alive)
-[![React: Tools](https://img.shields.io/badge/React-Tools-26C9FF?style=flat-square&logo=react)](http://npm.im/react-fiber-keep-alive)
-[![Types: Typescript](https://img.shields.io/badge/Types-Typescript-red?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
+[![npm](https://img.shields.io/npm/v/react-fiber-keep-alive.svg?style=for-the-badge)](http://npm.im/react-fiber-keep-alive)
+[![downloads](https://img.shields.io/npm/dm/react-fiber-keep-alive.svg?style=for-the-badge)](https://www.npmjs.com/package/react-fiber-keep-alive)
+[![typescript](https://img.shields.io/badge/language-typescript-blue?style=for-the-badge)](https://www.typescriptlang.org/)
+[![LICENSE](https://img.shields.io/npm/l/react-fiber-keep-alive.svg?style=for-the-badge)](https://github.com/shenjunru/react-fiber-keep-alive/blob/main/LICENSE)
+
+`<KeepAlive>` is a component that maintains component state and avoids repeated re-rendering.
 
 
 ## ✨ Features
@@ -29,7 +32,6 @@ npm install --save react-fiber-keep-alive
 import React from 'react';
 import ReactDOM from 'react-dom';
 import KeepAlive from 'react-fiber-keep-alive';
-import Test from './views/Test';
 
 const root = document.getElementById('root');
 
@@ -53,19 +55,31 @@ ReactDOM.render((
   - Must be the root container of `render()`.
   - If not provided, `keep-alive` will be disabled.
 
-- Wrap your component with `keepLive()`
-    ```JavaScript
-    const NewComponent = keepAlive(YourComponent, (props) => {
-        // you can use react hooks here
-        return `unique-key`;
-    });
-    ```
-
 - Wrap your component with `<KeepAlive>`
     ```JSX
     <KeepAlive name="unique-key">
         <YourComponent />
     </KeepAlive>
+    ```
+    - prop "name" is a required unique string used to identify the cache.
+    - prop "ignore" is a optional boolean used to bypass and clear the cache.
+
+- Wrap your component with `keepLive()`
+    ```JavaScript
+    const NewComponent = keepAlive(YourComponent, (props) => {
+        // props: the income props for `<YourComponent>`
+        
+        // you can use react hooks here
+
+        return `unique-key`;
+
+        // or
+
+        return {
+            name: `unique-key`,
+            // other props for `<KeepAlive>`
+        };
+    });
     ```
 
 - If the `render()` of class component has side effects.
@@ -75,7 +89,7 @@ ReactDOM.render((
     // Example:
     class Test extends React.Component {
         render() {
-            // emit event here.
+            // side effect here, ex: emit event here.
             return null;
         }
     }
@@ -96,14 +110,16 @@ ReactDOM.render((
     ```
 
 
-## 💡 Be careful
+## 💡 Tips
 
-- The global side effects. (ex: insert global style)
+- Be careful the global side effects. (ex: insert global style)
 - Do not use `<KeepAlive>` under the `<React.StrictMode>`.
-- If use `<KeepAlive>` recursively.
-  - It handled by top level `<KeepAlive>`.
+- Recursive `<KeepAlive>` handled by top level `<KeepAlive>`.
 - If the `container` changed in `ReactDOM.createPortal(children, container)`.
   - All saved sub tree state will be lost.
+- To avoid react reuse same `<KeepAlive>` sub tree.
+  - Provides **different** value of "key" prop on `<KeepAlive>`.
+  - Example: navigate to the same keep-alive wrapped page.
 
 
 ## 🏁 Tested
