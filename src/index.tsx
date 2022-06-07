@@ -36,7 +36,7 @@ const enum Step {
 }
 
 type KeepAliveCache = [Fiber, { current: boolean }];
-type KeepAliveState = [Step, null | undefined | KeepAliveCache];
+type KeepAliveState = [Step, null | KeepAliveCache];
 type KeepAliveProps = {
     name: string;
     ignore?: boolean;
@@ -44,7 +44,8 @@ type KeepAliveProps = {
 };
 
 const randomKey = Math.random().toString(36).slice(2);
-const KeepAlivePropKey = '__keepAlive$' + randomKey;
+const CachesPropKey = '__keepAliveCaches$' + randomKey;
+const MapperPropKey = '__keepAliveMapper$' + randomKey;
 const KeepAliveContext = createContext<null | HTMLElement>(null);
 
 class KeepAliveCursor extends React.Component {
@@ -79,10 +80,10 @@ const KeepAliveEffect: React.FC<{
         if (rootFiber && effectFiber && renderFiber && finishFiber) {
             appendFiberEffect(rootFiber, effectFiber, renderFiber, finishFiber);
         }
-    }, [context, state]);
+    }, [state]);
 
     // fake passive effect
-    useEffect(noop, [context, state]);
+    useEffect(noop, [state]);
 
     return null;
 };
@@ -101,27 +102,45 @@ const KeepAliveFinish: React.FC = () => {
 };
 
 const KeepAliveManage: React.FC<KeepAliveProps> = (props) => {
-    const name = props.name;
     const context = useContext(KeepAliveContext);
     const cursor = useRef<KeepAliveCursor>(null);
-    const ignore = useRef(true === props.ignore);
-    const caches = useMemo((): Map<string, [Fiber, { current: boolean }]> => {
-        const value = (context as any)?.[KeepAlivePropKey] || new Map();
+    const caches = useMemo((): Map<string, KeepAliveCache> => {
+        const value = (context as any)?.[CachesPropKey] || new Map();
         if (context) {
-            (context as any)[KeepAlivePropKey] = value;
+            (context as any)[CachesPropKey] = value;
         }
         return value;
-    }, [context]);
+    }, []);
+    const mapper = useMemo((): Map<string, string> => {
+        const value = (context as any)?.[MapperPropKey] || new Map();
+        if (context) {
+            (context as any)[MapperPropKey] = value;
+        }
+        return value;
+    }, []);
 
-    ignore.current = true === props.ignore;
+    const readKey = useMemo(() => mapper.get(props.name) || props.name, []);
+    props.name && mapper.set(props.name, readKey);
 
     const [state, setState] = useState<KeepAliveState>(() => {
-        return [Step.Render, ignore.current ? null : caches.get(name)];
+        const _cache = caches.get(readKey);
+        caches.delete(readKey);
+
+        props.ignore && mapper.forEach((value, key) => {
+            if (value === readKey) {
+                mapper.delete(key);
+            }
+        });
+
+        return props.ignore ? [Step.Finish, null] : [Step.Render, _cache || null];
     });
     const [step, cache] = state;
 
+    const ignore = useRef(true === props.ignore);
+    ignore.current = true === props.ignore;
+
     useIsomorphicLayoutEffect(() => () => {
-        if (!context || ignore.current) {
+        if (!context || !readKey || ignore.current) {
             return;
         }
 
@@ -139,17 +158,16 @@ const KeepAliveManage: React.FC<KeepAliveProps> = (props) => {
 
         // console.log('[KEEP-ALIVE]', '[SAVE]', name, renderFiber);
         const restore = protectFiber(renderFiber);
-        caches.set(name, [renderFiber, restore]);
-    }, [context, name]);
+        caches.set(readKey, [renderFiber, restore]);
+    }, []);
 
     useEffect(() => {
         if (step !== Step.Render) {
             return;
         }
 
-        if (!context || !name || !cache) {
+        if (!context || !readKey || !cache) {
             // console.log('[KEEP-ALIVE]', '[SKIP]', name);
-            name && ignore.current && caches.delete(name);
             return setState([Step.Finish, cache]);
         }
 
@@ -167,26 +185,24 @@ const KeepAliveManage: React.FC<KeepAliveProps> = (props) => {
             return setState([Step.Finish, null]);
         }
 
-        caches.delete(name);
-        // console.log('[KEEP-ALIVE]', '[SWAP]', name);
-
         const [cachedFiber, restore] = cache;
+        // console.log('[KEEP-ALIVE]', '[SWAP]', name);
         replaceFiber(renderFiber, cachedFiber, restore);
 
         return setState([Step.Effect, null]);
-    }, [context, state, name]);
+    }, [state]);
 
     useEffect(() => {
         if (step === Step.Effect) {
             // console.log('[KEEP-ALIVE]', '[DONE]', name);
             setState([Step.Finish, null]);
         }
-    }, [context, state, name]);
+    }, [state]);
 
     return (
         <>
             <KeepAliveCursor ref={cursor} />
-            <KeepAliveEffect cursor={cursor} name={name} state={state} />
+            <KeepAliveEffect cursor={cursor} name={readKey} state={state} />
             <KeepAliveRender>
                 {null != cache ? null : props.children}
             </KeepAliveRender>
