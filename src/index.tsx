@@ -48,6 +48,24 @@ const CachesPropKey = '__keepAliveCaches$' + randomKey;
 const MapperPropKey = '__keepAliveMapper$' + randomKey;
 const KeepAliveContext = createContext<null | HTMLElement>(null);
 
+const KeepAliveProvider: React.FC<{
+    children: React.ReactNode;
+    value: null | HTMLElement;
+}> = (props) => {
+    const value = props.value;
+
+    useEffect(() => () => {
+        if (value) {
+            delete (value as any)[CachesPropKey];
+            delete (value as any)[MapperPropKey];
+        }
+    }, [value]);
+
+    return (
+        <KeepAliveContext.Provider {...props} />
+    );
+};
+
 class KeepAliveCursor extends React.Component {
     public render() {
         return null;
@@ -218,7 +236,7 @@ const KeepAliveManage: React.FC<KeepAliveProps> = (props) => {
 };
 
 export const KeepAlive = Object.assign(KeepAliveManage, {
-    Provider: KeepAliveContext.Provider,
+    Provider: KeepAliveProvider,
 });
 
 export function keepAlive<P>(
