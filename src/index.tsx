@@ -1,6 +1,7 @@
 import type { Fiber } from 'react-reconciler';
 import React, {
     createContext,
+    useCallback,
     useContext,
     useEffect,
     useLayoutEffect,
@@ -35,31 +36,38 @@ const enum Step {
     Effect = 0b0010,
 }
 
+const randomKey = Math.random().toString(36).slice(2);
+const CachesPropKey: unique symbol = ('__keepAliveCaches$' + randomKey) as any;
+const MapperPropKey: unique symbol = ('__keepAliveMapper$' + randomKey) as any;
+
 type KeepAliveCache = [Fiber, { current: boolean }];
 type KeepAliveState = [Step, null | KeepAliveCache];
+
 type KeepAliveProps = {
     name: string;
     ignore?: boolean;
     children: React.ReactNode;
 };
 
-const randomKey = Math.random().toString(36).slice(2);
-const CachesPropKey = '__keepAliveCaches$' + randomKey;
-const MapperPropKey = '__keepAliveMapper$' + randomKey;
+type RootContainer = null | (HTMLElement & {
+    [CachesPropKey]?: Map<string, KeepAliveCache>,
+    [MapperPropKey]?: Map<string, string>,
+});
+
 const KeepAliveContext = createContext<null | HTMLElement>(null);
 
 const KeepAliveProvider: React.FC<{
     children: React.ReactNode;
     value: null | HTMLElement;
 }> = (props) => {
-    const value = props.value;
+    const context: RootContainer = props.value as any;
 
     useEffect(() => () => {
-        if (value) {
-            delete (value as any)[CachesPropKey];
-            delete (value as any)[MapperPropKey];
+        if (context) {
+            delete context[CachesPropKey];
+            delete context[MapperPropKey];
         }
-    }, [value]);
+    }, [context]);
 
     return (
         <KeepAliveContext.Provider {...props} />
@@ -124,19 +132,19 @@ const KeepAliveFinish: React.FC<{
 };
 
 const KeepAliveManage: React.FC<KeepAliveProps> = (props) => {
-    const context = useContext(KeepAliveContext);
+    const context: RootContainer = useContext(KeepAliveContext) as any;
     const cursor = useRef<KeepAliveCursor>(null);
     const caches = useMemo((): Map<string, KeepAliveCache> => {
-        const value = (context as any)?.[CachesPropKey] || new Map();
+        const value = context?.[CachesPropKey] || new Map();
         if (context) {
-            (context as any)[CachesPropKey] = value;
+            context[CachesPropKey] = value;
         }
         return value;
     }, []);
     const mapper = useMemo((): Map<string, string> => {
-        const value = (context as any)?.[MapperPropKey] || new Map();
+        const value = context?.[MapperPropKey] || new Map();
         if (context) {
-            (context as any)[MapperPropKey] = value;
+            context[MapperPropKey] = value;
         }
         return value;
     }, []);
@@ -256,6 +264,22 @@ export function keepAlive<P>(
         );
     };
 }
+
+export const useIgnoreKeepAlive = () => {
+    const context: RootContainer = useContext(KeepAliveContext) as any;
+
+    return useCallback((name: string) => {
+        const caches = context?.[CachesPropKey];
+        const mapper = context?.[MapperPropKey];
+        const readKey = mapper?.get(name);
+        readKey && caches?.delete(readKey);
+        readKey && mapper?.forEach((value, key) => {
+            if (value === readKey) {
+                mapper.delete(key);
+            }
+        });
+    }, [context]);
+};
 
 export {
     markClassComponentHasSideEffectRender,
