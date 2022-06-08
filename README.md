@@ -66,6 +66,8 @@ ReactDOM.render((
 
 - Wrap your component with `keepLive()`
     ```JavaScript
+    import { keepAlive } from 'react-fiber-keep-alive';
+
     const NewComponent = keepAlive(YourComponent, (props) => {
         // props: the income props for `<YourComponent>`
         
@@ -82,8 +84,19 @@ ReactDOM.render((
     });
     ```
 
+- Hook: `useIgnoreKeepAlive()` returns a cache cleaner function.
+    ```JavaScript
+    import { useIgnoreKeepAlive } from 'react-fiber-keep-alive';
+    
+    const ignoreCache = useIgnoreKeepAlive();
+
+    ignoreCache(`unique-key`);
+    ```
+
 - If the `render()` of class component has side effects.
     ```JavaScript
+    import { markClassComponentHasSideEffectRender } from 'react-fiber-keep-alive';
+
     markClassComponentHasSideEffectRender(ClassComponent);
 
     // Example:
@@ -98,6 +111,8 @@ ReactDOM.render((
 
 - If no need to trigger the effect hook while remounting.
     ```JavaScript
+    import { markEffectHookIsOnetime } from 'react-fiber-keep-alive';
+
     markEffectHookIsOnetime(effectHook);
 
     // Example:
