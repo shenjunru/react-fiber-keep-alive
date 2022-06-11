@@ -1,0 +1,14 @@
+{
+  "version": "0.0.0",
+  "private": true,
+  "devDependencies": {
+    "@types/react": "16.14.26",
+    "@types/react-dom": "16.9.16",
+    "react": "16.13.1",
+    "react-dom": "16.13.1"
+  },
+  "jest": {
+    "preset": "../jest.config",
+    "rootDir": "."
+  }
+}

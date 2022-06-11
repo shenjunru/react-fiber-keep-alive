@@ -1,0 +1,27 @@
+{
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "setup:16": "yarn --cwd react-16 install --check-files",
+    "setup:17": "yarn --cwd react-17 install --check-files",
+    "setup:18": "yarn --cwd react-18 install --check-files",
+    "setup": "yarn install --check-files && yarn setup:16 && yarn setup:17 && yarn setup:18",
+    "test:16": "jest --rootDir react-16 --detectOpenHandles --forceExit",
+    "test:17": "jest --rootDir react-17 --detectOpenHandles --forceExit",
+    "test:18": "jest --rootDir react-18 --detectOpenHandles --forceExit",
+    "test": "yarn test:16 && yarn test:17 && yarn test:18"
+  },
+  "devDependencies": {
+    "@testing-library/dom": "8.13.0",
+    "@testing-library/jest-dom": "5.16.4",
+    "@testing-library/react": "13.3.0",
+    "@types/jest": "28.1.1",
+    "@types/jsdom": "16.2.14",
+    "@types/react-reconciler": "0.26.6",
+    "jest": "28.1.1",
+    "jest-environment-jsdom": "28.1.1",
+    "jsdom": "19.0.0",
+    "ts-jest": "28.0.4",
+    "typescript": "../node_modules/typescript"
+  }
+}

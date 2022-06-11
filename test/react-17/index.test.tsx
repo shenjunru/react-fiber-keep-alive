@@ -1,0 +1,1 @@
+../react-16/index.test.tsx

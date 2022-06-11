@@ -1,0 +1,17 @@
+{
+  "extends": "../../tsconfig",
+  "compilerOptions": {
+    "preserveSymlinks": true,
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": "..",
+    "rootDir": "..",
+    "typeRoots": [
+      "node_modules/@types",
+      "../node_modules/@types",
+    ],
+    "types": ["jest", "jsdom", "node"],
+    "paths": {
+      "@shared/*": ["./shared/*"],
+    },
+  },
+}
