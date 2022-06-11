@@ -5,6 +5,9 @@
     "emitDeclarationOnly": true,
     "module": "esnext",
     "target": "esnext",
+    "baseUrl": "./src",
+    "rootDir": "./src",
     "outDir": "./lib/types"
-  }
+  },
+  "include": ["src"]
 }

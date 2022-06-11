@@ -3,6 +3,9 @@
   "compilerOptions": {
     "module": "esnext",
     "target": "esnext",
+    "baseUrl": "./src",
+    "rootDir": "./src",
     "outDir": "./lib/esm"
-  }
+  },
+  "include": ["src"]
 }

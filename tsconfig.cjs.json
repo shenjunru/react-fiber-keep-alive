@@ -3,6 +3,9 @@
   "compilerOptions": {
     "module": "commonjs",
     "target": "es6",
+    "baseUrl": "./src",
+    "rootDir": "./src",
     "outDir": "./lib/cjs"
-  }
+  },
+  "include": ["src"]
 }
