@@ -1,14 +1,5 @@
 import type { Fiber } from 'react-reconciler';
-import React, {
-    createContext,
-    useCallback,
-    useContext,
-    useEffect,
-    useLayoutEffect,
-    useMemo,
-    useRef,
-    useState,
-} from 'react';
+import * as React from 'react';
 import {
     markClassComponentHasSideEffectRender,
     markEffectHookIsOnetime,
@@ -28,7 +19,7 @@ const InBrowser = (
     typeof window.document.createElement !== 'undefined'
 );
 
-const useIsomorphicLayoutEffect = InBrowser ? useLayoutEffect : useEffect;
+const useIsomorphicLayoutEffect = InBrowser ? React.useLayoutEffect : React.useEffect;
 
 const enum Step {
     Finish = 0b0000,
@@ -54,7 +45,7 @@ type RootContainer = null | (HTMLElement & {
     [MapperPropKey]?: Map<string, string>,
 });
 
-const KeepAliveContext = createContext<null | HTMLElement>(null);
+const KeepAliveContext = React.createContext<null | HTMLElement>(null);
 
 const KeepAliveProvider: React.FC<{
     children: React.ReactNode;
@@ -62,7 +53,7 @@ const KeepAliveProvider: React.FC<{
 }> = (props) => {
     const context: RootContainer = props.value as any;
 
-    useEffect(() => () => {
+    React.useEffect(() => () => {
         if (context) {
             delete context[CachesPropKey];
             delete context[MapperPropKey];
@@ -85,7 +76,7 @@ const KeepAliveEffect: React.FC<{
     state: KeepAliveState;
     name: string;
 }> = (props) => {
-    const context = useContext(KeepAliveContext);
+    const context = React.useContext(KeepAliveContext);
     const cursor = props.cursor;
     const state = props.state;
     const [step] = state;
@@ -109,7 +100,7 @@ const KeepAliveEffect: React.FC<{
     }, [state]);
 
     // fake passive effect
-    useEffect(noop, [state]);
+    React.useEffect(noop, [state]);
 
     return null;
 };
@@ -126,22 +117,22 @@ const KeepAliveFinish: React.FC<{
     const state = props.state;
 
     useIsomorphicLayoutEffect(noop, [state]);
-    useEffect(noop, [state]);
+    React.useEffect(noop, [state]);
 
     return null;
 };
 
 const KeepAliveManage: React.FC<KeepAliveProps> = (props) => {
-    const context: RootContainer = useContext(KeepAliveContext) as any;
-    const cursor = useRef<KeepAliveCursor>(null);
-    const caches = useMemo((): Map<string, KeepAliveCache> => {
+    const context: RootContainer = React.useContext(KeepAliveContext) as any;
+    const cursor = React.useRef<KeepAliveCursor>(null);
+    const caches = React.useMemo((): Map<string, KeepAliveCache> => {
         const value = context?.[CachesPropKey] || new Map();
         if (context) {
             context[CachesPropKey] = value;
         }
         return value;
     }, []);
-    const mapper = useMemo((): Map<string, string> => {
+    const mapper = React.useMemo((): Map<string, string> => {
         const value = context?.[MapperPropKey] || new Map();
         if (context) {
             context[MapperPropKey] = value;
@@ -149,10 +140,10 @@ const KeepAliveManage: React.FC<KeepAliveProps> = (props) => {
         return value;
     }, []);
 
-    const readKey = useMemo(() => mapper.get(props.name) || props.name, []);
+    const readKey = React.useMemo(() => mapper.get(props.name) || props.name, []);
     props.name && mapper.set(props.name, readKey);
 
-    const [state, setState] = useState<KeepAliveState>(() => {
+    const [state, setState] = React.useState<KeepAliveState>(() => {
         const _cache = caches.get(readKey);
         caches.delete(readKey);
 
@@ -166,8 +157,8 @@ const KeepAliveManage: React.FC<KeepAliveProps> = (props) => {
     });
     const [step, cache] = state;
 
-    const bypass = useRef(false);
-    const ignore = useRef(true === props.ignore);
+    const bypass = React.useRef(false);
+    const ignore = React.useRef(true === props.ignore);
     ignore.current = true === props.ignore;
 
     useIsomorphicLayoutEffect(() => () => {
@@ -192,7 +183,7 @@ const KeepAliveManage: React.FC<KeepAliveProps> = (props) => {
         caches.set(readKey, [renderFiber, restore]);
     }, []);
 
-    useEffect(() => {
+    React.useEffect(() => {
         if (step !== Step.Render) {
             return;
         }
@@ -224,7 +215,7 @@ const KeepAliveManage: React.FC<KeepAliveProps> = (props) => {
         return setState([Step.Effect, null]);
     }, [state]);
 
-    useEffect(() => {
+    React.useEffect(() => {
         if (step === Step.Effect) {
             // console.log('[KEEP-ALIVE]', '[DONE]', name);
             setState([Step.Finish, null]);
@@ -266,9 +257,9 @@ export function keepAlive<P>(
 }
 
 export const useIgnoreKeepAlive = () => {
-    const context: RootContainer = useContext(KeepAliveContext) as any;
+    const context: RootContainer = React.useContext(KeepAliveContext) as any;
 
-    return useCallback((name: string) => {
+    return React.useCallback((name: string) => {
         const caches = context?.[CachesPropKey];
         const mapper = context?.[MapperPropKey];
         const readKey = mapper?.get(name);
