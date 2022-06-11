@@ -175,8 +175,8 @@ ReactDOM.render((
 - [x] `ReactDOM.createPortal(children, container)`
 - [x] `React.memo()`
 - [x] `React.forwardRef()`
-- [ ] `React.lazy()`
-- [ ] `<Suspense>`
+- [x] `React.lazy()`
+- [x] `<Suspense>`
 - [ ] `<Offscreen>` (since v18)
 
 
