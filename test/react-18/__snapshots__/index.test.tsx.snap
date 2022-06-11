@@ -1,0 +1,2250 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`react-18.1.0: #1 KeepA render() 1`] = `
+Array [
+  Array [
+    "[A-ForwardRef] create - useMemo()",
+  ],
+  Array [
+    "[A-CounterCX] getDerivedStateFromProps()",
+    0,
+  ],
+  Array [
+    "[A-CounterCX] render()",
+    0,
+  ],
+  Array [
+    "[A-CounterFN] render()",
+  ],
+  Array [
+    "[A-CounterFN] create - useState()",
+  ],
+  Array [
+    "[A-CounterFN] useMemo()",
+  ],
+  Array [
+    "[A-CounterFN] useMemo(count)",
+    0,
+  ],
+  Array [
+    "[A-MemoCounterFN] render()",
+  ],
+  Array [
+    "[A-MemoCounterFN] create - useState()",
+  ],
+  Array [
+    "[A-MemoCounterFN] useMemo()",
+  ],
+  Array [
+    "[A-MemoCounterFN] useMemo(count)",
+    0,
+  ],
+  Array [
+    "[A-LazyCounterCX-Fallback] create - useMemo()",
+  ],
+  Array [
+    "[A-LazyCounterFN-Fallback] create - useMemo()",
+  ],
+  Array [
+    "[A-ForwardRef] create - useLayoutEffect()",
+  ],
+  Array [
+    "[A-CounterCX] componentDidMount()",
+    0,
+  ],
+  Array [
+    "[A-CounterFN] useImperativeHandle()",
+    0,
+  ],
+  Array [
+    "[A-CounterFN] useCallback()",
+    0,
+  ],
+  Array [
+    "[A-CounterFN] create - useLayoutEffect()",
+  ],
+  Array [
+    "[A-CounterFN] create - useLayoutEffect(count)",
+    0,
+  ],
+  Array [
+    "[A-CounterFN] create - onetime - useLayoutEffect(count)",
+    0,
+  ],
+  Array [
+    "[A-MemoCounterFN] useImperativeHandle()",
+    0,
+  ],
+  Array [
+    "[A-MemoCounterFN] useCallback()",
+    0,
+  ],
+  Array [
+    "[A-MemoCounterFN] create - useLayoutEffect()",
+  ],
+  Array [
+    "[A-MemoCounterFN] create - useLayoutEffect(count)",
+    0,
+  ],
+  Array [
+    "[A-MemoCounterFN] create - onetime - useLayoutEffect(count)",
+    0,
+  ],
+  Array [
+    "[A-LazyCounterCX-Fallback] create - useLayoutEffect()",
+  ],
+  Array [
+    "[A-LazyCounterFN-Fallback] create - useLayoutEffect()",
+  ],
+  Array [
+    "[A-ForwardRef] create - useEffect()",
+  ],
+  Array [
+    "[A-CounterFN] create - useEffect()",
+  ],
+  Array [
+    "[A-CounterFN] create - useEffect(count)",
+    0,
+  ],
+  Array [
+    "[A-CounterFN] create - onetime - useEffect(count)",
+    0,
+  ],
+  Array [
+    "[A-MemoCounterFN] create - useEffect()",
+  ],
+  Array [
+    "[A-MemoCounterFN] create - useEffect(count)",
+    0,
+  ],
+  Array [
+    "[A-MemoCounterFN] create - onetime - useEffect(count)",
+    0,
+  ],
+  Array [
+    "[A-LazyCounterCX-Fallback] create - useEffect()",
+  ],
+  Array [
+    "[A-LazyCounterFN-Fallback] create - useEffect()",
+  ],
+]
+`;
+
+exports[`react-18.1.0: #1 KeepB render() 1`] = `
+Array [
+  Array [
+    "[B-ForwardRef] create - useMemo()",
+  ],
+  Array [
+    "[B-CounterCX] getDerivedStateFromProps()",
+    0,
+  ],
+  Array [
+    "[B-CounterCX] render()",
+    0,
+  ],
+  Array [
+    "[B-CounterFN] render()",
+  ],
+  Array [
+    "[B-CounterFN] create - useState()",
+  ],
+  Array [
+    "[B-CounterFN] useMemo()",
+  ],
+  Array [
+    "[B-CounterFN] useMemo(count)",
+    0,
+  ],
+  Array [
+    "[B-MemoCounterFN] render()",
+  ],
+  Array [
+    "[B-MemoCounterFN] create - useState()",
+  ],
+  Array [
+    "[B-MemoCounterFN] useMemo()",
+  ],
+  Array [
+    "[B-MemoCounterFN] useMemo(count)",
+    0,
+  ],
+  Array [
+    "[B-LazyCounterCX-Fallback] create - useMemo()",
+  ],
+  Array [
+    "[B-LazyCounterFN-Fallback] create - useMemo()",
+  ],
+  Array [
+    "[B-ForwardRef] destroy - useLayoutEffect()",
+  ],
+  Array [
+    "[B-CounterCX] componentWillUnmount()",
+    0,
+  ],
+  Array [
+    "[B-CounterFN] destroy - useLayoutEffect()",
+  ],
+  Array [
+    "[B-CounterFN] destroy - useLayoutEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-CounterFN] destroy - onetime - useLayoutEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-MemoCounterFN] destroy - useLayoutEffect()",
+  ],
+  Array [
+    "[B-MemoCounterFN] destroy - useLayoutEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-MemoCounterFN] destroy - onetime - useLayoutEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-LazyCounterCX-Fallback] destroy - useLayoutEffect()",
+  ],
+  Array [
+    "[B-LazyCounterFN-Fallback] destroy - useLayoutEffect()",
+  ],
+  Array [
+    "[B-ForwardRef] create - useLayoutEffect()",
+  ],
+  Array [
+    "[B-CounterCX] componentDidMount()",
+    0,
+  ],
+  Array [
+    "[B-CounterFN] useImperativeHandle()",
+    0,
+  ],
+  Array [
+    "[B-CounterFN] useCallback()",
+    0,
+  ],
+  Array [
+    "[B-CounterFN] create - useLayoutEffect()",
+  ],
+  Array [
+    "[B-CounterFN] create - useLayoutEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-CounterFN] create - onetime - useLayoutEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-MemoCounterFN] useImperativeHandle()",
+    0,
+  ],
+  Array [
+    "[B-MemoCounterFN] useCallback()",
+    0,
+  ],
+  Array [
+    "[B-MemoCounterFN] create - useLayoutEffect()",
+  ],
+  Array [
+    "[B-MemoCounterFN] create - useLayoutEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-MemoCounterFN] create - onetime - useLayoutEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-LazyCounterCX-Fallback] create - useLayoutEffect()",
+  ],
+  Array [
+    "[B-LazyCounterFN-Fallback] create - useLayoutEffect()",
+  ],
+  Array [
+    "[B-ForwardRef] destroy - useEffect()",
+  ],
+  Array [
+    "[B-CounterFN] destroy - useEffect()",
+  ],
+  Array [
+    "[B-CounterFN] destroy - useEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-CounterFN] destroy - onetime - useEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-MemoCounterFN] destroy - useEffect()",
+  ],
+  Array [
+    "[B-MemoCounterFN] destroy - useEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-MemoCounterFN] destroy - onetime - useEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-LazyCounterCX-Fallback] destroy - useEffect()",
+  ],
+  Array [
+    "[B-LazyCounterFN-Fallback] destroy - useEffect()",
+  ],
+  Array [
+    "[B-ForwardRef] create - useEffect()",
+  ],
+  Array [
+    "[B-CounterFN] create - useEffect()",
+  ],
+  Array [
+    "[B-CounterFN] create - useEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-CounterFN] create - onetime - useEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-MemoCounterFN] create - useEffect()",
+  ],
+  Array [
+    "[B-MemoCounterFN] create - useEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-MemoCounterFN] create - onetime - useEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-LazyCounterCX-Fallback] create - useEffect()",
+  ],
+  Array [
+    "[B-LazyCounterFN-Fallback] create - useEffect()",
+  ],
+]
+`;
+
+exports[`react-18.1.0: #1 ListB render() 1`] = `
+Array [
+  Array [
+    "[B-ForwardRef] create - useMemo()",
+  ],
+  Array [
+    "[B-CounterCX] getDerivedStateFromProps()",
+    0,
+  ],
+  Array [
+    "[B-CounterCX] render()",
+    0,
+  ],
+  Array [
+    "[B-CounterFN] render()",
+  ],
+  Array [
+    "[B-CounterFN] create - useState()",
+  ],
+  Array [
+    "[B-CounterFN] useMemo()",
+  ],
+  Array [
+    "[B-CounterFN] useMemo(count)",
+    0,
+  ],
+  Array [
+    "[B-MemoCounterFN] render()",
+  ],
+  Array [
+    "[B-MemoCounterFN] create - useState()",
+  ],
+  Array [
+    "[B-MemoCounterFN] useMemo()",
+  ],
+  Array [
+    "[B-MemoCounterFN] useMemo(count)",
+    0,
+  ],
+  Array [
+    "[B-LazyCounterCX-Fallback] create - useMemo()",
+  ],
+  Array [
+    "[B-LazyCounterFN-Fallback] create - useMemo()",
+  ],
+  Array [
+    "[A-ForwardRef] destroy - useLayoutEffect()",
+  ],
+  Array [
+    "[A-CounterCX] componentWillUnmount()",
+    0,
+  ],
+  Array [
+    "[A-CounterFN] destroy - useLayoutEffect()",
+  ],
+  Array [
+    "[A-CounterFN] destroy - useLayoutEffect(count)",
+    0,
+  ],
+  Array [
+    "[A-CounterFN] destroy - onetime - useLayoutEffect(count)",
+    0,
+  ],
+  Array [
+    "[A-MemoCounterFN] destroy - useLayoutEffect()",
+  ],
+  Array [
+    "[A-MemoCounterFN] destroy - useLayoutEffect(count)",
+    0,
+  ],
+  Array [
+    "[A-MemoCounterFN] destroy - onetime - useLayoutEffect(count)",
+    0,
+  ],
+  Array [
+    "[A-LazyCounterCX-Fallback] destroy - useLayoutEffect()",
+  ],
+  Array [
+    "[A-LazyCounterFN-Fallback] destroy - useLayoutEffect()",
+  ],
+  Array [
+    "[B-ForwardRef] create - useLayoutEffect()",
+  ],
+  Array [
+    "[B-CounterCX] componentDidMount()",
+    0,
+  ],
+  Array [
+    "[B-CounterFN] useImperativeHandle()",
+    0,
+  ],
+  Array [
+    "[B-CounterFN] useCallback()",
+    0,
+  ],
+  Array [
+    "[B-CounterFN] create - useLayoutEffect()",
+  ],
+  Array [
+    "[B-CounterFN] create - useLayoutEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-CounterFN] create - onetime - useLayoutEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-MemoCounterFN] useImperativeHandle()",
+    0,
+  ],
+  Array [
+    "[B-MemoCounterFN] useCallback()",
+    0,
+  ],
+  Array [
+    "[B-MemoCounterFN] create - useLayoutEffect()",
+  ],
+  Array [
+    "[B-MemoCounterFN] create - useLayoutEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-MemoCounterFN] create - onetime - useLayoutEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-LazyCounterCX-Fallback] create - useLayoutEffect()",
+  ],
+  Array [
+    "[B-LazyCounterFN-Fallback] create - useLayoutEffect()",
+  ],
+  Array [
+    "[A-ForwardRef] destroy - useEffect()",
+  ],
+  Array [
+    "[A-CounterFN] destroy - useEffect()",
+  ],
+  Array [
+    "[A-CounterFN] destroy - useEffect(count)",
+    0,
+  ],
+  Array [
+    "[A-CounterFN] destroy - onetime - useEffect(count)",
+    0,
+  ],
+  Array [
+    "[A-MemoCounterFN] destroy - useEffect()",
+  ],
+  Array [
+    "[A-MemoCounterFN] destroy - useEffect(count)",
+    0,
+  ],
+  Array [
+    "[A-MemoCounterFN] destroy - onetime - useEffect(count)",
+    0,
+  ],
+  Array [
+    "[A-LazyCounterCX-Fallback] destroy - useEffect()",
+  ],
+  Array [
+    "[A-LazyCounterFN-Fallback] destroy - useEffect()",
+  ],
+  Array [
+    "[B-ForwardRef] create - useEffect()",
+  ],
+  Array [
+    "[B-CounterFN] create - useEffect()",
+  ],
+  Array [
+    "[B-CounterFN] create - useEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-CounterFN] create - onetime - useEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-MemoCounterFN] create - useEffect()",
+  ],
+  Array [
+    "[B-MemoCounterFN] create - useEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-MemoCounterFN] create - onetime - useEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-LazyCounterCX-Fallback] create - useEffect()",
+  ],
+  Array [
+    "[B-LazyCounterFN-Fallback] create - useEffect()",
+  ],
+]
+`;
+
+exports[`react-18.1.0: #2 KeepA render() 1`] = `
+Array [
+  Array [
+    "[B-ForwardRef] destroy - useLayoutEffect()",
+  ],
+  Array [
+    "[B-CounterCX] componentWillUnmount()",
+    0,
+  ],
+  Array [
+    "[B-CounterFN] destroy - useLayoutEffect()",
+  ],
+  Array [
+    "[B-CounterFN] destroy - useLayoutEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-CounterFN] destroy - onetime - useLayoutEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-MemoCounterFN] destroy - useLayoutEffect()",
+  ],
+  Array [
+    "[B-MemoCounterFN] destroy - useLayoutEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-MemoCounterFN] destroy - onetime - useLayoutEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-LazyCounterCX-Fallback] destroy - useLayoutEffect()",
+  ],
+  Array [
+    "[B-LazyCounterFN-Fallback] destroy - useLayoutEffect()",
+  ],
+  Array [
+    "[B-ForwardRef] destroy - useEffect()",
+  ],
+  Array [
+    "[B-CounterFN] destroy - useEffect()",
+  ],
+  Array [
+    "[B-CounterFN] destroy - useEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-CounterFN] destroy - onetime - useEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-MemoCounterFN] destroy - useEffect()",
+  ],
+  Array [
+    "[B-MemoCounterFN] destroy - useEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-MemoCounterFN] destroy - onetime - useEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-LazyCounterCX-Fallback] destroy - useEffect()",
+  ],
+  Array [
+    "[B-LazyCounterFN-Fallback] destroy - useEffect()",
+  ],
+  Array [
+    "[A-CounterCX] getDerivedStateFromProps()",
+    0,
+  ],
+  Array [
+    "[A-CounterFN] render()",
+  ],
+  Array [
+    "[A-ForwardRef] create - useLayoutEffect()",
+  ],
+  Array [
+    "[A-CounterCX] render()",
+    0,
+  ],
+  Array [
+    "[A-CounterCX] componentDidMount()",
+    0,
+  ],
+  Array [
+    "[A-CounterFN] useImperativeHandle()",
+    0,
+  ],
+  Array [
+    "[A-CounterFN] useCallback()",
+    0,
+  ],
+  Array [
+    "[A-CounterFN] create - useLayoutEffect()",
+  ],
+  Array [
+    "[A-CounterFN] create - useLayoutEffect(count)",
+    0,
+  ],
+  Array [
+    "[A-MemoCounterFN] useImperativeHandle()",
+    0,
+  ],
+  Array [
+    "[A-MemoCounterFN] useCallback()",
+    0,
+  ],
+  Array [
+    "[A-MemoCounterFN] create - useLayoutEffect()",
+  ],
+  Array [
+    "[A-MemoCounterFN] create - useLayoutEffect(count)",
+    0,
+  ],
+  Array [
+    "[A-LazyCounterCX-Fallback] create - useLayoutEffect()",
+  ],
+  Array [
+    "[A-LazyCounterFN-Fallback] create - useLayoutEffect()",
+  ],
+  Array [
+    "[A-ForwardRef] create - useEffect()",
+  ],
+  Array [
+    "[A-CounterFN] create - useEffect()",
+  ],
+  Array [
+    "[A-CounterFN] create - useEffect(count)",
+    0,
+  ],
+  Array [
+    "[A-MemoCounterFN] create - useEffect()",
+  ],
+  Array [
+    "[A-MemoCounterFN] create - useEffect(count)",
+    0,
+  ],
+  Array [
+    "[A-LazyCounterCX-Fallback] create - useEffect()",
+  ],
+  Array [
+    "[A-LazyCounterFN-Fallback] create - useEffect()",
+  ],
+]
+`;
+
+exports[`react-18.1.0: #2 KeepB render() 1`] = `
+Array [
+  Array [
+    "[B-ForwardRef] destroy - useLayoutEffect()",
+  ],
+  Array [
+    "[B-CounterCX] componentWillUnmount()",
+    1,
+  ],
+  Array [
+    "[B-CounterFN] destroy - useLayoutEffect()",
+  ],
+  Array [
+    "[B-CounterFN] destroy - useLayoutEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-CounterFN] destroy - onetime - useLayoutEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-MemoCounterFN] destroy - useLayoutEffect()",
+  ],
+  Array [
+    "[B-MemoCounterFN] destroy - useLayoutEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-MemoCounterFN] destroy - onetime - useLayoutEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-LazyCounterCX-Fallback] destroy - useLayoutEffect()",
+  ],
+  Array [
+    "[B-LazyCounterFN-Fallback] destroy - useLayoutEffect()",
+  ],
+  Array [
+    "[B-ForwardRef] destroy - useEffect()",
+  ],
+  Array [
+    "[B-CounterFN] destroy - useEffect()",
+  ],
+  Array [
+    "[B-CounterFN] destroy - useEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-CounterFN] destroy - onetime - useEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-MemoCounterFN] destroy - useEffect()",
+  ],
+  Array [
+    "[B-MemoCounterFN] destroy - useEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-MemoCounterFN] destroy - onetime - useEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-LazyCounterCX-Fallback] destroy - useEffect()",
+  ],
+  Array [
+    "[B-LazyCounterFN-Fallback] destroy - useEffect()",
+  ],
+  Array [
+    "[B-CounterCX] getDerivedStateFromProps()",
+    0,
+  ],
+  Array [
+    "[B-CounterFN] render()",
+  ],
+  Array [
+    "[B-ForwardRef] create - useLayoutEffect()",
+  ],
+  Array [
+    "[B-CounterCX] render()",
+    0,
+  ],
+  Array [
+    "[B-CounterCX] componentDidMount()",
+    0,
+  ],
+  Array [
+    "[B-CounterFN] useImperativeHandle()",
+    0,
+  ],
+  Array [
+    "[B-CounterFN] useCallback()",
+    0,
+  ],
+  Array [
+    "[B-CounterFN] create - useLayoutEffect()",
+  ],
+  Array [
+    "[B-CounterFN] create - useLayoutEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-MemoCounterFN] useImperativeHandle()",
+    0,
+  ],
+  Array [
+    "[B-MemoCounterFN] useCallback()",
+    0,
+  ],
+  Array [
+    "[B-MemoCounterFN] create - useLayoutEffect()",
+  ],
+  Array [
+    "[B-MemoCounterFN] create - useLayoutEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-LazyCounterCX-Fallback] create - useLayoutEffect()",
+  ],
+  Array [
+    "[B-LazyCounterFN-Fallback] create - useLayoutEffect()",
+  ],
+  Array [
+    "[B-ForwardRef] create - useEffect()",
+  ],
+  Array [
+    "[B-CounterFN] create - useEffect()",
+  ],
+  Array [
+    "[B-CounterFN] create - useEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-MemoCounterFN] create - useEffect()",
+  ],
+  Array [
+    "[B-MemoCounterFN] create - useEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-LazyCounterCX-Fallback] create - useEffect()",
+  ],
+  Array [
+    "[B-LazyCounterFN-Fallback] create - useEffect()",
+  ],
+]
+`;
+
+exports[`react-18.1.0: #2 ListB render() 1`] = `
+Array [
+  Array [
+    "[A-ForwardRef] destroy - useLayoutEffect()",
+  ],
+  Array [
+    "[A-CounterCX] componentWillUnmount()",
+    1,
+  ],
+  Array [
+    "[A-CounterFN] destroy - useLayoutEffect()",
+  ],
+  Array [
+    "[A-CounterFN] destroy - useLayoutEffect(count)",
+    1,
+  ],
+  Array [
+    "[A-CounterFN] destroy - onetime - useLayoutEffect(count)",
+    1,
+  ],
+  Array [
+    "[A-MemoCounterFN] destroy - useLayoutEffect()",
+  ],
+  Array [
+    "[A-MemoCounterFN] destroy - useLayoutEffect(count)",
+    1,
+  ],
+  Array [
+    "[A-MemoCounterFN] destroy - onetime - useLayoutEffect(count)",
+    1,
+  ],
+  Array [
+    "[A-LazyCounterCX-Fallback] destroy - useLayoutEffect()",
+  ],
+  Array [
+    "[A-LazyCounterFN-Fallback] destroy - useLayoutEffect()",
+  ],
+  Array [
+    "[A-ForwardRef] destroy - useEffect()",
+  ],
+  Array [
+    "[A-CounterFN] destroy - useEffect()",
+  ],
+  Array [
+    "[A-CounterFN] destroy - useEffect(count)",
+    1,
+  ],
+  Array [
+    "[A-CounterFN] destroy - onetime - useEffect(count)",
+    1,
+  ],
+  Array [
+    "[A-MemoCounterFN] destroy - useEffect()",
+  ],
+  Array [
+    "[A-MemoCounterFN] destroy - useEffect(count)",
+    1,
+  ],
+  Array [
+    "[A-MemoCounterFN] destroy - onetime - useEffect(count)",
+    1,
+  ],
+  Array [
+    "[A-LazyCounterCX-Fallback] destroy - useEffect()",
+  ],
+  Array [
+    "[A-LazyCounterFN-Fallback] destroy - useEffect()",
+  ],
+  Array [
+    "[B-CounterCX] getDerivedStateFromProps()",
+    0,
+  ],
+  Array [
+    "[B-CounterFN] render()",
+  ],
+  Array [
+    "[B-ForwardRef] create - useLayoutEffect()",
+  ],
+  Array [
+    "[B-CounterCX] render()",
+    0,
+  ],
+  Array [
+    "[B-CounterCX] componentDidMount()",
+    0,
+  ],
+  Array [
+    "[B-CounterFN] useImperativeHandle()",
+    0,
+  ],
+  Array [
+    "[B-CounterFN] useCallback()",
+    0,
+  ],
+  Array [
+    "[B-CounterFN] create - useLayoutEffect()",
+  ],
+  Array [
+    "[B-CounterFN] create - useLayoutEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-MemoCounterFN] useImperativeHandle()",
+    0,
+  ],
+  Array [
+    "[B-MemoCounterFN] useCallback()",
+    0,
+  ],
+  Array [
+    "[B-MemoCounterFN] create - useLayoutEffect()",
+  ],
+  Array [
+    "[B-MemoCounterFN] create - useLayoutEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-LazyCounterCX-Fallback] create - useLayoutEffect()",
+  ],
+  Array [
+    "[B-LazyCounterFN-Fallback] create - useLayoutEffect()",
+  ],
+  Array [
+    "[B-ForwardRef] create - useEffect()",
+  ],
+  Array [
+    "[B-CounterFN] create - useEffect()",
+  ],
+  Array [
+    "[B-CounterFN] create - useEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-MemoCounterFN] create - useEffect()",
+  ],
+  Array [
+    "[B-MemoCounterFN] create - useEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-LazyCounterCX-Fallback] create - useEffect()",
+  ],
+  Array [
+    "[B-LazyCounterFN-Fallback] create - useEffect()",
+  ],
+]
+`;
+
+exports[`react-18.1.0: #3 KeepA click() 1`] = `
+Array [
+  Array [
+    "[A-CounterCX] getDerivedStateFromProps()",
+    1,
+  ],
+  Array [
+    "[A-CounterCX] render()",
+    1,
+  ],
+  Array [
+    "[A-CounterFN] render()",
+  ],
+  Array [
+    "[A-CounterFN] useMemo(count)",
+    1,
+  ],
+  Array [
+    "[A-MemoCounterFN] render()",
+  ],
+  Array [
+    "[A-MemoCounterFN] useMemo(count)",
+    1,
+  ],
+  Array [
+    "[A-CounterCX] getSnapshotBeforeUpdate()",
+    1,
+  ],
+  Array [
+    "[A-CounterFN] destroy - useLayoutEffect(count)",
+    0,
+  ],
+  Array [
+    "[A-MemoCounterFN] destroy - useLayoutEffect(count)",
+    0,
+  ],
+  Array [
+    "[A-CounterCX] componentDidUpdate()",
+    1,
+  ],
+  Array [
+    "[A-CounterFN] useImperativeHandle()",
+    1,
+  ],
+  Array [
+    "[A-CounterFN] useCallback()",
+    1,
+  ],
+  Array [
+    "[A-CounterFN] create - useLayoutEffect(count)",
+    1,
+  ],
+  Array [
+    "[A-CounterFN] create - onetime - useLayoutEffect(count)",
+    1,
+  ],
+  Array [
+    "[A-MemoCounterFN] useImperativeHandle()",
+    1,
+  ],
+  Array [
+    "[A-MemoCounterFN] useCallback()",
+    1,
+  ],
+  Array [
+    "[A-MemoCounterFN] create - useLayoutEffect(count)",
+    1,
+  ],
+  Array [
+    "[A-MemoCounterFN] create - onetime - useLayoutEffect(count)",
+    1,
+  ],
+  Array [
+    "[A-CounterFN] destroy - useEffect(count)",
+    0,
+  ],
+  Array [
+    "[A-MemoCounterFN] destroy - useEffect(count)",
+    0,
+  ],
+  Array [
+    "[A-CounterFN] create - useEffect(count)",
+    1,
+  ],
+  Array [
+    "[A-CounterFN] create - onetime - useEffect(count)",
+    1,
+  ],
+  Array [
+    "[A-MemoCounterFN] create - useEffect(count)",
+    1,
+  ],
+  Array [
+    "[A-MemoCounterFN] create - onetime - useEffect(count)",
+    1,
+  ],
+]
+`;
+
+exports[`react-18.1.0: #3 KeepB click() 1`] = `
+Array [
+  Array [
+    "[B-CounterCX] getDerivedStateFromProps()",
+    1,
+  ],
+  Array [
+    "[B-CounterCX] render()",
+    1,
+  ],
+  Array [
+    "[B-CounterFN] render()",
+  ],
+  Array [
+    "[B-CounterFN] useMemo(count)",
+    1,
+  ],
+  Array [
+    "[B-MemoCounterFN] render()",
+  ],
+  Array [
+    "[B-MemoCounterFN] useMemo(count)",
+    1,
+  ],
+  Array [
+    "[B-CounterCX] getSnapshotBeforeUpdate()",
+    1,
+  ],
+  Array [
+    "[B-CounterFN] destroy - useLayoutEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-MemoCounterFN] destroy - useLayoutEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-CounterCX] componentDidUpdate()",
+    1,
+  ],
+  Array [
+    "[B-CounterFN] useImperativeHandle()",
+    1,
+  ],
+  Array [
+    "[B-CounterFN] useCallback()",
+    1,
+  ],
+  Array [
+    "[B-CounterFN] create - useLayoutEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-CounterFN] create - onetime - useLayoutEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-MemoCounterFN] useImperativeHandle()",
+    1,
+  ],
+  Array [
+    "[B-MemoCounterFN] useCallback()",
+    1,
+  ],
+  Array [
+    "[B-MemoCounterFN] create - useLayoutEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-MemoCounterFN] create - onetime - useLayoutEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-CounterFN] destroy - useEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-MemoCounterFN] destroy - useEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-CounterFN] create - useEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-CounterFN] create - onetime - useEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-MemoCounterFN] create - useEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-MemoCounterFN] create - onetime - useEffect(count)",
+    1,
+  ],
+]
+`;
+
+exports[`react-18.1.0: #3 ListB click() 1`] = `
+Array [
+  Array [
+    "[B-CounterCX] getDerivedStateFromProps()",
+    1,
+  ],
+  Array [
+    "[B-CounterCX] render()",
+    1,
+  ],
+  Array [
+    "[B-CounterFN] render()",
+  ],
+  Array [
+    "[B-CounterFN] useMemo(count)",
+    1,
+  ],
+  Array [
+    "[B-MemoCounterFN] render()",
+  ],
+  Array [
+    "[B-MemoCounterFN] useMemo(count)",
+    1,
+  ],
+  Array [
+    "[B-CounterCX] getSnapshotBeforeUpdate()",
+    1,
+  ],
+  Array [
+    "[B-CounterFN] destroy - useLayoutEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-MemoCounterFN] destroy - useLayoutEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-CounterCX] componentDidUpdate()",
+    1,
+  ],
+  Array [
+    "[B-CounterFN] useImperativeHandle()",
+    1,
+  ],
+  Array [
+    "[B-CounterFN] useCallback()",
+    1,
+  ],
+  Array [
+    "[B-CounterFN] create - useLayoutEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-CounterFN] create - onetime - useLayoutEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-MemoCounterFN] useImperativeHandle()",
+    1,
+  ],
+  Array [
+    "[B-MemoCounterFN] useCallback()",
+    1,
+  ],
+  Array [
+    "[B-MemoCounterFN] create - useLayoutEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-MemoCounterFN] create - onetime - useLayoutEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-CounterFN] destroy - useEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-MemoCounterFN] destroy - useEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-CounterFN] create - useEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-CounterFN] create - onetime - useEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-MemoCounterFN] create - useEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-MemoCounterFN] create - onetime - useEffect(count)",
+    1,
+  ],
+]
+`;
+
+exports[`react-18.1.0: #4 KeepA render() 1`] = `
+Array [
+  Array [
+    "[B-ForwardRef] destroy - useLayoutEffect()",
+  ],
+  Array [
+    "[B-CounterCX] componentWillUnmount()",
+    2,
+  ],
+  Array [
+    "[B-CounterFN] destroy - useLayoutEffect()",
+  ],
+  Array [
+    "[B-CounterFN] destroy - useLayoutEffect(count)",
+    2,
+  ],
+  Array [
+    "[B-CounterFN] destroy - onetime - useLayoutEffect(count)",
+    2,
+  ],
+  Array [
+    "[B-MemoCounterFN] destroy - useLayoutEffect()",
+  ],
+  Array [
+    "[B-MemoCounterFN] destroy - useLayoutEffect(count)",
+    2,
+  ],
+  Array [
+    "[B-MemoCounterFN] destroy - onetime - useLayoutEffect(count)",
+    2,
+  ],
+  Array [
+    "[B-LazyCounterCX] componentWillUnmount()",
+    1,
+  ],
+  Array [
+    "[B-LazyCounterFN] destroy - useLayoutEffect()",
+  ],
+  Array [
+    "[B-LazyCounterFN] destroy - useLayoutEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-LazyCounterFN] destroy - onetime - useLayoutEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-ForwardRef] destroy - useEffect()",
+  ],
+  Array [
+    "[B-CounterFN] destroy - useEffect()",
+  ],
+  Array [
+    "[B-CounterFN] destroy - useEffect(count)",
+    2,
+  ],
+  Array [
+    "[B-CounterFN] destroy - onetime - useEffect(count)",
+    2,
+  ],
+  Array [
+    "[B-MemoCounterFN] destroy - useEffect()",
+  ],
+  Array [
+    "[B-MemoCounterFN] destroy - useEffect(count)",
+    2,
+  ],
+  Array [
+    "[B-MemoCounterFN] destroy - onetime - useEffect(count)",
+    2,
+  ],
+  Array [
+    "[B-LazyCounterFN] destroy - useEffect()",
+  ],
+  Array [
+    "[B-LazyCounterFN] destroy - useEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-LazyCounterFN] destroy - onetime - useEffect(count)",
+    1,
+  ],
+  Array [
+    "[A-CounterCX] getDerivedStateFromProps()",
+    1,
+  ],
+  Array [
+    "[A-CounterFN] render()",
+  ],
+  Array [
+    "[A-LazyCounterCX] getDerivedStateFromProps()",
+    0,
+  ],
+  Array [
+    "[A-LazyCounterCX] render()",
+    0,
+  ],
+  Array [
+    "[A-LazyCounterFN] render()",
+  ],
+  Array [
+    "[A-LazyCounterFN] create - useState()",
+  ],
+  Array [
+    "[A-LazyCounterFN] useMemo()",
+  ],
+  Array [
+    "[A-LazyCounterFN] useMemo(count)",
+    0,
+  ],
+  Array [
+    "[A-ForwardRef] create - useLayoutEffect()",
+  ],
+  Array [
+    "[A-CounterCX] render()",
+    1,
+  ],
+  Array [
+    "[A-CounterCX] componentDidMount()",
+    1,
+  ],
+  Array [
+    "[A-CounterFN] useImperativeHandle()",
+    1,
+  ],
+  Array [
+    "[A-CounterFN] useCallback()",
+    1,
+  ],
+  Array [
+    "[A-CounterFN] create - useLayoutEffect()",
+  ],
+  Array [
+    "[A-CounterFN] create - useLayoutEffect(count)",
+    1,
+  ],
+  Array [
+    "[A-MemoCounterFN] useImperativeHandle()",
+    1,
+  ],
+  Array [
+    "[A-MemoCounterFN] useCallback()",
+    1,
+  ],
+  Array [
+    "[A-MemoCounterFN] create - useLayoutEffect()",
+  ],
+  Array [
+    "[A-MemoCounterFN] create - useLayoutEffect(count)",
+    1,
+  ],
+  Array [
+    "[A-LazyCounterCX] componentDidMount()",
+    0,
+  ],
+  Array [
+    "[A-LazyCounterFN] useImperativeHandle()",
+    0,
+  ],
+  Array [
+    "[A-LazyCounterFN] useCallback()",
+    0,
+  ],
+  Array [
+    "[A-LazyCounterFN] create - useLayoutEffect()",
+  ],
+  Array [
+    "[A-LazyCounterFN] create - useLayoutEffect(count)",
+    0,
+  ],
+  Array [
+    "[A-LazyCounterFN] create - onetime - useLayoutEffect(count)",
+    0,
+  ],
+  Array [
+    "[A-ForwardRef] create - useEffect()",
+  ],
+  Array [
+    "[A-CounterFN] create - useEffect()",
+  ],
+  Array [
+    "[A-CounterFN] create - useEffect(count)",
+    1,
+  ],
+  Array [
+    "[A-MemoCounterFN] create - useEffect()",
+  ],
+  Array [
+    "[A-MemoCounterFN] create - useEffect(count)",
+    1,
+  ],
+  Array [
+    "[A-LazyCounterFN] create - useEffect()",
+  ],
+  Array [
+    "[A-LazyCounterFN] create - useEffect(count)",
+    0,
+  ],
+  Array [
+    "[A-LazyCounterFN] create - onetime - useEffect(count)",
+    0,
+  ],
+]
+`;
+
+exports[`react-18.1.0: #4 KeepB render() 1`] = `
+Array [
+  Array [
+    "[B-LazyCounterCX] getDerivedStateFromProps()",
+    0,
+  ],
+  Array [
+    "[B-LazyCounterCX] render()",
+    0,
+  ],
+  Array [
+    "[B-LazyCounterFN] render()",
+  ],
+  Array [
+    "[B-LazyCounterFN] create - useState()",
+  ],
+  Array [
+    "[B-LazyCounterFN] useMemo()",
+  ],
+  Array [
+    "[B-LazyCounterFN] useMemo(count)",
+    0,
+  ],
+  Array [
+    "[B-LazyCounterCX-Fallback] destroy - useLayoutEffect()",
+  ],
+  Array [
+    "[B-LazyCounterFN-Fallback] destroy - useLayoutEffect()",
+  ],
+  Array [
+    "[B-LazyCounterCX] componentDidMount()",
+    0,
+  ],
+  Array [
+    "[B-LazyCounterFN] useImperativeHandle()",
+    0,
+  ],
+  Array [
+    "[B-LazyCounterFN] useCallback()",
+    0,
+  ],
+  Array [
+    "[B-LazyCounterFN] create - useLayoutEffect()",
+  ],
+  Array [
+    "[B-LazyCounterFN] create - useLayoutEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-LazyCounterFN] create - onetime - useLayoutEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-LazyCounterCX-Fallback] destroy - useEffect()",
+  ],
+  Array [
+    "[B-LazyCounterFN-Fallback] destroy - useEffect()",
+  ],
+  Array [
+    "[B-LazyCounterFN] create - useEffect()",
+  ],
+  Array [
+    "[B-LazyCounterFN] create - useEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-LazyCounterFN] create - onetime - useEffect(count)",
+    0,
+  ],
+]
+`;
+
+exports[`react-18.1.0: #4 ListB render() 1`] = `
+Array [
+  Array [
+    "[A-ForwardRef] destroy - useLayoutEffect()",
+  ],
+  Array [
+    "[A-CounterCX] componentWillUnmount()",
+    2,
+  ],
+  Array [
+    "[A-CounterFN] destroy - useLayoutEffect()",
+  ],
+  Array [
+    "[A-CounterFN] destroy - useLayoutEffect(count)",
+    2,
+  ],
+  Array [
+    "[A-CounterFN] destroy - onetime - useLayoutEffect(count)",
+    2,
+  ],
+  Array [
+    "[A-MemoCounterFN] destroy - useLayoutEffect()",
+  ],
+  Array [
+    "[A-MemoCounterFN] destroy - useLayoutEffect(count)",
+    2,
+  ],
+  Array [
+    "[A-MemoCounterFN] destroy - onetime - useLayoutEffect(count)",
+    2,
+  ],
+  Array [
+    "[A-LazyCounterCX] componentWillUnmount()",
+    1,
+  ],
+  Array [
+    "[A-LazyCounterFN] destroy - useLayoutEffect()",
+  ],
+  Array [
+    "[A-LazyCounterFN] destroy - useLayoutEffect(count)",
+    1,
+  ],
+  Array [
+    "[A-LazyCounterFN] destroy - onetime - useLayoutEffect(count)",
+    1,
+  ],
+  Array [
+    "[A-ForwardRef] destroy - useEffect()",
+  ],
+  Array [
+    "[A-CounterFN] destroy - useEffect()",
+  ],
+  Array [
+    "[A-CounterFN] destroy - useEffect(count)",
+    2,
+  ],
+  Array [
+    "[A-CounterFN] destroy - onetime - useEffect(count)",
+    2,
+  ],
+  Array [
+    "[A-MemoCounterFN] destroy - useEffect()",
+  ],
+  Array [
+    "[A-MemoCounterFN] destroy - useEffect(count)",
+    2,
+  ],
+  Array [
+    "[A-MemoCounterFN] destroy - onetime - useEffect(count)",
+    2,
+  ],
+  Array [
+    "[A-LazyCounterFN] destroy - useEffect()",
+  ],
+  Array [
+    "[A-LazyCounterFN] destroy - useEffect(count)",
+    1,
+  ],
+  Array [
+    "[A-LazyCounterFN] destroy - onetime - useEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-CounterCX] getDerivedStateFromProps()",
+    1,
+  ],
+  Array [
+    "[B-CounterFN] render()",
+  ],
+  Array [
+    "[B-LazyCounterCX] getDerivedStateFromProps()",
+    0,
+  ],
+  Array [
+    "[B-LazyCounterCX] render()",
+    0,
+  ],
+  Array [
+    "[B-LazyCounterFN] render()",
+  ],
+  Array [
+    "[B-LazyCounterFN] create - useState()",
+  ],
+  Array [
+    "[B-LazyCounterFN] useMemo()",
+  ],
+  Array [
+    "[B-LazyCounterFN] useMemo(count)",
+    0,
+  ],
+  Array [
+    "[B-ForwardRef] create - useLayoutEffect()",
+  ],
+  Array [
+    "[B-CounterCX] render()",
+    1,
+  ],
+  Array [
+    "[B-CounterCX] componentDidMount()",
+    1,
+  ],
+  Array [
+    "[B-CounterFN] useImperativeHandle()",
+    1,
+  ],
+  Array [
+    "[B-CounterFN] useCallback()",
+    1,
+  ],
+  Array [
+    "[B-CounterFN] create - useLayoutEffect()",
+  ],
+  Array [
+    "[B-CounterFN] create - useLayoutEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-MemoCounterFN] useImperativeHandle()",
+    1,
+  ],
+  Array [
+    "[B-MemoCounterFN] useCallback()",
+    1,
+  ],
+  Array [
+    "[B-MemoCounterFN] create - useLayoutEffect()",
+  ],
+  Array [
+    "[B-MemoCounterFN] create - useLayoutEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-LazyCounterCX] componentDidMount()",
+    0,
+  ],
+  Array [
+    "[B-LazyCounterFN] useImperativeHandle()",
+    0,
+  ],
+  Array [
+    "[B-LazyCounterFN] useCallback()",
+    0,
+  ],
+  Array [
+    "[B-LazyCounterFN] create - useLayoutEffect()",
+  ],
+  Array [
+    "[B-LazyCounterFN] create - useLayoutEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-LazyCounterFN] create - onetime - useLayoutEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-ForwardRef] create - useEffect()",
+  ],
+  Array [
+    "[B-CounterFN] create - useEffect()",
+  ],
+  Array [
+    "[B-CounterFN] create - useEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-MemoCounterFN] create - useEffect()",
+  ],
+  Array [
+    "[B-MemoCounterFN] create - useEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-LazyCounterFN] create - useEffect()",
+  ],
+  Array [
+    "[B-LazyCounterFN] create - useEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-LazyCounterFN] create - onetime - useEffect(count)",
+    0,
+  ],
+]
+`;
+
+exports[`react-18.1.0: #5 KeepA click() 1`] = `
+Array [
+  Array [
+    "[A-CounterCX] getDerivedStateFromProps()",
+    2,
+  ],
+  Array [
+    "[A-CounterCX] render()",
+    2,
+  ],
+  Array [
+    "[A-CounterFN] render()",
+  ],
+  Array [
+    "[A-CounterFN] useMemo(count)",
+    2,
+  ],
+  Array [
+    "[A-MemoCounterFN] render()",
+  ],
+  Array [
+    "[A-MemoCounterFN] useMemo(count)",
+    2,
+  ],
+  Array [
+    "[A-LazyCounterCX] getDerivedStateFromProps()",
+    1,
+  ],
+  Array [
+    "[A-LazyCounterCX] render()",
+    1,
+  ],
+  Array [
+    "[A-LazyCounterFN] render()",
+  ],
+  Array [
+    "[A-LazyCounterFN] useMemo(count)",
+    1,
+  ],
+  Array [
+    "[A-CounterCX] getSnapshotBeforeUpdate()",
+    2,
+  ],
+  Array [
+    "[A-LazyCounterCX] getSnapshotBeforeUpdate()",
+    1,
+  ],
+  Array [
+    "[A-CounterFN] destroy - useLayoutEffect(count)",
+    1,
+  ],
+  Array [
+    "[A-MemoCounterFN] destroy - useLayoutEffect(count)",
+    1,
+  ],
+  Array [
+    "[A-LazyCounterFN] destroy - useLayoutEffect(count)",
+    0,
+  ],
+  Array [
+    "[A-LazyCounterFN] destroy - onetime - useLayoutEffect(count)",
+    0,
+  ],
+  Array [
+    "[A-CounterCX] componentDidUpdate()",
+    2,
+  ],
+  Array [
+    "[A-CounterFN] useImperativeHandle()",
+    2,
+  ],
+  Array [
+    "[A-CounterFN] useCallback()",
+    2,
+  ],
+  Array [
+    "[A-CounterFN] create - useLayoutEffect(count)",
+    2,
+  ],
+  Array [
+    "[A-CounterFN] create - onetime - useLayoutEffect(count)",
+    2,
+  ],
+  Array [
+    "[A-MemoCounterFN] useImperativeHandle()",
+    2,
+  ],
+  Array [
+    "[A-MemoCounterFN] useCallback()",
+    2,
+  ],
+  Array [
+    "[A-MemoCounterFN] create - useLayoutEffect(count)",
+    2,
+  ],
+  Array [
+    "[A-MemoCounterFN] create - onetime - useLayoutEffect(count)",
+    2,
+  ],
+  Array [
+    "[A-LazyCounterCX] componentDidUpdate()",
+    1,
+  ],
+  Array [
+    "[A-LazyCounterFN] useImperativeHandle()",
+    1,
+  ],
+  Array [
+    "[A-LazyCounterFN] useCallback()",
+    1,
+  ],
+  Array [
+    "[A-LazyCounterFN] create - useLayoutEffect(count)",
+    1,
+  ],
+  Array [
+    "[A-LazyCounterFN] create - onetime - useLayoutEffect(count)",
+    1,
+  ],
+  Array [
+    "[A-CounterFN] destroy - useEffect(count)",
+    1,
+  ],
+  Array [
+    "[A-MemoCounterFN] destroy - useEffect(count)",
+    1,
+  ],
+  Array [
+    "[A-LazyCounterFN] destroy - useEffect(count)",
+    0,
+  ],
+  Array [
+    "[A-LazyCounterFN] destroy - onetime - useEffect(count)",
+    0,
+  ],
+  Array [
+    "[A-CounterFN] create - useEffect(count)",
+    2,
+  ],
+  Array [
+    "[A-CounterFN] create - onetime - useEffect(count)",
+    2,
+  ],
+  Array [
+    "[A-MemoCounterFN] create - useEffect(count)",
+    2,
+  ],
+  Array [
+    "[A-MemoCounterFN] create - onetime - useEffect(count)",
+    2,
+  ],
+  Array [
+    "[A-LazyCounterFN] create - useEffect(count)",
+    1,
+  ],
+  Array [
+    "[A-LazyCounterFN] create - onetime - useEffect(count)",
+    1,
+  ],
+]
+`;
+
+exports[`react-18.1.0: #5 KeepB click() 1`] = `
+Array [
+  Array [
+    "[B-CounterCX] getDerivedStateFromProps()",
+    2,
+  ],
+  Array [
+    "[B-CounterCX] render()",
+    2,
+  ],
+  Array [
+    "[B-CounterFN] render()",
+  ],
+  Array [
+    "[B-CounterFN] useMemo(count)",
+    2,
+  ],
+  Array [
+    "[B-MemoCounterFN] render()",
+  ],
+  Array [
+    "[B-MemoCounterFN] useMemo(count)",
+    2,
+  ],
+  Array [
+    "[B-LazyCounterCX] getDerivedStateFromProps()",
+    1,
+  ],
+  Array [
+    "[B-LazyCounterCX] render()",
+    1,
+  ],
+  Array [
+    "[B-LazyCounterFN] render()",
+  ],
+  Array [
+    "[B-LazyCounterFN] useMemo(count)",
+    1,
+  ],
+  Array [
+    "[B-CounterCX] getSnapshotBeforeUpdate()",
+    2,
+  ],
+  Array [
+    "[B-LazyCounterCX] getSnapshotBeforeUpdate()",
+    1,
+  ],
+  Array [
+    "[B-CounterFN] destroy - useLayoutEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-CounterFN] destroy - onetime - useLayoutEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-MemoCounterFN] destroy - useLayoutEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-MemoCounterFN] destroy - onetime - useLayoutEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-LazyCounterFN] destroy - useLayoutEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-LazyCounterFN] destroy - onetime - useLayoutEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-CounterCX] componentDidUpdate()",
+    2,
+  ],
+  Array [
+    "[B-CounterFN] useImperativeHandle()",
+    2,
+  ],
+  Array [
+    "[B-CounterFN] useCallback()",
+    2,
+  ],
+  Array [
+    "[B-CounterFN] create - useLayoutEffect(count)",
+    2,
+  ],
+  Array [
+    "[B-CounterFN] create - onetime - useLayoutEffect(count)",
+    2,
+  ],
+  Array [
+    "[B-MemoCounterFN] useImperativeHandle()",
+    2,
+  ],
+  Array [
+    "[B-MemoCounterFN] useCallback()",
+    2,
+  ],
+  Array [
+    "[B-MemoCounterFN] create - useLayoutEffect(count)",
+    2,
+  ],
+  Array [
+    "[B-MemoCounterFN] create - onetime - useLayoutEffect(count)",
+    2,
+  ],
+  Array [
+    "[B-LazyCounterCX] componentDidUpdate()",
+    1,
+  ],
+  Array [
+    "[B-LazyCounterFN] useImperativeHandle()",
+    1,
+  ],
+  Array [
+    "[B-LazyCounterFN] useCallback()",
+    1,
+  ],
+  Array [
+    "[B-LazyCounterFN] create - useLayoutEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-LazyCounterFN] create - onetime - useLayoutEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-CounterFN] destroy - useEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-CounterFN] destroy - onetime - useEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-MemoCounterFN] destroy - useEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-MemoCounterFN] destroy - onetime - useEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-LazyCounterFN] destroy - useEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-LazyCounterFN] destroy - onetime - useEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-CounterFN] create - useEffect(count)",
+    2,
+  ],
+  Array [
+    "[B-CounterFN] create - onetime - useEffect(count)",
+    2,
+  ],
+  Array [
+    "[B-MemoCounterFN] create - useEffect(count)",
+    2,
+  ],
+  Array [
+    "[B-MemoCounterFN] create - onetime - useEffect(count)",
+    2,
+  ],
+  Array [
+    "[B-LazyCounterFN] create - useEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-LazyCounterFN] create - onetime - useEffect(count)",
+    1,
+  ],
+]
+`;
+
+exports[`react-18.1.0: #5 ListB click() 1`] = `
+Array [
+  Array [
+    "[B-CounterCX] getDerivedStateFromProps()",
+    2,
+  ],
+  Array [
+    "[B-CounterCX] render()",
+    2,
+  ],
+  Array [
+    "[B-CounterFN] render()",
+  ],
+  Array [
+    "[B-CounterFN] useMemo(count)",
+    2,
+  ],
+  Array [
+    "[B-MemoCounterFN] render()",
+  ],
+  Array [
+    "[B-MemoCounterFN] useMemo(count)",
+    2,
+  ],
+  Array [
+    "[B-LazyCounterCX] getDerivedStateFromProps()",
+    1,
+  ],
+  Array [
+    "[B-LazyCounterCX] render()",
+    1,
+  ],
+  Array [
+    "[B-LazyCounterFN] render()",
+  ],
+  Array [
+    "[B-LazyCounterFN] useMemo(count)",
+    1,
+  ],
+  Array [
+    "[B-CounterCX] getSnapshotBeforeUpdate()",
+    2,
+  ],
+  Array [
+    "[B-LazyCounterCX] getSnapshotBeforeUpdate()",
+    1,
+  ],
+  Array [
+    "[B-CounterFN] destroy - useLayoutEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-MemoCounterFN] destroy - useLayoutEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-LazyCounterFN] destroy - useLayoutEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-LazyCounterFN] destroy - onetime - useLayoutEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-CounterCX] componentDidUpdate()",
+    2,
+  ],
+  Array [
+    "[B-CounterFN] useImperativeHandle()",
+    2,
+  ],
+  Array [
+    "[B-CounterFN] useCallback()",
+    2,
+  ],
+  Array [
+    "[B-CounterFN] create - useLayoutEffect(count)",
+    2,
+  ],
+  Array [
+    "[B-CounterFN] create - onetime - useLayoutEffect(count)",
+    2,
+  ],
+  Array [
+    "[B-MemoCounterFN] useImperativeHandle()",
+    2,
+  ],
+  Array [
+    "[B-MemoCounterFN] useCallback()",
+    2,
+  ],
+  Array [
+    "[B-MemoCounterFN] create - useLayoutEffect(count)",
+    2,
+  ],
+  Array [
+    "[B-MemoCounterFN] create - onetime - useLayoutEffect(count)",
+    2,
+  ],
+  Array [
+    "[B-LazyCounterCX] componentDidUpdate()",
+    1,
+  ],
+  Array [
+    "[B-LazyCounterFN] useImperativeHandle()",
+    1,
+  ],
+  Array [
+    "[B-LazyCounterFN] useCallback()",
+    1,
+  ],
+  Array [
+    "[B-LazyCounterFN] create - useLayoutEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-LazyCounterFN] create - onetime - useLayoutEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-CounterFN] destroy - useEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-MemoCounterFN] destroy - useEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-LazyCounterFN] destroy - useEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-LazyCounterFN] destroy - onetime - useEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-CounterFN] create - useEffect(count)",
+    2,
+  ],
+  Array [
+    "[B-CounterFN] create - onetime - useEffect(count)",
+    2,
+  ],
+  Array [
+    "[B-MemoCounterFN] create - useEffect(count)",
+    2,
+  ],
+  Array [
+    "[B-MemoCounterFN] create - onetime - useEffect(count)",
+    2,
+  ],
+  Array [
+    "[B-LazyCounterFN] create - useEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-LazyCounterFN] create - onetime - useEffect(count)",
+    1,
+  ],
+]
+`;
+
+exports[`react-18.1.0: initialization 1`] = `Array []`;

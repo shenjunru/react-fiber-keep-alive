@@ -9,12 +9,10 @@
     "test:16": "jest --rootDir react-16 --detectOpenHandles --forceExit",
     "test:17": "jest --rootDir react-17 --detectOpenHandles --forceExit",
     "test:18": "jest --rootDir react-18 --detectOpenHandles --forceExit",
+    "test:up": "yarn test:16 -u && yarn test:17 -u && yarn test:18 -u",
     "test": "yarn test:16 && yarn test:17 && yarn test:18"
   },
   "devDependencies": {
-    "@testing-library/dom": "8.13.0",
-    "@testing-library/jest-dom": "5.16.4",
-    "@testing-library/react": "13.3.0",
     "@types/jest": "28.1.1",
     "@types/jsdom": "16.2.14",
     "@types/react-reconciler": "0.26.6",

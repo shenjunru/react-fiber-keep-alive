@@ -12,6 +12,7 @@ module.exports = {
         enableSymlinks: true,
     },
     globals: {
+        IS_REACT_ACT_ENVIRONMENT: true, // fix v18 "act()" warning
         'ts-jest': {
             diagnostics: false,
         },

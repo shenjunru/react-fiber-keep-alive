@@ -2,13 +2,15 @@
   "extends": "../../tsconfig",
   "compilerOptions": {
     "preserveSymlinks": true,
-    "allowSyntheticDefaultImports": true,
+    "sourceMap": true,
+    "inlineSources": true,
     "baseUrl": "..",
     "rootDir": "..",
     "typeRoots": [
       "node_modules/@types",
       "../node_modules/@types",
     ],
+    "lib": ["dom", "esnext"],
     "types": ["jest", "jsdom", "node"],
     "paths": {
       "@shared/*": ["./shared/*"],
