@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import { markClassComponentHasSideEffectRender, markEffectHookIsOnetime } from './helpers';
 declare type KeepAliveProps = {
     name: string;
