@@ -25,7 +25,7 @@ export const ForwardRef = React.forwardRef<HTMLSpanElement, {
         };
     }, []);
 
-    return <span ref={ref}>{date.valueOf()}</span>;
+    return <span ref={ref}>[{prefix}] {date.valueOf()}</span>;
 });
 
 export const KeepForwardRef = keepAlive(ForwardRef, (props) => props.prefix);

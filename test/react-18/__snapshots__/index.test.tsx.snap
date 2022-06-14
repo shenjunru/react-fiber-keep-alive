@@ -49,8 +49,16 @@ Array [
     "[A-ForwardRef] create - useLayoutEffect()",
   ],
   Array [
+    "[A-CounterCX] setButtonRef()",
+    "BUTTON",
+  ],
+  Array [
     "[A-CounterCX] componentDidMount()",
     0,
+  ],
+  Array [
+    "[A-CounterFN] setButtonRef()",
+    "BUTTON",
   ],
   Array [
     "[A-CounterFN] useImperativeHandle()",
@@ -70,6 +78,10 @@ Array [
   Array [
     "[A-CounterFN] create - onetime - useLayoutEffect(count)",
     0,
+  ],
+  Array [
+    "[A-MemoCounterFN] setButtonRef()",
+    "BUTTON",
   ],
   Array [
     "[A-MemoCounterFN] useImperativeHandle()",
@@ -183,6 +195,10 @@ Array [
     0,
   ],
   Array [
+    "[B-CounterCX] setButtonRef()",
+    null,
+  ],
+  Array [
     "[B-CounterFN] destroy - useLayoutEffect()",
   ],
   Array [
@@ -192,6 +208,10 @@ Array [
   Array [
     "[B-CounterFN] destroy - onetime - useLayoutEffect(count)",
     0,
+  ],
+  Array [
+    "[B-CounterFN] setButtonRef()",
+    null,
   ],
   Array [
     "[B-MemoCounterFN] destroy - useLayoutEffect()",
@@ -205,6 +225,10 @@ Array [
     0,
   ],
   Array [
+    "[B-MemoCounterFN] setButtonRef()",
+    null,
+  ],
+  Array [
     "[B-LazyCounterCX-Fallback] destroy - useLayoutEffect()",
   ],
   Array [
@@ -214,8 +238,16 @@ Array [
     "[B-ForwardRef] create - useLayoutEffect()",
   ],
   Array [
+    "[B-CounterCX] setButtonRef()",
+    "BUTTON",
+  ],
+  Array [
     "[B-CounterCX] componentDidMount()",
     0,
+  ],
+  Array [
+    "[B-CounterFN] setButtonRef()",
+    "BUTTON",
   ],
   Array [
     "[B-CounterFN] useImperativeHandle()",
@@ -235,6 +267,10 @@ Array [
   Array [
     "[B-CounterFN] create - onetime - useLayoutEffect(count)",
     0,
+  ],
+  Array [
+    "[B-MemoCounterFN] setButtonRef()",
+    "BUTTON",
   ],
   Array [
     "[B-MemoCounterFN] useImperativeHandle()",
@@ -379,6 +415,10 @@ Array [
     0,
   ],
   Array [
+    "[A-CounterCX] setButtonRef()",
+    null,
+  ],
+  Array [
     "[A-CounterFN] destroy - useLayoutEffect()",
   ],
   Array [
@@ -388,6 +428,10 @@ Array [
   Array [
     "[A-CounterFN] destroy - onetime - useLayoutEffect(count)",
     0,
+  ],
+  Array [
+    "[A-CounterFN] setButtonRef()",
+    null,
   ],
   Array [
     "[A-MemoCounterFN] destroy - useLayoutEffect()",
@@ -401,6 +445,10 @@ Array [
     0,
   ],
   Array [
+    "[A-MemoCounterFN] setButtonRef()",
+    null,
+  ],
+  Array [
     "[A-LazyCounterCX-Fallback] destroy - useLayoutEffect()",
   ],
   Array [
@@ -410,8 +458,16 @@ Array [
     "[B-ForwardRef] create - useLayoutEffect()",
   ],
   Array [
+    "[B-CounterCX] setButtonRef()",
+    "BUTTON",
+  ],
+  Array [
     "[B-CounterCX] componentDidMount()",
     0,
+  ],
+  Array [
+    "[B-CounterFN] setButtonRef()",
+    "BUTTON",
   ],
   Array [
     "[B-CounterFN] useImperativeHandle()",
@@ -431,6 +487,10 @@ Array [
   Array [
     "[B-CounterFN] create - onetime - useLayoutEffect(count)",
     0,
+  ],
+  Array [
+    "[B-MemoCounterFN] setButtonRef()",
+    "BUTTON",
   ],
   Array [
     "[B-MemoCounterFN] useImperativeHandle()",
@@ -532,6 +592,10 @@ Array [
     0,
   ],
   Array [
+    "[B-CounterCX] setButtonRef()",
+    null,
+  ],
+  Array [
     "[B-CounterFN] destroy - useLayoutEffect()",
   ],
   Array [
@@ -543,6 +607,10 @@ Array [
     0,
   ],
   Array [
+    "[B-CounterFN] setButtonRef()",
+    null,
+  ],
+  Array [
     "[B-MemoCounterFN] destroy - useLayoutEffect()",
   ],
   Array [
@@ -552,6 +620,10 @@ Array [
   Array [
     "[B-MemoCounterFN] destroy - onetime - useLayoutEffect(count)",
     0,
+  ],
+  Array [
+    "[B-MemoCounterFN] setButtonRef()",
+    null,
   ],
   Array [
     "[B-LazyCounterCX-Fallback] destroy - useLayoutEffect()",
@@ -601,12 +673,20 @@ Array [
     "[A-ForwardRef] create - useLayoutEffect()",
   ],
   Array [
+    "[A-CounterCX] setButtonRef()",
+    "BUTTON",
+  ],
+  Array [
     "[A-CounterCX] render()",
     0,
   ],
   Array [
     "[A-CounterCX] componentDidMount()",
     0,
+  ],
+  Array [
+    "[A-CounterFN] setButtonRef()",
+    "BUTTON",
   ],
   Array [
     "[A-CounterFN] useImperativeHandle()",
@@ -622,6 +702,10 @@ Array [
   Array [
     "[A-CounterFN] create - useLayoutEffect(count)",
     0,
+  ],
+  Array [
+    "[A-MemoCounterFN] setButtonRef()",
+    "BUTTON",
   ],
   Array [
     "[A-MemoCounterFN] useImperativeHandle()",
@@ -680,6 +764,10 @@ Array [
     1,
   ],
   Array [
+    "[B-CounterCX] setButtonRef()",
+    null,
+  ],
+  Array [
     "[B-CounterFN] destroy - useLayoutEffect()",
   ],
   Array [
@@ -691,6 +779,10 @@ Array [
     1,
   ],
   Array [
+    "[B-CounterFN] setButtonRef()",
+    null,
+  ],
+  Array [
     "[B-MemoCounterFN] destroy - useLayoutEffect()",
   ],
   Array [
@@ -700,6 +792,10 @@ Array [
   Array [
     "[B-MemoCounterFN] destroy - onetime - useLayoutEffect(count)",
     1,
+  ],
+  Array [
+    "[B-MemoCounterFN] setButtonRef()",
+    null,
   ],
   Array [
     "[B-LazyCounterCX-Fallback] destroy - useLayoutEffect()",
@@ -749,12 +845,20 @@ Array [
     "[B-ForwardRef] create - useLayoutEffect()",
   ],
   Array [
+    "[B-CounterCX] setButtonRef()",
+    "BUTTON",
+  ],
+  Array [
     "[B-CounterCX] render()",
     0,
   ],
   Array [
     "[B-CounterCX] componentDidMount()",
     0,
+  ],
+  Array [
+    "[B-CounterFN] setButtonRef()",
+    "BUTTON",
   ],
   Array [
     "[B-CounterFN] useImperativeHandle()",
@@ -770,6 +874,10 @@ Array [
   Array [
     "[B-CounterFN] create - useLayoutEffect(count)",
     0,
+  ],
+  Array [
+    "[B-MemoCounterFN] setButtonRef()",
+    "BUTTON",
   ],
   Array [
     "[B-MemoCounterFN] useImperativeHandle()",
@@ -828,6 +936,10 @@ Array [
     1,
   ],
   Array [
+    "[A-CounterCX] setButtonRef()",
+    null,
+  ],
+  Array [
     "[A-CounterFN] destroy - useLayoutEffect()",
   ],
   Array [
@@ -839,6 +951,10 @@ Array [
     1,
   ],
   Array [
+    "[A-CounterFN] setButtonRef()",
+    null,
+  ],
+  Array [
     "[A-MemoCounterFN] destroy - useLayoutEffect()",
   ],
   Array [
@@ -848,6 +964,10 @@ Array [
   Array [
     "[A-MemoCounterFN] destroy - onetime - useLayoutEffect(count)",
     1,
+  ],
+  Array [
+    "[A-MemoCounterFN] setButtonRef()",
+    null,
   ],
   Array [
     "[A-LazyCounterCX-Fallback] destroy - useLayoutEffect()",
@@ -897,12 +1017,20 @@ Array [
     "[B-ForwardRef] create - useLayoutEffect()",
   ],
   Array [
+    "[B-CounterCX] setButtonRef()",
+    "BUTTON",
+  ],
+  Array [
     "[B-CounterCX] render()",
     0,
   ],
   Array [
     "[B-CounterCX] componentDidMount()",
     0,
+  ],
+  Array [
+    "[B-CounterFN] setButtonRef()",
+    "BUTTON",
   ],
   Array [
     "[B-CounterFN] useImperativeHandle()",
@@ -918,6 +1046,10 @@ Array [
   Array [
     "[B-CounterFN] create - useLayoutEffect(count)",
     0,
+  ],
+  Array [
+    "[B-MemoCounterFN] setButtonRef()",
+    "BUTTON",
   ],
   Array [
     "[B-MemoCounterFN] useImperativeHandle()",
@@ -1273,6 +1405,10 @@ Array [
     2,
   ],
   Array [
+    "[B-CounterCX] setButtonRef()",
+    null,
+  ],
+  Array [
     "[B-CounterFN] destroy - useLayoutEffect()",
   ],
   Array [
@@ -1282,6 +1418,10 @@ Array [
   Array [
     "[B-CounterFN] destroy - onetime - useLayoutEffect(count)",
     2,
+  ],
+  Array [
+    "[B-CounterFN] setButtonRef()",
+    null,
   ],
   Array [
     "[B-MemoCounterFN] destroy - useLayoutEffect()",
@@ -1295,8 +1435,16 @@ Array [
     2,
   ],
   Array [
+    "[B-MemoCounterFN] setButtonRef()",
+    null,
+  ],
+  Array [
     "[B-LazyCounterCX] componentWillUnmount()",
     1,
+  ],
+  Array [
+    "[B-LazyCounterCX] setButtonRef()",
+    null,
   ],
   Array [
     "[B-LazyCounterFN] destroy - useLayoutEffect()",
@@ -1308,6 +1456,10 @@ Array [
   Array [
     "[B-LazyCounterFN] destroy - onetime - useLayoutEffect(count)",
     1,
+  ],
+  Array [
+    "[B-LazyCounterFN] setButtonRef()",
+    null,
   ],
   Array [
     "[B-ForwardRef] destroy - useEffect()",
@@ -1377,12 +1529,20 @@ Array [
     "[A-ForwardRef] create - useLayoutEffect()",
   ],
   Array [
+    "[A-CounterCX] setButtonRef()",
+    "BUTTON",
+  ],
+  Array [
     "[A-CounterCX] render()",
     1,
   ],
   Array [
     "[A-CounterCX] componentDidMount()",
     1,
+  ],
+  Array [
+    "[A-CounterFN] setButtonRef()",
+    "BUTTON",
   ],
   Array [
     "[A-CounterFN] useImperativeHandle()",
@@ -1400,6 +1560,10 @@ Array [
     1,
   ],
   Array [
+    "[A-MemoCounterFN] setButtonRef()",
+    "BUTTON",
+  ],
+  Array [
     "[A-MemoCounterFN] useImperativeHandle()",
     1,
   ],
@@ -1415,8 +1579,16 @@ Array [
     1,
   ],
   Array [
+    "[A-LazyCounterCX] setButtonRef()",
+    "BUTTON",
+  ],
+  Array [
     "[A-LazyCounterCX] componentDidMount()",
     0,
+  ],
+  Array [
+    "[A-LazyCounterFN] setButtonRef()",
+    "BUTTON",
   ],
   Array [
     "[A-LazyCounterFN] useImperativeHandle()",
@@ -1498,8 +1670,16 @@ Array [
     "[B-LazyCounterFN-Fallback] destroy - useLayoutEffect()",
   ],
   Array [
+    "[B-LazyCounterCX] setButtonRef()",
+    "BUTTON",
+  ],
+  Array [
     "[B-LazyCounterCX] componentDidMount()",
     0,
+  ],
+  Array [
+    "[B-LazyCounterFN] setButtonRef()",
+    "BUTTON",
   ],
   Array [
     "[B-LazyCounterFN] useImperativeHandle()",
@@ -1550,6 +1730,10 @@ Array [
     2,
   ],
   Array [
+    "[A-CounterCX] setButtonRef()",
+    null,
+  ],
+  Array [
     "[A-CounterFN] destroy - useLayoutEffect()",
   ],
   Array [
@@ -1559,6 +1743,10 @@ Array [
   Array [
     "[A-CounterFN] destroy - onetime - useLayoutEffect(count)",
     2,
+  ],
+  Array [
+    "[A-CounterFN] setButtonRef()",
+    null,
   ],
   Array [
     "[A-MemoCounterFN] destroy - useLayoutEffect()",
@@ -1572,8 +1760,16 @@ Array [
     2,
   ],
   Array [
+    "[A-MemoCounterFN] setButtonRef()",
+    null,
+  ],
+  Array [
     "[A-LazyCounterCX] componentWillUnmount()",
     1,
+  ],
+  Array [
+    "[A-LazyCounterCX] setButtonRef()",
+    null,
   ],
   Array [
     "[A-LazyCounterFN] destroy - useLayoutEffect()",
@@ -1585,6 +1781,10 @@ Array [
   Array [
     "[A-LazyCounterFN] destroy - onetime - useLayoutEffect(count)",
     1,
+  ],
+  Array [
+    "[A-LazyCounterFN] setButtonRef()",
+    null,
   ],
   Array [
     "[A-ForwardRef] destroy - useEffect()",
@@ -1654,12 +1854,20 @@ Array [
     "[B-ForwardRef] create - useLayoutEffect()",
   ],
   Array [
+    "[B-CounterCX] setButtonRef()",
+    "BUTTON",
+  ],
+  Array [
     "[B-CounterCX] render()",
     1,
   ],
   Array [
     "[B-CounterCX] componentDidMount()",
     1,
+  ],
+  Array [
+    "[B-CounterFN] setButtonRef()",
+    "BUTTON",
   ],
   Array [
     "[B-CounterFN] useImperativeHandle()",
@@ -1677,6 +1885,10 @@ Array [
     1,
   ],
   Array [
+    "[B-MemoCounterFN] setButtonRef()",
+    "BUTTON",
+  ],
+  Array [
     "[B-MemoCounterFN] useImperativeHandle()",
     1,
   ],
@@ -1692,8 +1904,16 @@ Array [
     1,
   ],
   Array [
+    "[B-LazyCounterCX] setButtonRef()",
+    "BUTTON",
+  ],
+  Array [
     "[B-LazyCounterCX] componentDidMount()",
     0,
+  ],
+  Array [
+    "[B-LazyCounterFN] setButtonRef()",
+    "BUTTON",
   ],
   Array [
     "[B-LazyCounterFN] useImperativeHandle()",

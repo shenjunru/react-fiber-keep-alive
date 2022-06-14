@@ -19,6 +19,10 @@ export const CounterFN: React.FC<{
         return 0;
     });
 
+    const setButtonRef = React.useCallback((value: null | HTMLButtonElement) => {
+        logger(`[${prefix}] setButtonRef()`, value?.tagName || value);
+    }, []);
+
     const action = React.useCallback(() => {
         logger(`[${prefix}] useCallback()`, count);
     }, [count]);
@@ -86,7 +90,7 @@ export const CounterFN: React.FC<{
     }), [count]);
 
     return (
-        <button onClick={() => setCount(count + 1)}>
+        <button ref={setButtonRef} onClick={() => setCount(count + 1)}>
             [{prefix}] {count}
         </button>
     );

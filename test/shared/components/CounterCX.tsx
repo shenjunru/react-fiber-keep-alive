@@ -24,6 +24,10 @@ export class CounterCX extends React.PureComponent<Props, State> {
 
     public state: State = { count: 0 };
 
+    private setButtonRef = (value: null | HTMLButtonElement) => {
+        this.props.logger(`[${this.props.prefix}] setButtonRef()`, value?.tagName || value);
+    };
+
     private handleClick = () => {
         this.setState(({ count }) => ({
             count: count + 1
@@ -49,7 +53,11 @@ export class CounterCX extends React.PureComponent<Props, State> {
 
     public render() {
         this.props.logger(`[${this.props.prefix}] render()`, this.state.count);
-        return <button onClick={this.handleClick}>[{this.props.prefix}] {this.state.count}</button>;
+        return (
+            <button ref={this.setButtonRef} onClick={this.handleClick}>
+                [{this.props.prefix}] {this.state.count}
+            </button>
+        );
     }
 }
 

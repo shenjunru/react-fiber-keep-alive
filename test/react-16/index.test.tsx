@@ -37,7 +37,7 @@ test([
             const dates = container.querySelectorAll('span');
             expect(dates.length).toBe(values.length);
             dates.forEach((button, i) => {
-                expect(button.textContent).toBe(values[i]);
+                expect(button.textContent?.split(' ').pop()).toBe(values[i]);
             });
         };
 
