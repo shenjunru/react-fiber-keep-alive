@@ -38,6 +38,7 @@ export declare const FiberFlag: Readonly<{
     NoFlags: number;
     Placement: number;
     Update: number;
+    Ref: number;
     Passive: number;
     LifecycleEffectMask: number;
     PassiveMask: number;
