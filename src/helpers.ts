@@ -129,8 +129,8 @@ export const FiberFlag = Object.freeze({
 //            /* v16 | v17 */ : 0,
 //  Callback            : v18 ? 0b00000000000000000001000000  // 64
 //            /* v16 | v17 */ : 0b00000000000000000000100000, // 32
-//  Ref                 : v18 ? 0b00000000000000001000000000  // 512
-//            /* v16 | v17 */ : 0b00000000000000000010000000, // 128
+    Ref                 : v18 ? 0b00000000000000001000000000  // 512
+              /* v16 | v17 */ : 0b00000000000000000010000000, // 128
 //  Snapshot            : v18 ? 0b00000000000000010000000000  // 1024
 //            /* v16 | v17 */ : 0b00000000000000000100000000, // 256
     Passive             : v18 ? 0b00000000000000100000000000  // 2048
@@ -431,6 +431,10 @@ const isNoEffectHook = (effect: FiberEffectHookState) => {
 
 const applyFiberEffect = (fiber: Fiber): number => {
     let flags = FiberFlag.NoFlags;
+
+    if (null != fiber.ref) {
+        flags |= FiberFlag.Ref;
+    }
 
     const isFunctionComponent = traverseEffectHooks(fiber, (effect) => {
         if (isNoEffectHook(effect)) {
