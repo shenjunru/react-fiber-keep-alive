@@ -4,7 +4,7 @@ import { keepAlive, markEffectHookIsOnetime } from '@shared/react-fiber-keep-ali
 import { lazy } from '@shared/helpers/lazy';
 import { ForwardRef } from '@shared/components/ForwardRef';
 
-function noop() { }
+function noop() {}
 
 export const CounterFN: React.FC<{
     logger: Logger;
@@ -77,15 +77,9 @@ export const CounterFN: React.FC<{
     }, [count]);
 
     React.useLayoutEffect(markEffectHookIsOnetime(() => {
-        logger(
-            `[${prefix}] create - onetime - useLayoutEffect(count)`,
-            count
-        );
+        logger(`[${prefix}] create - onetime - useLayoutEffect(count)`, count);
         return () => {
-            logger(
-                `[${prefix}] destroy - onetime - useLayoutEffect(count)`,
-                count
-            );
+            logger(`[${prefix}] destroy - onetime - useLayoutEffect(count)`, count);
         };
     }), [count]);
 

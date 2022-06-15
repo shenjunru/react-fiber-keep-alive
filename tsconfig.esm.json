@@ -5,7 +5,6 @@
     "target": "es6",
     "baseUrl": "./src",
     "rootDir": "./src",
-    "outDir": "./lib/esm"
+    "outDir": "./lib/esm",
   },
-  "include": ["src"]
 }

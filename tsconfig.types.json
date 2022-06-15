@@ -7,7 +7,6 @@
     "target": "esnext",
     "baseUrl": "./src",
     "rootDir": "./src",
-    "outDir": "./lib/types"
+    "outDir": "./lib/types",
   },
-  "include": ["src"]
 }
