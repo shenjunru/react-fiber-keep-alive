@@ -1,5 +1,6 @@
 import type { Logger } from '@shared/interfaces/Logger';
 import { keepAlive } from '@shared/react-fiber-keep-alive';
+import { useInsertionEffect } from '@shared/helpers/hook';
 import * as React from 'react';
 
 export const ForwardRef = React.forwardRef<HTMLSpanElement, {
@@ -22,6 +23,13 @@ export const ForwardRef = React.forwardRef<HTMLSpanElement, {
         logger(`[${prefix}] create - useLayoutEffect()`);
         return () => {
             logger(`[${prefix}] destroy - useLayoutEffect()`);
+        };
+    }, []);
+
+    useInsertionEffect(() => {
+        logger(`[${prefix}] create - useInsertionEffect()`);
+        return () => {
+            logger(`[${prefix}] destroy - useInsertionEffect()`);
         };
     }, []);
 

@@ -1,6 +1,7 @@
 import type { Logger } from '@shared/interfaces/Logger';
 import * as React from 'react';
 import { keepAlive, markEffectHookIsOnetime } from '@shared/react-fiber-keep-alive';
+import { useInsertionEffect } from '@shared/helpers/hook';
 import { lazy } from '@shared/helpers/lazy';
 import { ForwardRef } from '@shared/components/ForwardRef';
 
@@ -33,6 +34,7 @@ export const CounterFN: React.FC<{
         return action;
     }, [count, action]);
 
+
     React.useMemo(() => {
         logger(`[${prefix}] useMemo()`);
     }, []);
@@ -40,6 +42,7 @@ export const CounterFN: React.FC<{
     React.useMemo(() => {
         logger(`[${prefix}] useMemo(count)`, count);
     }, [count]);
+
 
     React.useEffect(() => {
         logger(`[${prefix}] create - useEffect()`);
@@ -62,6 +65,7 @@ export const CounterFN: React.FC<{
         };
     }), [count]);
 
+
     React.useLayoutEffect(() => {
         logger(`[${prefix}] create - useLayoutEffect()`);
         return () => {
@@ -80,6 +84,28 @@ export const CounterFN: React.FC<{
         logger(`[${prefix}] create - onetime - useLayoutEffect(count)`, count);
         return () => {
             logger(`[${prefix}] destroy - onetime - useLayoutEffect(count)`, count);
+        };
+    }), [count]);
+
+
+    useInsertionEffect(() => {
+        logger(`[${prefix}] create - useInsertionEffect()`);
+        return () => {
+            logger(`[${prefix}] destroy - useInsertionEffect()`);
+        };
+    }, []);
+
+    useInsertionEffect(() => {
+        logger(`[${prefix}] create - useInsertionEffect(count)`, count);
+        return () => {
+            logger(`[${prefix}] destroy - useInsertionEffect(count)`, count);
+        };
+    }, [count]);
+
+    useInsertionEffect(markEffectHookIsOnetime(() => {
+        logger(`[${prefix}] create - onetime - useInsertionEffect(count)`, count);
+        return () => {
+            logger(`[${prefix}] destroy - onetime - useInsertionEffect(count)`, count);
         };
     }), [count]);
 

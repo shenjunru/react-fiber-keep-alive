@@ -46,6 +46,37 @@ Array [
     "[A-LazyCounterFN-Fallback] create - useMemo()",
   ],
   Array [
+    "[A-ForwardRef] create - useInsertionEffect()",
+  ],
+  Array [
+    "[A-CounterFN] create - useInsertionEffect()",
+  ],
+  Array [
+    "[A-CounterFN] create - useInsertionEffect(count)",
+    0,
+  ],
+  Array [
+    "[A-CounterFN] create - onetime - useInsertionEffect(count)",
+    0,
+  ],
+  Array [
+    "[A-MemoCounterFN] create - useInsertionEffect()",
+  ],
+  Array [
+    "[A-MemoCounterFN] create - useInsertionEffect(count)",
+    0,
+  ],
+  Array [
+    "[A-MemoCounterFN] create - onetime - useInsertionEffect(count)",
+    0,
+  ],
+  Array [
+    "[A-LazyCounterCX-Fallback] create - useInsertionEffect()",
+  ],
+  Array [
+    "[A-LazyCounterFN-Fallback] create - useInsertionEffect()",
+  ],
+  Array [
     "[A-ForwardRef] create - useLayoutEffect()",
   ],
   Array [
@@ -191,6 +222,9 @@ Array [
     "[B-ForwardRef] destroy - useLayoutEffect()",
   ],
   Array [
+    "[B-ForwardRef] destroy - useInsertionEffect()",
+  ],
+  Array [
     "[B-CounterCX] componentWillUnmount()",
     0,
   ],
@@ -210,6 +244,17 @@ Array [
     0,
   ],
   Array [
+    "[B-CounterFN] destroy - useInsertionEffect()",
+  ],
+  Array [
+    "[B-CounterFN] destroy - useInsertionEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-CounterFN] destroy - onetime - useInsertionEffect(count)",
+    0,
+  ],
+  Array [
     "[B-CounterFN] setButtonRef()",
     null,
   ],
@@ -225,6 +270,17 @@ Array [
     0,
   ],
   Array [
+    "[B-MemoCounterFN] destroy - useInsertionEffect()",
+  ],
+  Array [
+    "[B-MemoCounterFN] destroy - useInsertionEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-MemoCounterFN] destroy - onetime - useInsertionEffect(count)",
+    0,
+  ],
+  Array [
     "[B-MemoCounterFN] setButtonRef()",
     null,
   ],
@@ -232,7 +288,44 @@ Array [
     "[B-LazyCounterCX-Fallback] destroy - useLayoutEffect()",
   ],
   Array [
+    "[B-LazyCounterCX-Fallback] destroy - useInsertionEffect()",
+  ],
+  Array [
     "[B-LazyCounterFN-Fallback] destroy - useLayoutEffect()",
+  ],
+  Array [
+    "[B-LazyCounterFN-Fallback] destroy - useInsertionEffect()",
+  ],
+  Array [
+    "[B-ForwardRef] create - useInsertionEffect()",
+  ],
+  Array [
+    "[B-CounterFN] create - useInsertionEffect()",
+  ],
+  Array [
+    "[B-CounterFN] create - useInsertionEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-CounterFN] create - onetime - useInsertionEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-MemoCounterFN] create - useInsertionEffect()",
+  ],
+  Array [
+    "[B-MemoCounterFN] create - useInsertionEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-MemoCounterFN] create - onetime - useInsertionEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-LazyCounterCX-Fallback] create - useInsertionEffect()",
+  ],
+  Array [
+    "[B-LazyCounterFN-Fallback] create - useInsertionEffect()",
   ],
   Array [
     "[B-ForwardRef] create - useLayoutEffect()",
@@ -411,6 +504,9 @@ Array [
     "[A-ForwardRef] destroy - useLayoutEffect()",
   ],
   Array [
+    "[A-ForwardRef] destroy - useInsertionEffect()",
+  ],
+  Array [
     "[A-CounterCX] componentWillUnmount()",
     0,
   ],
@@ -430,6 +526,17 @@ Array [
     0,
   ],
   Array [
+    "[A-CounterFN] destroy - useInsertionEffect()",
+  ],
+  Array [
+    "[A-CounterFN] destroy - useInsertionEffect(count)",
+    0,
+  ],
+  Array [
+    "[A-CounterFN] destroy - onetime - useInsertionEffect(count)",
+    0,
+  ],
+  Array [
     "[A-CounterFN] setButtonRef()",
     null,
   ],
@@ -445,6 +552,17 @@ Array [
     0,
   ],
   Array [
+    "[A-MemoCounterFN] destroy - useInsertionEffect()",
+  ],
+  Array [
+    "[A-MemoCounterFN] destroy - useInsertionEffect(count)",
+    0,
+  ],
+  Array [
+    "[A-MemoCounterFN] destroy - onetime - useInsertionEffect(count)",
+    0,
+  ],
+  Array [
     "[A-MemoCounterFN] setButtonRef()",
     null,
   ],
@@ -452,7 +570,44 @@ Array [
     "[A-LazyCounterCX-Fallback] destroy - useLayoutEffect()",
   ],
   Array [
+    "[A-LazyCounterCX-Fallback] destroy - useInsertionEffect()",
+  ],
+  Array [
     "[A-LazyCounterFN-Fallback] destroy - useLayoutEffect()",
+  ],
+  Array [
+    "[A-LazyCounterFN-Fallback] destroy - useInsertionEffect()",
+  ],
+  Array [
+    "[B-ForwardRef] create - useInsertionEffect()",
+  ],
+  Array [
+    "[B-CounterFN] create - useInsertionEffect()",
+  ],
+  Array [
+    "[B-CounterFN] create - useInsertionEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-CounterFN] create - onetime - useInsertionEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-MemoCounterFN] create - useInsertionEffect()",
+  ],
+  Array [
+    "[B-MemoCounterFN] create - useInsertionEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-MemoCounterFN] create - onetime - useInsertionEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-LazyCounterCX-Fallback] create - useInsertionEffect()",
+  ],
+  Array [
+    "[B-LazyCounterFN-Fallback] create - useInsertionEffect()",
   ],
   Array [
     "[B-ForwardRef] create - useLayoutEffect()",
@@ -588,6 +743,9 @@ Array [
     "[B-ForwardRef] destroy - useLayoutEffect()",
   ],
   Array [
+    "[B-ForwardRef] destroy - useInsertionEffect()",
+  ],
+  Array [
     "[B-CounterCX] componentWillUnmount()",
     0,
   ],
@@ -607,6 +765,17 @@ Array [
     0,
   ],
   Array [
+    "[B-CounterFN] destroy - useInsertionEffect()",
+  ],
+  Array [
+    "[B-CounterFN] destroy - useInsertionEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-CounterFN] destroy - onetime - useInsertionEffect(count)",
+    0,
+  ],
+  Array [
     "[B-CounterFN] setButtonRef()",
     null,
   ],
@@ -622,6 +791,17 @@ Array [
     0,
   ],
   Array [
+    "[B-MemoCounterFN] destroy - useInsertionEffect()",
+  ],
+  Array [
+    "[B-MemoCounterFN] destroy - useInsertionEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-MemoCounterFN] destroy - onetime - useInsertionEffect(count)",
+    0,
+  ],
+  Array [
     "[B-MemoCounterFN] setButtonRef()",
     null,
   ],
@@ -629,7 +809,13 @@ Array [
     "[B-LazyCounterCX-Fallback] destroy - useLayoutEffect()",
   ],
   Array [
+    "[B-LazyCounterCX-Fallback] destroy - useInsertionEffect()",
+  ],
+  Array [
     "[B-LazyCounterFN-Fallback] destroy - useLayoutEffect()",
+  ],
+  Array [
+    "[B-LazyCounterFN-Fallback] destroy - useInsertionEffect()",
   ],
   Array [
     "[B-ForwardRef] destroy - useEffect()",
@@ -668,6 +854,33 @@ Array [
   ],
   Array [
     "[A-CounterFN] render()",
+  ],
+  Array [
+    "[A-ForwardRef] create - useInsertionEffect()",
+  ],
+  Array [
+    "[A-CounterFN] setButtonRef()",
+    null,
+  ],
+  Array [
+    "[A-CounterFN] create - useInsertionEffect()",
+  ],
+  Array [
+    "[A-CounterFN] create - useInsertionEffect(count)",
+    0,
+  ],
+  Array [
+    "[A-MemoCounterFN] create - useInsertionEffect()",
+  ],
+  Array [
+    "[A-MemoCounterFN] create - useInsertionEffect(count)",
+    0,
+  ],
+  Array [
+    "[A-LazyCounterCX-Fallback] create - useInsertionEffect()",
+  ],
+  Array [
+    "[A-LazyCounterFN-Fallback] create - useInsertionEffect()",
   ],
   Array [
     "[A-ForwardRef] create - useLayoutEffect()",
@@ -760,6 +973,9 @@ Array [
     "[B-ForwardRef] destroy - useLayoutEffect()",
   ],
   Array [
+    "[B-ForwardRef] destroy - useInsertionEffect()",
+  ],
+  Array [
     "[B-CounterCX] componentWillUnmount()",
     1,
   ],
@@ -779,6 +995,17 @@ Array [
     1,
   ],
   Array [
+    "[B-CounterFN] destroy - useInsertionEffect()",
+  ],
+  Array [
+    "[B-CounterFN] destroy - useInsertionEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-CounterFN] destroy - onetime - useInsertionEffect(count)",
+    1,
+  ],
+  Array [
     "[B-CounterFN] setButtonRef()",
     null,
   ],
@@ -794,6 +1021,17 @@ Array [
     1,
   ],
   Array [
+    "[B-MemoCounterFN] destroy - useInsertionEffect()",
+  ],
+  Array [
+    "[B-MemoCounterFN] destroy - useInsertionEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-MemoCounterFN] destroy - onetime - useInsertionEffect(count)",
+    1,
+  ],
+  Array [
     "[B-MemoCounterFN] setButtonRef()",
     null,
   ],
@@ -801,7 +1039,13 @@ Array [
     "[B-LazyCounterCX-Fallback] destroy - useLayoutEffect()",
   ],
   Array [
+    "[B-LazyCounterCX-Fallback] destroy - useInsertionEffect()",
+  ],
+  Array [
     "[B-LazyCounterFN-Fallback] destroy - useLayoutEffect()",
+  ],
+  Array [
+    "[B-LazyCounterFN-Fallback] destroy - useInsertionEffect()",
   ],
   Array [
     "[B-ForwardRef] destroy - useEffect()",
@@ -840,6 +1084,33 @@ Array [
   ],
   Array [
     "[B-CounterFN] render()",
+  ],
+  Array [
+    "[B-ForwardRef] create - useInsertionEffect()",
+  ],
+  Array [
+    "[B-CounterFN] setButtonRef()",
+    null,
+  ],
+  Array [
+    "[B-CounterFN] create - useInsertionEffect()",
+  ],
+  Array [
+    "[B-CounterFN] create - useInsertionEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-MemoCounterFN] create - useInsertionEffect()",
+  ],
+  Array [
+    "[B-MemoCounterFN] create - useInsertionEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-LazyCounterCX-Fallback] create - useInsertionEffect()",
+  ],
+  Array [
+    "[B-LazyCounterFN-Fallback] create - useInsertionEffect()",
   ],
   Array [
     "[B-ForwardRef] create - useLayoutEffect()",
@@ -932,6 +1203,9 @@ Array [
     "[A-ForwardRef] destroy - useLayoutEffect()",
   ],
   Array [
+    "[A-ForwardRef] destroy - useInsertionEffect()",
+  ],
+  Array [
     "[A-CounterCX] componentWillUnmount()",
     1,
   ],
@@ -951,6 +1225,17 @@ Array [
     1,
   ],
   Array [
+    "[A-CounterFN] destroy - useInsertionEffect()",
+  ],
+  Array [
+    "[A-CounterFN] destroy - useInsertionEffect(count)",
+    1,
+  ],
+  Array [
+    "[A-CounterFN] destroy - onetime - useInsertionEffect(count)",
+    1,
+  ],
+  Array [
     "[A-CounterFN] setButtonRef()",
     null,
   ],
@@ -966,6 +1251,17 @@ Array [
     1,
   ],
   Array [
+    "[A-MemoCounterFN] destroy - useInsertionEffect()",
+  ],
+  Array [
+    "[A-MemoCounterFN] destroy - useInsertionEffect(count)",
+    1,
+  ],
+  Array [
+    "[A-MemoCounterFN] destroy - onetime - useInsertionEffect(count)",
+    1,
+  ],
+  Array [
     "[A-MemoCounterFN] setButtonRef()",
     null,
   ],
@@ -973,7 +1269,13 @@ Array [
     "[A-LazyCounterCX-Fallback] destroy - useLayoutEffect()",
   ],
   Array [
+    "[A-LazyCounterCX-Fallback] destroy - useInsertionEffect()",
+  ],
+  Array [
     "[A-LazyCounterFN-Fallback] destroy - useLayoutEffect()",
+  ],
+  Array [
+    "[A-LazyCounterFN-Fallback] destroy - useInsertionEffect()",
   ],
   Array [
     "[A-ForwardRef] destroy - useEffect()",
@@ -1012,6 +1314,33 @@ Array [
   ],
   Array [
     "[B-CounterFN] render()",
+  ],
+  Array [
+    "[B-ForwardRef] create - useInsertionEffect()",
+  ],
+  Array [
+    "[B-CounterFN] setButtonRef()",
+    null,
+  ],
+  Array [
+    "[B-CounterFN] create - useInsertionEffect()",
+  ],
+  Array [
+    "[B-CounterFN] create - useInsertionEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-MemoCounterFN] create - useInsertionEffect()",
+  ],
+  Array [
+    "[B-MemoCounterFN] create - useInsertionEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-LazyCounterCX-Fallback] create - useInsertionEffect()",
+  ],
+  Array [
+    "[B-LazyCounterFN-Fallback] create - useInsertionEffect()",
   ],
   Array [
     "[B-ForwardRef] create - useLayoutEffect()",
@@ -1127,8 +1456,32 @@ Array [
     1,
   ],
   Array [
+    "[A-CounterFN] destroy - useInsertionEffect(count)",
+    0,
+  ],
+  Array [
+    "[A-CounterFN] create - useInsertionEffect(count)",
+    1,
+  ],
+  Array [
+    "[A-CounterFN] create - onetime - useInsertionEffect(count)",
+    1,
+  ],
+  Array [
     "[A-CounterFN] destroy - useLayoutEffect(count)",
     0,
+  ],
+  Array [
+    "[A-MemoCounterFN] destroy - useInsertionEffect(count)",
+    0,
+  ],
+  Array [
+    "[A-MemoCounterFN] create - useInsertionEffect(count)",
+    1,
+  ],
+  Array [
+    "[A-MemoCounterFN] create - onetime - useInsertionEffect(count)",
+    1,
   ],
   Array [
     "[A-MemoCounterFN] destroy - useLayoutEffect(count)",
@@ -1226,8 +1579,32 @@ Array [
     1,
   ],
   Array [
+    "[B-CounterFN] destroy - useInsertionEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-CounterFN] create - useInsertionEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-CounterFN] create - onetime - useInsertionEffect(count)",
+    1,
+  ],
+  Array [
     "[B-CounterFN] destroy - useLayoutEffect(count)",
     0,
+  ],
+  Array [
+    "[B-MemoCounterFN] destroy - useInsertionEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-MemoCounterFN] create - useInsertionEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-MemoCounterFN] create - onetime - useInsertionEffect(count)",
+    1,
   ],
   Array [
     "[B-MemoCounterFN] destroy - useLayoutEffect(count)",
@@ -1325,8 +1702,32 @@ Array [
     1,
   ],
   Array [
+    "[B-CounterFN] destroy - useInsertionEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-CounterFN] create - useInsertionEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-CounterFN] create - onetime - useInsertionEffect(count)",
+    1,
+  ],
+  Array [
     "[B-CounterFN] destroy - useLayoutEffect(count)",
     0,
+  ],
+  Array [
+    "[B-MemoCounterFN] destroy - useInsertionEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-MemoCounterFN] create - useInsertionEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-MemoCounterFN] create - onetime - useInsertionEffect(count)",
+    1,
   ],
   Array [
     "[B-MemoCounterFN] destroy - useLayoutEffect(count)",
@@ -1401,6 +1802,9 @@ Array [
     "[B-ForwardRef] destroy - useLayoutEffect()",
   ],
   Array [
+    "[B-ForwardRef] destroy - useInsertionEffect()",
+  ],
+  Array [
     "[B-CounterCX] componentWillUnmount()",
     2,
   ],
@@ -1420,6 +1824,17 @@ Array [
     2,
   ],
   Array [
+    "[B-CounterFN] destroy - useInsertionEffect()",
+  ],
+  Array [
+    "[B-CounterFN] destroy - useInsertionEffect(count)",
+    2,
+  ],
+  Array [
+    "[B-CounterFN] destroy - onetime - useInsertionEffect(count)",
+    2,
+  ],
+  Array [
     "[B-CounterFN] setButtonRef()",
     null,
   ],
@@ -1432,6 +1847,17 @@ Array [
   ],
   Array [
     "[B-MemoCounterFN] destroy - onetime - useLayoutEffect(count)",
+    2,
+  ],
+  Array [
+    "[B-MemoCounterFN] destroy - useInsertionEffect()",
+  ],
+  Array [
+    "[B-MemoCounterFN] destroy - useInsertionEffect(count)",
+    2,
+  ],
+  Array [
+    "[B-MemoCounterFN] destroy - onetime - useInsertionEffect(count)",
     2,
   ],
   Array [
@@ -1455,6 +1881,17 @@ Array [
   ],
   Array [
     "[B-LazyCounterFN] destroy - onetime - useLayoutEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-LazyCounterFN] destroy - useInsertionEffect()",
+  ],
+  Array [
+    "[B-LazyCounterFN] destroy - useInsertionEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-LazyCounterFN] destroy - onetime - useInsertionEffect(count)",
     1,
   ],
   Array [
@@ -1523,6 +1960,46 @@ Array [
   ],
   Array [
     "[A-LazyCounterFN] useMemo(count)",
+    0,
+  ],
+  Array [
+    "[A-ForwardRef] create - useInsertionEffect()",
+  ],
+  Array [
+    "[A-CounterCX] setButtonRef()",
+    null,
+  ],
+  Array [
+    "[A-CounterFN] setButtonRef()",
+    null,
+  ],
+  Array [
+    "[A-CounterFN] create - useInsertionEffect()",
+  ],
+  Array [
+    "[A-CounterFN] create - useInsertionEffect(count)",
+    1,
+  ],
+  Array [
+    "[A-MemoCounterFN] setButtonRef()",
+    null,
+  ],
+  Array [
+    "[A-MemoCounterFN] create - useInsertionEffect()",
+  ],
+  Array [
+    "[A-MemoCounterFN] create - useInsertionEffect(count)",
+    1,
+  ],
+  Array [
+    "[A-LazyCounterFN] create - useInsertionEffect()",
+  ],
+  Array [
+    "[A-LazyCounterFN] create - useInsertionEffect(count)",
+    0,
+  ],
+  Array [
+    "[A-LazyCounterFN] create - onetime - useInsertionEffect(count)",
     0,
   ],
   Array [
@@ -1667,7 +2144,24 @@ Array [
     "[B-LazyCounterCX-Fallback] destroy - useLayoutEffect()",
   ],
   Array [
+    "[B-LazyCounterCX-Fallback] destroy - useInsertionEffect()",
+  ],
+  Array [
     "[B-LazyCounterFN-Fallback] destroy - useLayoutEffect()",
+  ],
+  Array [
+    "[B-LazyCounterFN-Fallback] destroy - useInsertionEffect()",
+  ],
+  Array [
+    "[B-LazyCounterFN] create - useInsertionEffect()",
+  ],
+  Array [
+    "[B-LazyCounterFN] create - useInsertionEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-LazyCounterFN] create - onetime - useInsertionEffect(count)",
+    0,
   ],
   Array [
     "[B-LazyCounterCX] setButtonRef()",
@@ -1726,6 +2220,9 @@ Array [
     "[A-ForwardRef] destroy - useLayoutEffect()",
   ],
   Array [
+    "[A-ForwardRef] destroy - useInsertionEffect()",
+  ],
+  Array [
     "[A-CounterCX] componentWillUnmount()",
     2,
   ],
@@ -1745,6 +2242,17 @@ Array [
     2,
   ],
   Array [
+    "[A-CounterFN] destroy - useInsertionEffect()",
+  ],
+  Array [
+    "[A-CounterFN] destroy - useInsertionEffect(count)",
+    2,
+  ],
+  Array [
+    "[A-CounterFN] destroy - onetime - useInsertionEffect(count)",
+    2,
+  ],
+  Array [
     "[A-CounterFN] setButtonRef()",
     null,
   ],
@@ -1757,6 +2265,17 @@ Array [
   ],
   Array [
     "[A-MemoCounterFN] destroy - onetime - useLayoutEffect(count)",
+    2,
+  ],
+  Array [
+    "[A-MemoCounterFN] destroy - useInsertionEffect()",
+  ],
+  Array [
+    "[A-MemoCounterFN] destroy - useInsertionEffect(count)",
+    2,
+  ],
+  Array [
+    "[A-MemoCounterFN] destroy - onetime - useInsertionEffect(count)",
     2,
   ],
   Array [
@@ -1780,6 +2299,17 @@ Array [
   ],
   Array [
     "[A-LazyCounterFN] destroy - onetime - useLayoutEffect(count)",
+    1,
+  ],
+  Array [
+    "[A-LazyCounterFN] destroy - useInsertionEffect()",
+  ],
+  Array [
+    "[A-LazyCounterFN] destroy - useInsertionEffect(count)",
+    1,
+  ],
+  Array [
+    "[A-LazyCounterFN] destroy - onetime - useInsertionEffect(count)",
     1,
   ],
   Array [
@@ -1848,6 +2378,46 @@ Array [
   ],
   Array [
     "[B-LazyCounterFN] useMemo(count)",
+    0,
+  ],
+  Array [
+    "[B-ForwardRef] create - useInsertionEffect()",
+  ],
+  Array [
+    "[B-CounterCX] setButtonRef()",
+    null,
+  ],
+  Array [
+    "[B-CounterFN] setButtonRef()",
+    null,
+  ],
+  Array [
+    "[B-CounterFN] create - useInsertionEffect()",
+  ],
+  Array [
+    "[B-CounterFN] create - useInsertionEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-MemoCounterFN] setButtonRef()",
+    null,
+  ],
+  Array [
+    "[B-MemoCounterFN] create - useInsertionEffect()",
+  ],
+  Array [
+    "[B-MemoCounterFN] create - useInsertionEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-LazyCounterFN] create - useInsertionEffect()",
+  ],
+  Array [
+    "[B-LazyCounterFN] create - useInsertionEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-LazyCounterFN] create - onetime - useInsertionEffect(count)",
     0,
   ],
   Array [
@@ -2013,11 +2583,51 @@ Array [
     1,
   ],
   Array [
+    "[A-CounterFN] destroy - useInsertionEffect(count)",
+    1,
+  ],
+  Array [
+    "[A-CounterFN] create - useInsertionEffect(count)",
+    2,
+  ],
+  Array [
+    "[A-CounterFN] create - onetime - useInsertionEffect(count)",
+    2,
+  ],
+  Array [
     "[A-CounterFN] destroy - useLayoutEffect(count)",
     1,
   ],
   Array [
+    "[A-MemoCounterFN] destroy - useInsertionEffect(count)",
+    1,
+  ],
+  Array [
+    "[A-MemoCounterFN] create - useInsertionEffect(count)",
+    2,
+  ],
+  Array [
+    "[A-MemoCounterFN] create - onetime - useInsertionEffect(count)",
+    2,
+  ],
+  Array [
     "[A-MemoCounterFN] destroy - useLayoutEffect(count)",
+    1,
+  ],
+  Array [
+    "[A-LazyCounterFN] destroy - useInsertionEffect(count)",
+    0,
+  ],
+  Array [
+    "[A-LazyCounterFN] destroy - onetime - useInsertionEffect(count)",
+    0,
+  ],
+  Array [
+    "[A-LazyCounterFN] create - useInsertionEffect(count)",
+    1,
+  ],
+  Array [
+    "[A-LazyCounterFN] create - onetime - useInsertionEffect(count)",
     1,
   ],
   Array [
@@ -2175,6 +2785,22 @@ Array [
     1,
   ],
   Array [
+    "[B-CounterFN] destroy - useInsertionEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-CounterFN] destroy - onetime - useInsertionEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-CounterFN] create - useInsertionEffect(count)",
+    2,
+  ],
+  Array [
+    "[B-CounterFN] create - onetime - useInsertionEffect(count)",
+    2,
+  ],
+  Array [
     "[B-CounterFN] destroy - useLayoutEffect(count)",
     1,
   ],
@@ -2183,11 +2809,43 @@ Array [
     1,
   ],
   Array [
+    "[B-MemoCounterFN] destroy - useInsertionEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-MemoCounterFN] destroy - onetime - useInsertionEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-MemoCounterFN] create - useInsertionEffect(count)",
+    2,
+  ],
+  Array [
+    "[B-MemoCounterFN] create - onetime - useInsertionEffect(count)",
+    2,
+  ],
+  Array [
     "[B-MemoCounterFN] destroy - useLayoutEffect(count)",
     1,
   ],
   Array [
     "[B-MemoCounterFN] destroy - onetime - useLayoutEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-LazyCounterFN] destroy - useInsertionEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-LazyCounterFN] destroy - onetime - useInsertionEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-LazyCounterFN] create - useInsertionEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-LazyCounterFN] create - onetime - useInsertionEffect(count)",
     1,
   ],
   Array [
@@ -2353,11 +3011,51 @@ Array [
     1,
   ],
   Array [
+    "[B-CounterFN] destroy - useInsertionEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-CounterFN] create - useInsertionEffect(count)",
+    2,
+  ],
+  Array [
+    "[B-CounterFN] create - onetime - useInsertionEffect(count)",
+    2,
+  ],
+  Array [
     "[B-CounterFN] destroy - useLayoutEffect(count)",
     1,
   ],
   Array [
+    "[B-MemoCounterFN] destroy - useInsertionEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-MemoCounterFN] create - useInsertionEffect(count)",
+    2,
+  ],
+  Array [
+    "[B-MemoCounterFN] create - onetime - useInsertionEffect(count)",
+    2,
+  ],
+  Array [
     "[B-MemoCounterFN] destroy - useLayoutEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-LazyCounterFN] destroy - useInsertionEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-LazyCounterFN] destroy - onetime - useInsertionEffect(count)",
+    0,
+  ],
+  Array [
+    "[B-LazyCounterFN] create - useInsertionEffect(count)",
+    1,
+  ],
+  Array [
+    "[B-LazyCounterFN] create - onetime - useInsertionEffect(count)",
     1,
   ],
   Array [
