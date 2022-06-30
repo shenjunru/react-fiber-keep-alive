@@ -112,67 +112,67 @@ export const FiberTag = Object.freeze(<const>{
 
 // react-reconciler/src/ReactTypeOfMode.js
 export const FiberMode = Object.freeze({
-    NoMode         :       0b000000, // 0
-    ConcurrentMode : v18 ? 0b000001  // 1
-         /* v16 | v17 */ : 0b000100, // 4
+    NoMode         :       0, // 0b000000
+    ConcurrentMode : v18 ? 1  // 0b000001
+         /* v16 | v17 */ : 4, // 0b000100
 });
 
 // v16: shared/ReactSideEffectTags.js
 // react-reconciler/src/ReactFiberFlags.js
 export const FiberFlag = Object.freeze({
-    NoFlags             :       0b00000000000000000000000000, // 0
-//  PerformedWork       :       0b00000000000000000000000001, // 1
-    Placement           :       0b00000000000000000000000010, // 2
-    Update              :       0b00000000000000000000000100, // 4
-//  Deletion            :       0b00000000000000000000001000, // 8
-//  ChildDeletion       : v18 ? 0b00000000000000000000010000  // 16
-//            /* v16 | v17 */ : 0,
-//  Callback            : v18 ? 0b00000000000000000001000000  // 64
-//            /* v16 | v17 */ : 0b00000000000000000000100000, // 32
-    Ref                 : v18 ? 0b00000000000000001000000000  // 512
-              /* v16 | v17 */ : 0b00000000000000000010000000, // 128
-//  Snapshot            : v18 ? 0b00000000000000010000000000  // 1024
-//            /* v16 | v17 */ : 0b00000000000000000100000000, // 256
-    Passive             : v18 ? 0b00000000000000100000000000  // 2048
-              /* v16 | v17 */ : 0b00000000000000001000000000, // 512
+    NoFlags             :       0,       // 0b00000000000000000000000000
+//  PerformedWork       :       1,       // 0b00000000000000000000000001
+    Placement           :       2,       // 0b00000000000000000000000010
+    Update              :       4,       // 0b00000000000000000000000100
+//  Deletion            :       8,       // 0b00000000000000000000001000
+//  ChildDeletion       : v18 ? 16       // 0b00000000000000000000010000
+//            /* v16 | v17 */ : 0,       // 0b00000000000000000000000000
+//  Callback            : v18 ? 64       // 0b00000000000000000001000000
+//            /* v16 | v17 */ : 32,      // 0b00000000000000000000100000
+    Ref                 : v18 ? 512      // 0b00000000000000001000000000
+              /* v16 | v17 */ : 128,     // 0b00000000000000000010000000
+//  Snapshot            : v18 ? 1024     // 0b00000000000000010000000000
+//            /* v16 | v17 */ : 256,     // 0b00000000000000000100000000
+    Passive             : v18 ? 2048     // 0b00000000000000100000000000
+              /* v16 | v17 */ : 512,     // 0b00000000000000001000000000
 
-    LifecycleEffectMask : v18 ? 0b00000000000111111000000000  // 32256 = Passive | Update | Callback | Ref | Snapshot | StoreConsistency
-              /* v16 | v17 */ : 0b00000000000000001110100100, // 932 = Passive | Update | Callback | Ref | Snapshot
+    LifecycleEffectMask : v18 ? 32256    // 0b00000000000111111000000000 = Passive | Update | Callback | Ref | Snapshot | StoreConsistency
+              /* v16 | v17 */ : 932,     // 0b00000000000000001110100100 = Passive | Update | Callback | Ref | Snapshot
 
-//  Incomplete          : v18 ? 0b00000000001000000000000000  // 32768
-//            /* v16 | v17 */ : 0b00000000000000100000000000, // 2048
-//  Forked              : v18 ? 0b00000100000000000000000000  // 1048576
-//            /* v16 | v17 */ : 0,
+//  Incomplete          : v18 ? 32768    // 0b00000000001000000000000000
+//            /* v16 | v17 */ : 2048,    // 0b00000000000000100000000000
+//  Forked              : v18 ? 1048576  // 0b00000100000000000000000000
+//            /* v16 | v17 */ : 0,       // 0b00000000000000000000000000
 
-//  LayoutStatic        : v18 ? 0b00010000000000000000000000  // 4194304
-//            /* v16 | v17 */ : 0,
-//  PassiveStatic       : v18 ? 0b00100000000000000000000000  // 8388608
-//                      : v17 ? 0b00000000001000000000000000  // 32768
-//                  /* v16 */ : 0,
+//  LayoutStatic        : v18 ? 4194304  // 0b00010000000000000000000000
+//            /* v16 | v17 */ : 0,       // 0b00000000000000000000000000
+//  PassiveStatic       : v18 ? 8388608  // 0b00100000000000000000000000
+//                      : v17 ? 32768    // 0b00000000001000000000000000
+//                  /* v16 */ : 0,       // 0b00000000000000000000000000
 
-//  LayoutMask          : v18 ? 0b00000000000010001001000100  // 8772 = Update | Callback | Ref | Visibility
-//                      : v17 ? 0b00000000000000000010100100  // 164
-//                  /* v16 */ : 0,
+//  LayoutMask          : v18 ? 8772     // 0b00000000000010001001000100 = Update | Callback | Ref | Visibility
+//                      : v17 ? 164      // 0b00000000000000000010100100
+//                  /* v16 */ : 0,       // 0b00000000000000000000000000
 
-    PassiveMask         : v18 ? 0b00000000000000100000010000  // 2064 = Passive | ChildDeletion
-                        : v17 ? 0b00000000000000001000001000  // 520
-                    /* v16 */ : 0,
+    PassiveMask         : v18 ? 2064     // 0b00000000000000100000010000 = Passive | ChildDeletion
+                        : v17 ? 520      // 0b00000000000000001000001000
+                    /* v16 */ : 0,       // 0b00000000000000000000000000
 
-//  StaticMask          : v18 ? 0b00111000000000000000000000  // 14680064 = LayoutStatic | PassiveStatic | RefStatic
-//                      : v17 ? 0b00000000001000000000000000  // 32768 = PassiveStatic
-//                  /* v16 */ : 0,
+//  StaticMask          : v18 ? 14680064 // 0b00111000000000000000000000 = LayoutStatic | PassiveStatic | RefStatic
+//                      : v17 ? 32768    // 0b00000000001000000000000000 = PassiveStatic
+//                  /* v16 */ : 0,       // 0b00000000000000000000000000
 });
 
 // react-reconciler/src/ReactHookEffectTags.js
 export const HookEffectTag = Object.freeze({
-    NoFlags   :       0b0000, // 0
-    HasEffect :       0b0001, // 1
-    Insertion : v18 ? 0b0010  // 2
-    /* v16 | v17 */ : 0,
-    Layout    : v18 ? 0b0100  // 4
-    /* v16 | v17 */ : 0b0010, // 2
-    Passive   : v18 ? 0b1000  // 8
-    /* v16 | v17 */ : 0b0100, // 4
+    NoFlags   :       0, // 0b0000
+    HasEffect :       1, // 0b0001
+    Insertion : v18 ? 2  // 0b0010
+    /* v16 | v17 */ : 0, // 0b0000
+    Layout    : v18 ? 4  // 0b0100
+    /* v16 | v17 */ : 2, // 0b0010
+    Passive   : v18 ? 8  // 0b1000
+    /* v16 | v17 */ : 4, // 0b0100
 });
 
 /* eslint-enable @typescript-eslint/indent */
@@ -380,7 +380,7 @@ const replaceFiberOnParent = (
 
 const traverseEffectHooks = (
     fiber: Fiber,
-    visit: (effect: FiberEffectHookState) => void,
+    visit: (effect: FiberEffectHookState, type: number) => void,
 ) => {
     switch (fiber.tag) {
         case FiberTag.FunctionComponent:
@@ -400,11 +400,12 @@ const traverseEffectHooks = (
         if (null != nextEffect?.tag) {
             let match = HookEffectTag.NoFlags;
 
+            match || (match = nextEffect.tag & HookEffectTag.Insertion);
             match || (match = nextEffect.tag & HookEffectTag.Layout);
             match || (match = nextEffect.tag & HookEffectTag.Passive);
 
             if (match) {
-                visit(nextEffect);
+                visit(nextEffect, match);
             }
         }
 
@@ -422,10 +423,11 @@ const isNoEffectHook = (effect: FiberEffectHookState) => {
     if (!create) {
         return true;
     }
+    // not onetime effect
     if (!hasOwnProperty.call(create, EffectProp)) {
         return false;
     }
-    // determine deps updated
+    // onetime effect has updated deps
     return HookEffectTag.NoFlags === (effect.tag & HookEffectTag.HasEffect);
 };
 
@@ -436,7 +438,7 @@ const applyFiberEffect = (fiber: Fiber): number => {
         flags |= FiberFlag.Ref;
     }
 
-    const isFunctionComponent = traverseEffectHooks(fiber, (effect) => {
+    const isFunctionComponent = traverseEffectHooks(fiber, (effect, type) => {
         if (isNoEffectHook(effect)) {
             return;
         }
@@ -444,7 +446,8 @@ const applyFiberEffect = (fiber: Fiber): number => {
         effect.tag |= HookEffectTag.HasEffect;
         effect.destroy = undefined;
 
-        switch (effect.tag & ~HookEffectTag.HasEffect) {
+        switch (type) {
+            case HookEffectTag.Insertion:
             case HookEffectTag.Layout:
                 flags |= FiberFlag.Update;
                 break;

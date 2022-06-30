@@ -13,13 +13,29 @@ import {
 
 function noop() {}
 
+const {
+    useCallback,
+    useContext,
+    useEffect,
+    useInsertionEffect,
+    useLayoutEffect,
+    useMemo,
+    useRef,
+    useState,
+} = React as typeof React & {
+    useInsertionEffect?: typeof React.useEffect;
+};
+
 const InBrowser = (
     typeof window !== 'undefined' &&
     typeof window.document !== 'undefined' &&
     typeof window.document.createElement !== 'undefined'
 );
 
-const useIsomorphicLayoutEffect = InBrowser ? React.useLayoutEffect : React.useEffect;
+const HasInsertionEffect = null != useInsertionEffect;
+
+const useIsomorphicLayoutEffect = InBrowser ? useLayoutEffect : useEffect;
+const useIsomorphicInsertionEffect = InBrowser ? useInsertionEffect || useIsomorphicLayoutEffect : useEffect;
 
 const enum Step {
     Finish = 0b0000,
@@ -45,7 +61,7 @@ const KeepAliveProvider: React.FC<{
     value: null | HTMLElement;
 }> = (props) => {
     const container = props.value;
-    const context: Context = React.useMemo(() => {
+    const context: Context = useMemo(() => {
         return container ? [container, new Map(), new Map()] : [];
     }, []);
 
@@ -67,20 +83,20 @@ const KeepAliveEffect: React.FC<{
     state: KeepAliveState;
     name: string;
 }> = (props) => {
-    const [container] = React.useContext(KeepAliveContext);
+    const [container] = useContext(KeepAliveContext);
     const cursor = props.cursor;
     const state = props.state;
     const [step] = state;
 
-    useIsomorphicLayoutEffect(() => {
+    useIsomorphicInsertionEffect(() => {
         if (!container || step !== Step.Effect) {
             return;
         }
 
         // console.log('[KEEP-ALIVE] [LIVE]', props.name);
-
         const rootFiber = getRootFiber(container);
-        const cursorFiber = findFiber(rootFiber, (fiber) => fiber.stateNode === cursor.current);
+        const wipRootFiber = HasInsertionEffect ? rootFiber?.alternate : rootFiber;
+        const cursorFiber = findFiber(wipRootFiber, (fiber) => fiber.stateNode === cursor.current);
         const effectFiber = cursorFiber?.sibling;
         const renderFiber = effectFiber?.sibling;
         const finishFiber = renderFiber?.sibling;
@@ -90,8 +106,7 @@ const KeepAliveEffect: React.FC<{
         }
     }, [state]);
 
-    // fake passive effect
-    React.useEffect(noop, [state]);
+    useEffect(noop, [state]);
 
     return null;
 };
@@ -107,20 +122,21 @@ const KeepAliveFinish: React.FC<{
 }> = (props) => {
     const state = props.state;
 
+    useIsomorphicInsertionEffect(noop, [state]);
     useIsomorphicLayoutEffect(noop, [state]);
-    React.useEffect(noop, [state]);
+    useEffect(noop, [state]);
 
     return null;
 };
 
 const KeepAliveManage: React.FC<KeepAliveProps> = (props) => {
-    const [container, caches, mapper] = React.useContext(KeepAliveContext);
-    const cursor = React.useRef<KeepAliveCursor>(null);
+    const [container, caches, mapper] = useContext(KeepAliveContext);
+    const cursor = useRef<KeepAliveCursor>(null);
 
-    const readKey = React.useMemo(() => mapper?.get(props.name) || props.name, []);
+    const readKey = useMemo(() => mapper?.get(props.name) || props.name, []);
     props.name && mapper?.set(props.name, readKey);
 
-    const [state, setState] = React.useState<KeepAliveState>(() => {
+    const [state, setState] = useState<KeepAliveState>(() => {
         const _cache = caches?.get(readKey);
         caches?.delete(readKey);
 
@@ -134,8 +150,8 @@ const KeepAliveManage: React.FC<KeepAliveProps> = (props) => {
     });
     const [step, cache] = state;
 
-    const bypass = React.useRef(false);
-    const ignore = React.useRef(true === props.ignore);
+    const bypass = useRef(false);
+    const ignore = useRef(true === props.ignore);
     ignore.current = true === props.ignore;
 
     useIsomorphicLayoutEffect(() => () => {
@@ -155,18 +171,18 @@ const KeepAliveManage: React.FC<KeepAliveProps> = (props) => {
             return;
         }
 
-        // console.log('[KEEP-ALIVE]', '[SAVE]', name, renderFiber);
+        // console.log('[KEEP-ALIVE]', '[SAVE]', readKey, renderFiber);
         const restore = protectFiber(renderFiber);
         caches.set(readKey, [renderFiber, restore]);
     }, []);
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (step !== Step.Render) {
             return;
         }
 
         if (!container || !readKey || !cache) {
-            // console.log('[KEEP-ALIVE]', '[SKIP]', name);
+            // console.log('[KEEP-ALIVE]', '[SKIP]', readKey);
             return setState([Step.Finish, cache]);
         }
 
@@ -174,27 +190,27 @@ const KeepAliveManage: React.FC<KeepAliveProps> = (props) => {
         const cursorFiber = findFiber(rootFiber, (fiber) => fiber.stateNode === cursor.current);
         const renderFiber = cursorFiber?.sibling?.sibling;
         if (!renderFiber || !renderFiber) {
-            // console.log('[KEEP-ALIVE]', '[WAIT]', name);
+            // console.log('[KEEP-ALIVE]', '[WAIT]', readKey);
             return setState([Step.Render, cache]);
         }
 
         const boundaryFiber = findParentFiber(cursorFiber, KeepAliveRender);
         if (boundaryFiber) {
-            // console.log('[KEEP-ALIVE]', '[PASS]', name);
+            // console.log('[KEEP-ALIVE]', '[PASS]', readKey);
             bypass.current = true;
             return setState([Step.Finish, null]);
         }
 
         const [cachedFiber, restore] = cache;
-        // console.log('[KEEP-ALIVE]', '[SWAP]', name);
+        // console.log('[KEEP-ALIVE]', '[SWAP]', readKey);
         replaceFiber(renderFiber, cachedFiber, restore);
 
         return setState([Step.Effect, null]);
     }, [state]);
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (step === Step.Effect) {
-            // console.log('[KEEP-ALIVE]', '[DONE]', name);
+            // console.log('[KEEP-ALIVE]', '[DONE]', readKey);
             setState([Step.Finish, null]);
         }
     }, [state]);
@@ -234,9 +250,9 @@ export function keepAlive<P>(
 }
 
 export const useIgnoreKeepAlive = () => {
-    const [, caches, mapper] = React.useContext(KeepAliveContext);
+    const [, caches, mapper] = useContext(KeepAliveContext);
 
-    return React.useCallback((name: string) => {
+    return useCallback((name: string) => {
         const readKey = mapper?.get(name);
         readKey && caches?.delete(readKey);
         readKey && mapper?.forEach((value, key) => {
