@@ -49,6 +49,8 @@ export type KeepAliveState = [Step, null | KeepAliveCache];
 export type KeepAliveProps = {
     name: string;
     ignore?: boolean;
+    onSave?: (name: string) => void;
+    onRead?: (name: string) => void;
     children: React.ReactNode;
 };
 
@@ -154,6 +156,9 @@ const KeepAliveManage: React.FC<KeepAliveProps> = (props) => {
     const ignore = useRef(true === props.ignore);
     ignore.current = true === props.ignore;
 
+    const refProps = useRef(props);
+    refProps.current = props;
+
     useIsomorphicLayoutEffect(() => () => {
         if (!container || !caches || !readKey || ignore.current || bypass.current) {
             return;
@@ -174,6 +179,7 @@ const KeepAliveManage: React.FC<KeepAliveProps> = (props) => {
         // console.log('[KEEP-ALIVE]', '[SAVE]', readKey, renderFiber);
         const restore = protectFiber(renderFiber);
         caches.set(readKey, [renderFiber, restore]);
+        refProps.current.onSave?.(readKey);
     }, []);
 
     useEffect(() => {
@@ -212,6 +218,7 @@ const KeepAliveManage: React.FC<KeepAliveProps> = (props) => {
         if (step === Step.Effect) {
             // console.log('[KEEP-ALIVE]', '[DONE]', readKey);
             setState([Step.Finish, null]);
+            refProps.current.onRead?.(readKey);
         }
     }, [state]);
 
