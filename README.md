@@ -63,6 +63,8 @@ ReactDOM.render((
     ```
     - prop "name" is a required unique string used to identify the cache.
     - prop "ignore" is a optional boolean used to bypass and clear the cache.
+    - prop "onRead(name: string): void" is a optional callback after cache applied.
+    - prop "onSave(name: string): void" is a optional callback after cache saved.
 
 - Wrap your component with `keepLive()`
     ```JavaScript
@@ -132,6 +134,8 @@ ReactDOM.render((
 - Recursive `<KeepAlive>` handled by top level `<KeepAlive>`.
 - If the `container` changed in `ReactDOM.createPortal(children, container)`.
   - All saved sub tree state will be lost.
+- Errors from `react-devtools` after `<KeepAlive>` remounted.
+  - Try force refresh the components tree. (ex: updates components filter)
 
 
 ## 🏁 Tested
@@ -149,6 +153,7 @@ ReactDOM.render((
 
 ### Class Component
 - [x] `Component.getDerivedStateFromProps()`
+- [x] `Component.getDerivedStateFromError()`
 - [x] `instance.componentDidMount()`
 - [x] `instance.getSnapshotBeforeUpdate()`
 - [x] `instance.componentDidUpdate()`
@@ -164,12 +169,12 @@ ReactDOM.render((
 - [x] `useMemo()`
 - [x] `useRef()`
 - [x] `useState()`
-- [x] `useDebugValue()`
+- [ ] `useDebugValue()`
 - [ ] `useDeferredValue()` (since v18)
-- [ ] `useTransition()` (since v18)
 - [ ] `useId()` (since v18)
+- [x] `useInsertionEffect()` (since v18)
 - [ ] `useSyncExternalStore()` (since v18)
-- [ ] `useInsertionEffect()` (since v18)
+- [ ] `useTransition()` (since v18)
 
 ### Other
 - [x] `ReactDOM.createPortal(children, container)`
