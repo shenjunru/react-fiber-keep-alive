@@ -43,18 +43,18 @@ const enum Step {
     Effect = 0b0010,
 }
 
-type KeepAliveCache = [Fiber, { current: boolean }];
-type KeepAliveState = [Step, null | KeepAliveCache];
+export type KeepAliveCache = [Fiber, { current: boolean }];
+export type KeepAliveState = [Step, null | KeepAliveCache];
 
-type KeepAliveProps = {
+export type KeepAliveProps = {
     name: string;
     ignore?: boolean;
     children: React.ReactNode;
 };
 
-type Context = Readonly<[] | [HTMLElement, Map<string, KeepAliveCache>,  Map<string, string>]>;
+type Context = Readonly<[] | [HTMLElement, Map<string, KeepAliveCache>, Map<string, string>]>;
 
-const KeepAliveContext = React.createContext<Context>([]);
+export const KeepAliveContext = React.createContext<Context>([]);
 
 const KeepAliveProvider: React.FC<{
     children: React.ReactNode;
@@ -228,6 +228,7 @@ const KeepAliveManage: React.FC<KeepAliveProps> = (props) => {
 };
 
 export const KeepAlive = Object.assign(KeepAliveManage, {
+    Context: KeepAliveContext,
     Provider: KeepAliveProvider,
 });
 
