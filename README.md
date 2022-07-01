@@ -48,7 +48,7 @@ ReactDOM.render((
 
 ## 📝 API
 
-- Provider `root` container element
+- Provide `root` container element.
     ```JSX
     <KeepAlive.Provider value={container}>
     ```
@@ -62,11 +62,11 @@ ReactDOM.render((
     </KeepAlive>
     ```
     - prop "name" is a required unique string used to identify the cache.
-    - prop "ignore" is a optional boolean used to bypass and clear the cache.
-    - prop "onRead(name: string): void" is a optional callback after cache applied.
-    - prop "onSave(name: string): void" is a optional callback after cache saved.
+    - prop "ignore" is a optional boolean used to bypass and clear the cache. (since 0.5.0)
+    - prop "onRead(name: string): void" is a optional callback after cache applied. (since 0.7.0)
+    - prop "onSave(name: string): void" is a optional callback after cache saved. (since 0.7.0)
 
-- Wrap your component with `keepLive()`
+- Wrap your component with `keepLive()`.
     ```JavaScript
     import { keepAlive } from 'react-fiber-keep-alive';
 
@@ -124,6 +124,36 @@ ReactDOM.render((
     React.useLayoutEffect(markEffectHookIsOnetime(() => {
         // do something
     }), []);
+    ```
+
+- `KeepAlive.Context` (since 0.7.0)
+    ```TSX
+    import * as React from 'react';
+    import KeepAlive, { Context, KeepAliveCache } from 'react-fiber-keep-alive';
+    import LRUCache from 'lru-cache';
+
+    /// Example: Use LRU to manage the cache
+    const YourKeepAliveProvider: React.FC<{
+        children: React.ReactNode;
+        value: null | HTMLElement;
+    }> = (props) => {
+        const container = props.value;
+        const context: Context = React.useMemo(() => {
+            if (!container) {
+                return [];
+            }
+            const caches = new LRUCache<string, KeepAliveCache>({ 
+                max: 10,
+            });
+            return [container, caches, new Map()];
+        }, []);
+
+        return (
+            <KeepAlive.Context.Provider value={context}>
+                {props.children}
+            </KeepAlive.Context.Provider>
+        );
+    };
     ```
 
 
