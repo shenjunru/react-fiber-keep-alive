@@ -17,7 +17,13 @@ export declare type KeepAliveProps = {
     onRead?: (name: string) => void;
     children: React.ReactNode;
 };
-declare type Context = Readonly<[] | [HTMLElement, Map<string, KeepAliveCache>, Map<string, string>]>;
+export interface IMap<K, V> {
+    delete(key: K): void;
+    forEach(iterator: (value: V, key: K) => void): void;
+    get(key: K): V | undefined;
+    set(key: K, value: V): void;
+}
+export declare type Context = Readonly<[] | [HTMLElement, IMap<string, KeepAliveCache>, IMap<string, string>]>;
 export declare const KeepAliveContext: React.Context<Context>;
 export declare const KeepAlive: React.FC<KeepAliveProps> & {
     Context: React.Context<Context>;
